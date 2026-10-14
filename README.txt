@@ -33,6 +33,12 @@ FABRICS, MATERIALS AND SCALE MAPPING
 - Deleting: any piece (including the preloaded ones) and any fabric can be deleted in the admin panel; "Restore" buttons bring defaults back.
 - For the repo: "Export additions for repo" now also exports fabrics, mapping, per-piece fabrics and deletions. Merge that JSON into data/site.json and commit any exported image/model files.
 
+ADMIN CHANGES PERSIST IN THE REPO (PUBLISH TO GITHUB)
+Admin edits are first saved in your browser. To make them live for every visitor, open the admin panel > "Publish to GitHub", enter your repository and a fine-grained token (Contents: Read and write, this repo only), then click "Publish changes". Everything (settings, fabrics, prices, mapping, uploaded models, images, videos) is committed to the repo in one commit: settings go to data/site.json, files to models/, swatches/fabrics/ and media/. GitHub Pages updates in 1-2 minutes. On a phone, tap the footer logo 5 times to open the admin.
+
+BACKEND
+A complete backend (accounts, wishlist, reviews, orders, PayFast payments, saved designs, forms, newsletter, emails) is in backend/. Follow backend/SETUP.md, then paste your API address into admin > Business details > "Backend API URL" and publish.
+
 CHANGING CODE
 Source is in src/. Install Node, then: npm install, npm run build (rebuilds js/app.js), npm run assets (regenerates placeholder models, swatches and the catalogue CSV from src/catalog.js).
 Add a product: add a line in src/catalog.js, drop models/<id>.glb in place, rebuild.

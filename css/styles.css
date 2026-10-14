@@ -114,3 +114,40 @@ video.slot-media{background:#000}
 .fab img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:.5s}a.fab:hover img{transform:scale(1.06)}.fab{overflow:hidden}
 .fab-big{background:var(--bg2);border:1px solid var(--line)}.fab-big canvas,.fab-big img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
 #adm .sec{border-bottom:1px solid var(--line)}#adm .sec>summary{font:400 .78rem var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);cursor:pointer;padding:.8rem 0;list-style:none}#adm .sec>summary::-webkit-details-marker{display:none}#adm .sec[open]>summary{color:var(--ink)}#adm .sec>details,#adm .sec>label,#adm .sec>.ar,#adm .sec>.acts,#adm .sec>p{margin-bottom:.6rem}
+
+/* ================= Mobile refinements (keep last) ================= */
+.m-only,.bki{display:none}
+body.menu{overflow:hidden}
+@media(max-width:960px){
+ /* backdrop-filter on the header would trap the fixed full-screen menu inside it, so it is off here */
+ .hdr{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg);gap:.6rem;padding:.7rem 1rem}
+ .logo{font-size:1.05rem;letter-spacing:.14em;white-space:nowrap;position:relative;z-index:60;margin-right:auto;min-width:0}
+ .logo .slot-media{height:30px}
+ .bk{padding:.45rem .6rem;letter-spacing:.04em;position:relative;z-index:56}
+ .bki{display:inline-block;vertical-align:-3px}.bk-t{display:none}
+ .burger{display:block;position:relative;z-index:60;margin-left:.2rem;flex:none}
+ #nav{position:fixed;inset:0;z-index:55;margin:0;padding:5rem 1.6rem 2.5rem;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1.05rem;font-size:1.05rem;letter-spacing:.16em;overflow-y:auto;transform:translateX(100%);visibility:hidden;transition:transform .4s,visibility 0s .4s}
+ .menu #nav{transform:none;visibility:visible;transition:transform .4s}
+ #nav a{padding:.2rem 0;border-bottom:0}
+ .m-only{display:block}.m-sep{width:60%;height:1px;background:var(--line);margin:.4rem 0}
+ .notice{font-size:.66rem;letter-spacing:.08em;padding:.5rem .8rem}
+ .hero{min-height:0;gap:1rem;padding:1.2rem 1.2rem 2rem}
+ .hero .stage{height:46vh}
+ .hero-bg::after{background:linear-gradient(180deg,var(--bg) 8%,rgba(247,243,237,.6) 55%,transparent)}
+ .hero-ctl .btn{padding:.9rem 1.3rem}
+ .shop-bar{gap:.6rem}.shop-bar .search{min-width:100%}#sort,#ffilter{flex:1 1 140px;min-width:0;width:auto}
+ .pdp{padding-top:1.5rem;gap:1.5rem}.pdp .stage{height:52vh}
+ .st-canvas{height:62vh}
+ .cc .stage{height:260px}.cmp-t th,.cmp-t td{padding:.6rem}
+ .co .row{grid-template-columns:1fr}
+ .fabs{grid-template-columns:repeat(2,1fr)}
+ .dl{flex-wrap:wrap}
+ .armodal{padding:0}.arbox{width:100%;max-height:100vh}
+ #adm{width:100vw}
+ .ftr{padding:2.5rem 1.2rem}
+ .cookie{left:0;right:0;bottom:0;max-width:none;z-index:130}
+ .wa{right:.8rem;bottom:4.6rem;padding:.6rem .9rem;font-size:.7rem}
+ #cmpbar{left:.8rem;right:.8rem;transform:none;bottom:.8rem;justify-content:space-between}
+ #toast{left:.8rem;right:.8rem;bottom:4.2rem;justify-content:space-between}
+}
+@media(max-width:480px){.logo{font-size:.95rem;letter-spacing:.1em}.hdr{padding:.65rem .8rem}.bk{padding:.4rem .5rem}}

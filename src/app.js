@@ -10,6 +10,7 @@ ready.then(async()=>{
  if(has('basket-list'))await import('./basketpage.js');
  if(has('co-form'))await import('./checkout.js');
  if(has('cmp-grid'))await import('./comparepage.js');
+ if(has('oc'))await import('./ordercomplete.js');
  if(has('fab-detail'))await import('./fabricpage.js');
  if(has('acc'))await import('./account.js');
  if(has('dl-models'))await import('./trade.js');

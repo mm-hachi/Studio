@@ -1,6 +1,7 @@
 // DEMO payment page: no payment is processed and card details are never stored or transmitted.
 import * as B from './basket.js';
 import { API, session } from './api.js';
+import * as Store from './store.js';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const S=B.shop(),sub=B.total(),fee=B.list().length?S.delivery:0,total=sub+fee;
 const rows=()=>B.list().map(i=>`<div><span>${i.qty}× ${esc(i.name)}<br><small>${esc(i.desc)}</small></span>${B.money(i.price*i.qty)}</div>`).join('');
@@ -12,7 +13,19 @@ else{
  $('cc').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,19).replace(/(.{4})/g,'$1 ').trim();
  $('exp').oninput=e=>{let v=e.target.value.replace(/\D/g,'').slice(0,4);if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2);e.target.value=v};
  const fail=m=>{$('co-err').textContent=m;$('co-err').hidden=false;$('co-pay').disabled=false;$('co-pay').textContent='Pay '+B.money(total)};
- $('co-form').onsubmit=e=>{e.preventDefault();$('co-err').hidden=true;const f=Object.fromEntries(new FormData(e.target)),num=f.cc.replace(/\s/g,'');
+ const LIVE=!!Store.DATA.apiBase;
+ if(LIVE){$('cc').closest('fieldset').hidden=true;$('co-pay').textContent='Continue to secure payment ('+B.money(total)+')';const bn=document.querySelector('.demo-banner');if(bn)bn.innerHTML='<b>Secure payment.</b> You will be taken to PayFast to pay. We never see or store your card details.'}
+ async function livePay(e){e.preventDefault();$('co-err').hidden=true;const f=Object.fromEntries(new FormData(e.target));
+  for(const k of ['name','email','phone','address','suburb','city','postal'])if(!String(f[k]||'').trim())return fail('Please complete all fields.');
+  if(!/^\S+@\S+\.\S+$/.test(f.email))return fail('Please enter a valid email address.');
+  $('co-pay').disabled=true;$('co-pay').textContent='Preparing payment…';
+  try{const r=await API.createOrder({name:f.name,email:f.email,phone:f.phone,address:`${f.address}, ${f.suburb}, ${f.city}, ${f.postal}`,items:B.list(),subtotal:sub,delivery:fee,total});
+   if(!r||!r.payfast)throw new Error('Payment could not be started. Please try again.');
+   try{sessionStorage.setItem('dekara-last-order',r.ref||'')}catch{}
+   const form=document.createElement('form');form.method='POST';form.action=r.payfast.url;
+   Object.entries(r.payfast.fields).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;form.append(i)});document.body.append(form);form.submit()}
+  catch(x){fail(x.message||'Something went wrong.')}}
+ $('co-form').onsubmit=e=>{if(LIVE)return livePay(e);e.preventDefault();$('co-err').hidden=true;const f=Object.fromEntries(new FormData(e.target)),num=f.cc.replace(/\s/g,'');
   for(const k of ['name','email','phone','address','suburb','city','postal','cardname'])if(!String(f[k]||'').trim())return fail('Please complete all fields.');
   if(!/^\S+@\S+\.\S+$/.test(f.email))return fail('Please enter a valid email address.');
   if(num.length<13||!luhn(num))return fail('That card number does not look valid.');

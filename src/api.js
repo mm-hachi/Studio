@@ -22,7 +22,10 @@ const local={
  async designs(){const s=session();return s?LS('dekara-designs-'+s.id,[]):[]},
  async saveDesign(d){const s=session();if(!s)throw new Error('Please sign in (Account page) to save designs.');const k='dekara-designs-'+s.id,a=LS(k,[]),x={id:'d'+Date.now().toString(36),date:new Date().toISOString(),...d};a.unshift(x);SV(k,a.slice(0,30));return x},
  async deleteDesign(id){const s=session();if(s){const k='dekara-designs-'+s.id;SV(k,LS(k,[]).filter(d=>d.id!==id))}},
- async tradeApply(a){const all=LS('dekara-trade',[]);all.unshift({...a,date:new Date().toISOString()});SV('dekara-trade',all)}
+ async tradeApply(a){const all=LS('dekara-trade',[]);all.unshift({...a,date:new Date().toISOString()});SV('dekara-trade',all)},
+ async contact(m){const a=LS('dekara-contacts',[]);a.unshift({...m,date:new Date().toISOString()});SV('dekara-contacts',a)},
+ async newsletter(e){const a=LS('dekara-subs',[]);if(!a.includes(e))a.push(e);SV('dekara-subs',a)},
+ async orderStatus(){return {status:'paid'}}
 };
 const rest=base=>{const call=async(m,p,b)=>{const t=localStorage.getItem('dekara-token');const r=await fetch(base+p,{method:m,headers:{'Content-Type':'application/json',...(t?{Authorization:'Bearer '+t}:{})},body:b?JSON.stringify(b):undefined});
   if(!r.ok)throw new Error((await r.json().catch(()=>({}))).message||'Request failed');return r.status===204?null:r.json()};
@@ -30,11 +33,11 @@ const rest=base=>{const call=async(m,p,b)=>{const t=localStorage.getItem('dekara
  return {me:()=>call('GET','/me').catch(()=>null),register:b=>auth('/auth/register',b),login:b=>auth('/auth/login',b),
   logout:async()=>{await call('POST','/auth/logout').catch(()=>{});localStorage.removeItem('dekara-token');localStorage.removeItem('dekara-session')},
   wishlist:()=>call('GET','/wishlist'),toggleWish:id=>call('POST','/wishlist/toggle',{productId:id}),reviews:id=>call('GET','/products/'+id+'/reviews'),addReview:r=>call('POST','/products/'+r.pid+'/reviews',r),
-  createOrder:o=>call('POST','/orders',o),orders:()=>call('GET','/orders'),designs:()=>call('GET','/designs'),saveDesign:d=>call('POST','/designs',d),deleteDesign:id=>call('DELETE','/designs/'+id),tradeApply:a=>call('POST','/trade-applications',a)}};
+  createOrder:o=>call('POST','/orders',o),orders:()=>call('GET','/orders'),designs:()=>call('GET','/designs'),saveDesign:d=>call('POST','/designs',d),deleteDesign:id=>call('DELETE','/designs/'+id),tradeApply:a=>call('POST','/trade-applications',a),contact:m=>call('POST','/contact',m),newsletter:e=>call('POST','/newsletter',{email:e}),orderStatus:ref=>call('GET','/orders/'+encodeURIComponent(ref)+'/status')}};
 const impl=()=>Store.DATA.apiBase?rest(Store.DATA.apiBase):local;
 let wish=new Set();
 export const wished=id=>wish.has(id),wishSize=()=>wish.size;
 export async function syncWish(){try{wish=new Set(await impl().wishlist())}catch{wish=new Set()}fire()}
 export async function toggleWish(id){try{wish=new Set(await impl().toggleWish(id))}catch{}fire()}
 const MUT=['register','login','logout','addReview','saveDesign','deleteDesign'];
-export const API=Object.fromEntries(['me','register','login','logout','wishlist','reviews','addReview','createOrder','orders','designs','saveDesign','deleteDesign','tradeApply'].map(n=>[n,async(...a)=>{const r=await impl()[n](...a);if(['login','register','logout'].includes(n))await syncWish();if(MUT.includes(n))fire();return r}]));
+export const API=Object.fromEntries(['me','register','login','logout','wishlist','reviews','addReview','createOrder','orders','designs','saveDesign','deleteDesign','tradeApply','contact','newsletter','orderStatus'].map(n=>[n,async(...a)=>{const r=await impl()[n](...a);if(['login','register','logout'].includes(n))await syncWish();if(MUT.includes(n))fire();return r}]));

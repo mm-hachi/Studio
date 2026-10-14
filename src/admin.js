@@ -1,6 +1,7 @@
 import * as Store from './store.js';
 import { PRODUCTS, CATS, FABRIC_LIST } from './products.js';
 import { measureGLB } from './loader.js';
+import { publish, ghTest, ghConfig, ghSave } from './publish.js';
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const hash=s=>crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''));
 const trig=document.createElement('button');trig.id='adm-trigger';trig.textContent='⚜';trig.setAttribute('aria-label','Steward access');document.body.append(trig);
@@ -17,7 +18,7 @@ const reload=()=>{sessionStorage.admOpen='1';location.reload()};
 const row=(label,slot,accept)=>{const m=Store.media(slot);return `<div class="ar"><b>${esc(label)}</b><small>${m?'Custom: '+esc(m.name):'Default'}</small><input type="file" accept="${accept}" data-slot="${esc(slot)}">${m?`<button data-del="${esc(slot)}">Remove custom file</button>`:''}</div>`};
 const fld=(id,k,l,v,t='text')=>`<label>${l}${t==='area'?`<textarea rows="4" data-pid="${id}" data-k="${k}">${esc(v)}</textarea>`:`<input type="${t}" data-pid="${id}" data-k="${k}" value="${esc(v)}">`}</label>`;
 const siteHtml=()=>{const c=Store.siteCfg();const t=(k,l,ph)=>`<label>${l}<input type="text" data-site="${k}" value="${esc(c[k]||'')}" placeholder="${ph}"></label>`;
- return `<h4>Business details</h4><p class="note">Shown in the footer and contact page. A WhatsApp number adds a floating chat button.</p>${t('phone','Phone','e.g. 010 000 0000')}${t('email','Email','e.g. info@yourdomain.co.za')}${t('whatsapp','WhatsApp number (with country code)','e.g. 27821234567')}<label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-site="backlight" ${c.backlight===false?'':'checked'} style="width:auto"> Backlight on main viewports</label><label>Backlight strength (%)<input type="number" min="0" max="300" data-site="backlightStrength" value="${c.backlightStrength??100}"></label>`};
+ return `<h4>Business details</h4><p class="note">Shown in the footer and contact page. A WhatsApp number adds a floating chat button.</p>${t('phone','Phone','e.g. 010 000 0000')}${t('email','Email','e.g. info@yourdomain.co.za')}${t('whatsapp','WhatsApp number (with country code)','e.g. 27821234567')}<label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-site="backlight" ${c.backlight===false?'':'checked'} style="width:auto"> Backlight on main viewports</label>${t('apiBase','Backend API URL (when your backend is live)','https://your-api.workers.dev')}<label>Backlight strength (%)<input type="number" min="0" max="300" data-site="backlightStrength" value="${c.backlightStrength??100}"></label>`};
 const shopHtml=()=>{const c=Store.shopCfg();let o=[];try{o=JSON.parse(localStorage.getItem('dekara-orders'))||[]}catch{}
  return `<h4>Basket and checkout</h4><label>Delivery fee (ZAR)<input type="number" min="0" data-sh="delivery" value="${c.delivery}"></label><label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-sh="payNow" ${c.payNow?'checked':''} style="width:auto"> Offer "Pay now" (demo payments)</label>
  <details><summary>Demo orders (${o.length})</summary>${o.slice(0,20).map(x=>`<div class="ar"><b>${esc(x.ref)}</b><small>${esc(x.name)} · ${esc(String(x.date).slice(0,10))} · R ${Math.round(x.total).toLocaleString('en-ZA')}</small></div>`).join('')||'<p class="note">No orders yet.</p>'}<div class="acts"><button data-act="orders">Export orders</button><button data-act="clearorders">Clear orders</button></div></details>`};
@@ -34,6 +35,9 @@ const studioHtml=()=>{const c=Store.studioCfg(),N={seat:'Seat',corner:'Corner',c
  return `<h4>Custom Studio limits</h4><p class="note">Decide how far a customer can take a build. For per-type maximums, 0 means unlimited.</p>${num('maxPieces','Max pieces on canvas',c.maxPieces)}${num('maxWidth','Max overall length (cm)',c.maxWidth)}${num('maxDepth','Max overall depth (cm)',c.maxDepth)}${chk('snap','Snap pieces together',c.snap)}
  <details><summary>Modules, prices and maximums</summary>${Object.keys(N).map(k=>`<div class="ar"><b>${N[k]}</b>${chk('enabled.'+k,'Available to customers',c.enabled[k])}${num('prices.'+k,'Price (ZAR)',c.prices[k])}${num('max.'+k,'Max of this type',c.max[k])}</div>`).join('')}</details>
  <details><summary>Starter sizes offered</summary>${[1,2,3,4].map(n=>chk('presets.'+n,n+'-seater',c.presets[n])).join('')}</details>`};
+const pubHtml=()=>{const g=ghConfig();const f=(k,l,t='text',ph='')=>`<label>${l}<input type="${t}" data-gh="${k}" value="${esc(g[k]||'')}" placeholder="${ph}" autocomplete="off"></label>`;
+ return `<h4>Publish to GitHub</h4><p class="note">Saves your changes (settings, fabrics, prices, models, images and videos) into your repository, so every visitor sees them. Create a fine-grained GitHub token limited to this one repository with "Contents: Read and write". The token is stored only in this browser, so use this on your own device.</p>${f('owner','GitHub owner (username or organisation)')}${f('repo','Repository')}${f('branch','Branch','text','main')}${f('token','Token','password')}
+ <div class="acts"><button data-act="ghpub">Publish changes</button><button data-act="ghtest">Test connection</button><button data-act="ghdiscard">Discard local changes</button></div><p class="note" id="gh-st"></p>`};
 const FT=['Fabric','Leather','Velvet','Linen','Wood','Stone','Metal','Other'];
 const chk2=(attr,val,label,on)=>`<label style="display:flex;gap:.5rem;align-items:center;text-transform:none;letter-spacing:0;font-size:.9rem;margin:.3rem 0"><input type="checkbox" ${attr} value="${esc(val)}" ${on?'checked':''} style="width:auto">${esc(label)}</label>`;
 const fabHtml=()=>`<h4>Fabrics &amp; materials</h4><p class="note">Add or delete the fabrics and materials customers can choose from. Tick which ones each piece offers (under Pieces), then set their scale per piece on the piece's page (see "Fabric mapping").</p>
@@ -62,7 +66,7 @@ function openPanel(){
  p.innerHTML=`<header><h3>Steward's Chamber</h3><button data-act="close">✕</button></header>
  <p class="note">Everything here is saved in this browser only. For a live site that all visitors see, these edits need a server or CMS behind them.</p>
  ${document.getElementById('p-canvas')?'<h4>Fabric mapping (this piece)</h4><div id="map-body"></div>':''}<h4>Media on this page</h4><p class="note">Every slot accepts an image or a video (MP4 or WebM; keep videos under about 50 MB). Background slots play silently on a loop; other videos show play controls.</p>${slots.map(s=>row(s.dataset.label||s.dataset.slot,s.dataset.slot,'image/*,video/*')).join('')||'<p class="note">No media slots on this page.</p>'}
- ${siteHtml()}${shopHtml()}${studioHtml()}${fabHtml()}${addHtml()}${collHtml()}<h4>Pieces</h4><div class="acts"><button data-act="restoredef">Restore deleted default pieces</button></div>${PRODUCTS.map(x=>`<details><summary>${esc(x.name)}</summary>${fld(x.id,'name','Name',x.name)}<label>Category<select data-pid="${x.id}" data-k="cat">${CATS.map(c=>`<option${c===x.cat?' selected':''}>${c}</option>`).join('')}</select></label>${fld(x.id,'sub','Subcategory',x.sub)}${fld(x.id,'tag','Tagline',x.tag)}${fld(x.id,'price','Price (ZAR)',x.price,'number')}${fld(x.id,'desc','Description',x.desc,'area')}<div class="ar"><b>Fabrics for this piece</b>${FABRIC_LIST.map(f=>chk2(`data-pf="${x.id}"`,f.id,f.name,x.fabrics.some(z=>z[2]===f.id))).join('')}<small>To set how each fabric is scaled on this piece, open its page with this panel open.</small><a href="product.html?id=${encodeURIComponent(x.id)}" style="border-bottom:1px solid var(--line);justify-self:start">Open piece page</a></div>
+ ${pubHtml()}${siteHtml()}${shopHtml()}${studioHtml()}${fabHtml()}${addHtml()}${collHtml()}<h4>Pieces</h4><div class="acts"><button data-act="restoredef">Restore deleted default pieces</button></div>${PRODUCTS.map(x=>`<details><summary>${esc(x.name)}</summary>${fld(x.id,'name','Name',x.name)}<label>Category<select data-pid="${x.id}" data-k="cat">${CATS.map(c=>`<option${c===x.cat?' selected':''}>${c}</option>`).join('')}</select></label>${fld(x.id,'sub','Subcategory',x.sub)}${fld(x.id,'tag','Tagline',x.tag)}${fld(x.id,'price','Price (ZAR)',x.price,'number')}${fld(x.id,'desc','Description',x.desc,'area')}<div class="ar"><b>Fabrics for this piece</b>${FABRIC_LIST.map(f=>chk2(`data-pf="${x.id}"`,f.id,f.name,x.fabrics.some(z=>z[2]===f.id))).join('')}<small>To set how each fabric is scaled on this piece, open its page with this panel open.</small><a href="product.html?id=${encodeURIComponent(x.id)}" style="border-bottom:1px solid var(--line);justify-self:start">Open piece page</a></div>
  ${row('3D model (.glb / .gltf)','model:'+x.id,'.glb,.gltf,model/gltf-binary')}${[1,2,3].map(n=>row('Gallery photo or video '+n,`gallery:${x.id}:${n}`,'image/*,video/*')).join('')}<div class="acts"><button data-delprod="${x.id}">Delete this piece</button></div></details>`).join('')}
  <div class="acts" id="adm-final"><button data-act="apply">Apply changes</button><button data-act="export">Export text</button><button data-act="import">Import text</button><button data-act="reset">Reset everything</button><button data-act="lock">Lock</button></div>`;
  document.body.append(p);requestAnimationFrame(()=>p.classList.add('open'));
@@ -71,6 +75,7 @@ function openPanel(){
   let n=h.nextSibling;while(n&&n.id!=='adm-final'&&!(n.nodeType===1&&n.tagName==='H4')){const nx=n.nextSibling;d.append(n);n=nx}if(h.textContent.startsWith('Fabric mapping'))d.open=true;h.replaceWith(d)});
  if(window.__prod)fillMap();addEventListener('prod-ready',fillMap);
  p.addEventListener('change',async e=>{const t=e.target;
+  if(t.dataset.gh){ghSave(t.dataset.gh,t.value.trim());return}
   if(t.dataset.fe){const [id,k]=t.dataset.fe.split('|');Store.editFabric(id,k,t.value);return}
   if(t.dataset.pf){Store.setPieceFabrics(t.dataset.pf,[...p.querySelectorAll('[data-pf]')].filter(i=>i.dataset.pf===t.dataset.pf&&i.checked).map(i=>i.value));return}
   if(t.dataset.site){Store.setSite(t.dataset.site,t.type==='checkbox'?t.checked:t.type==='number'?Number(t.value):t.value.trim());return}
@@ -94,6 +99,9 @@ function openPanel(){
   const a=b.dataset.act;
   if(a==='close'){p.classList.remove('open');sessionStorage.admOpen='0'}
   if(a==='apply')reload();
+  if(a==='ghtest'||a==='ghpub'||a==='ghdiscard'){const st=document.getElementById('gh-st'),log=m=>{st.textContent=m};
+   if(a==='ghdiscard'){if(confirm('Discard all local changes and show what is published in the repository?')){await Store.discardLocal();reload()}return}
+   b.disabled=true;try{log(a==='ghtest'?await ghTest():await publish(log))}catch(x){log('Error: '+x.message)}b.disabled=false;return}
   if(a==='restoredef'){delete Store.cfg.deleted;Store.save();reload()}
   if(a==='restorefab'){delete Store.cfg.deletedFabrics;Store.save();reload()}
   if(a==='addfab'){const g=id=>document.getElementById(id),name=g('nf-name').value.trim();if(!name){alert('Please name the fabric.');return}
@@ -112,6 +120,8 @@ function openPanel(){
   if(a==='lock'){sessionStorage.clear();location.reload()}
   if(a==='export'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([JSON.stringify(Store.cfg,null,2)],{type:'application/json'}));l.download='dekara-content.json';l.click()}
   if(a==='import'){const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=async()=>{try{Store.replaceCfg(JSON.parse(await i.files[0].text()));reload()}catch{alert('That file could not be read.')}};i.click()}
-  if(a==='reset'&&confirm('Remove all custom text and uploaded files?')){await Store.clearFiles();Store.replaceCfg({});reload()}});
+  if(a==='reset'&&confirm('Remove all custom text and uploaded files?')){await Store.discardLocal();reload()}});
 }
 if(sessionStorage.adm==='1'&&sessionStorage.admOpen==='1')openPanel();
+// Open the admin on touch devices: tap the footer logo 5 times quickly
+{let n=0,t0=0;document.addEventListener('click',e=>{if(!e.target.closest('.ftr .logo'))return;const now=Date.now();n=now-t0>2000?1:n+1;t0=now;if(n>=5){n=0;trig.click()}})}

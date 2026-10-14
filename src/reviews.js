@@ -6,6 +6,6 @@ export function initReviews(pid){
   $('rev-list').replaceChildren(...(rs.length?rs.map(r=>{const d=document.createElement('div');d.className='rv';const h=document.createElement('b'),p=document.createElement('p'),s=document.createElement('small');
    h.textContent='★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'  '+r.title;p.textContent=r.body;s.textContent=`${r.name} · ${new Date(r.date).toLocaleDateString('en-ZA')}`;d.append(h,p,s);return d}):[Object.assign(document.createElement('p'),{textContent:'Be the first to share your experience with this piece.',className:'st-note'})]));
   const s=session();$('rev-form').hidden=!s;$('rev-signin').hidden=!!s};
- $('rev-form').onsubmit=async e=>{e.preventDefault();try{await API.addReview({pid,rating:+$('rv-r').value,title:$('rv-t').value.trim(),body:$('rv-b').value.trim()});e.target.reset();$('rv-msg').textContent='Thank you for your review.'}catch(x){$('rv-msg').textContent=x.message}};
+ $('rev-form').onsubmit=async e=>{e.preventDefault();try{const r=await API.addReview({pid,rating:+$('rv-r').value,title:$('rv-t').value.trim(),body:$('rv-b').value.trim()});e.target.reset();$('rv-msg').textContent=r&&r.pending?'Thank you. Your review will appear once it has been approved.':'Thank you for your review.'}catch(x){$('rv-msg').textContent=x.message}};
  onChange(render);render();
 }

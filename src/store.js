@@ -1,17 +1,29 @@
 // Browser-side content store: text config in localStorage, uploaded files (images, video, GLB) in IndexedDB.
 const KEY='dekara-cfg';
-export const cfg=JSON.parse(localStorage.getItem(KEY)||'{}');cfg.products??={};
+let LOCAL={};try{LOCAL=JSON.parse(localStorage.getItem(KEY)||'{}')}catch{}
+export const cfg={products:{}};   // effective config: data/site.json "config" overlaid with this browser's unpublished edits
+export const RAW={};              // pristine copy of data/site.json as loaded
 const files={};
 export const DATA={models:{},documents:null};
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('dekara-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 const tx=(mode,fn)=>idb().then(db=>new Promise((res,rej)=>{const t=db.transaction('f',mode),q=fn(t.objectStore('f'));t.oncomplete=()=>res(q.result);t.onerror=()=>rej(t.error)}));
-export const ready=(async()=>{try{const r=await fetch('data/site.json');if(r.ok)Object.assign(DATA,await r.json())}catch{}
-try{const keys=await tx('readonly',s=>s.getAllKeys()),all=await tx('readonly',s=>s.getAll());
+export const ready=(async()=>{
+ try{const r=await fetch('data/site.json',{cache:'no-store'});if(r.ok){const j=await r.json();Object.assign(DATA,j);Object.assign(RAW,JSON.parse(JSON.stringify(j)))}}catch{}
+ let local=LOCAL;
+ // once the published repo has caught up with our last publish, drop the local copy and use the repo
+ if(local._publishedAt&&(DATA.version||0)>=local._publishedAt){local={};try{localStorage.removeItem(KEY)}catch{}await tx('readwrite',s=>s.clear()).catch(()=>{})}
+ Object.assign(cfg,JSON.parse(JSON.stringify(DATA.config||{})),local);cfg.products??={};
+ if(!DATA.apiBase&&cfg.site?.apiBase)DATA.apiBase=cfg.site.apiBase;
+ try{const keys=await tx('readonly',s=>s.getAllKeys()),all=await tx('readonly',s=>s.getAll());
  keys.forEach((k,i)=>files[k]={url:URL.createObjectURL(all[i].blob),type:all[i].type||'',name:all[i].name})}catch(e){console.warn('Media store unavailable',e)}})();
-export const media=slot=>files[slot]||null;
-export const url=slot=>files[slot]?.url||null;
-export const put=(slot,f)=>tx('readwrite',s=>s.put({blob:f,type:f.type||(/\.(mp4|m4v|mov|webm|ogv)$/i.test(f.name)?'video/mp4':''),name:f.name},slot));
-export const del=slot=>tx('readwrite',s=>s.delete(slot));
+// Files: this browser's uploads (IndexedDB) win; otherwise files published in the repo (data/site.json "files")
+const repoFile=k=>{if((cfg._removed||[]).includes(k))return null;const f=DATA.files?.[k];return f?{url:f.path,type:f.type||'',name:f.name||f.path.split('/').pop(),repo:true}:null};
+export const media=slot=>files[slot]||repoFile(slot);
+export const url=slot=>media(slot)?.url||null;
+export const localMedia=k=>files[k]||null;
+export const localKeys=()=>Object.keys(files);
+export const put=(slot,f)=>{if(cfg._removed?.includes(slot)){cfg._removed=cfg._removed.filter(x=>x!==slot);save()}return tx('readwrite',s=>s.put({blob:f,type:f.type||(/\.(mp4|m4v|mov|webm|ogv)$/i.test(f.name)?'video/mp4':''),name:f.name},slot))};
+export const del=async slot=>{try{await tx('readwrite',s=>s.delete(slot))}catch{}if(DATA.files?.[slot]){const r=(cfg._removed??=[]);if(!r.includes(slot))r.push(slot);save()}};
 export const clearFiles=()=>tx('readwrite',s=>s.clear());
 export const save=()=>localStorage.setItem(KEY,JSON.stringify(cfg));
 export const setProduct=(id,k,v)=>{(cfg.products[id]??={})[k]=k==='price'?(Number(v)||0):v;save()};
@@ -42,3 +54,4 @@ export const addFabric=f=>{(cfg.addedFabrics??=[]).push(f);save()};
 export const editFabric=(id,k,v)=>{((cfg.fabricEdits??={})[id]??={})[k]=v;save()};
 export const deleteFabric=id=>{const a=cfg.addedFabrics||[];if(a.some(f=>f.id===id))cfg.addedFabrics=a.filter(f=>f.id!==id);else(cfg.deletedFabrics??=[]).push(id);save()};
 export const deleteProduct=id=>{if((cfg.added||[]).some(p=>p.id===id))cfg.added=cfg.added.filter(p=>p.id!==id);else(cfg.deleted??=[]).push(id);save()};
+export const discardLocal=async()=>{await clearFiles();try{localStorage.removeItem(KEY)}catch{}};
