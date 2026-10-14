@@ -1,0 +1,11 @@
+import { PRODUCTS, FABRICS } from './products.js';
+import { weaveCanvas } from './texture.js';
+import * as Store from './store.js';
+import { API } from './api.js';
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+$('dl-models').innerHTML=PRODUCTS.map(p=>`<div class="dl"><div><b>${esc(p.name)}</b><small>${esc(p.cat)} · ${p.dims.join(' × ')} cm</small></div><div><a href="models/${p.id}.glb" download>GLB</a><a href="models/${p.id}.usdz" download>USDZ</a></div></div>`).join('');
+$('dl-fabrics').innerHTML=FABRICS.map(([n,h,id,img])=>`<a class="fab" style="--c:${esc(h)}" href="${esc(img||weaveCanvas(h,800).toDataURL('image/png'))}" download="${slug(n)}.${img?'jpg':'png'}"><span>${esc(n)}</span></a>`).join('');
+const docs=Store.DATA.documents||[{name:'Product catalogue (CSV)',file:'downloads/dekara-catalogue.csv',desc:'Names, categories, sizes, materials and prices'},{name:'All 3D models (ZIP)',file:'downloads/dekara-3d-models.zip',desc:'GLB and USDZ for every piece'},{name:'Fabric swatch sheet',file:'swatches/dekara-swatch-sheet.svg',desc:'All fabrics on one sheet'}];
+$('dl-docs').innerHTML=docs.map(d=>`<div class="dl"><div><b>${esc(d.name)}</b><small>${esc(d.desc||'')}</small></div><div><a href="${esc(d.file)}" download>Download</a></div></div>`).join('');
+$('tf').onsubmit=async e=>{e.preventDefault();try{await API.tradeApply(Object.fromEntries(new FormData(e.target)));e.target.hidden=true;$('tf-ok').hidden=false}catch(x){$('tf-err').textContent=x.message;$('tf-err').hidden=false}};

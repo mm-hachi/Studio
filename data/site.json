@@ -1,0 +1,35 @@
+{
+ "models": {
+  "sofa": "models/sofa.glb",
+  "chaise": "models/chaise.glb",
+  "armchair": "models/armchair.glb",
+  "bar": "models/bar.glb",
+  "dchair": "models/dchair.glb",
+  "dtable": "models/dtable.glb",
+  "coffee": "models/coffee.glb",
+  "console": "models/console.glb",
+  "dset": "models/dset.glb",
+  "ottoman": "models/ottoman.glb",
+  "headboard": "models/headboard.glb",
+  "bedside": "models/bedside.glb",
+  "dresser": "models/dresser.glb",
+  "tv": "models/tv.glb"
+ },
+ "documents": [
+  {
+   "name": "Product catalogue (CSV)",
+   "file": "downloads/dekara-catalogue.csv",
+   "desc": "Names, categories, sizes, materials and prices"
+  },
+  {
+   "name": "All 3D models (ZIP)",
+   "file": "downloads/dekara-3d-models.zip",
+   "desc": "GLB and USDZ for every piece"
+  },
+  {
+   "name": "Fabric swatch sheet",
+   "file": "swatches/dekara-swatch-sheet.svg",
+   "desc": "All fabrics on one sheet"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+import * as B from './basket.js';
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){const it=B.list(),S=B.shop();
+ if(!it.length){$('basket-list').innerHTML='<div class="none"><h3>Your basket is empty</h3><p>Add pieces from the shop, or build one in the Custom Studio.</p><a class="btn" href="shop.html">Browse the shop</a> <a class="btn ghost" href="custom-studio.html">Custom Studio</a></div>';$('basket-sum').style.display='none';return}
+ $('basket-sum').style.display='';
+ $('print-head').innerHTML=`<h2>Dekara Designs · Quotation</h2><p>Quote Q-${new Date().toISOString().slice(2,10).replace(/-/g,'')} · ${new Date().toLocaleDateString('en-ZA')} · valid for 14 days. Prices include 15% VAT. Delivery 4–6 weeks; delivery fee confirmed at checkout.</p>`;
+ $('basket-list').innerHTML=it.map(i=>`<div class="bk-row"><span class="dot" style="background:${esc(i.swatch||'#ddd')}"></span><div class="bk-info"><h3>${esc(i.name)}</h3><p>${esc(i.desc)}</p><button class="lnk" data-rm="${esc(i.key)}">Remove</button></div><div class="qty"><button data-q="${esc(i.key)}" data-d="-1" aria-label="Decrease quantity">−</button><span>${i.qty}</span><button data-q="${esc(i.key)}" data-d="1" aria-label="Increase quantity">+</button></div><b>${B.money(i.price*i.qty)}</b></div>`).join('');
+ $('basket-sum').innerHTML=`<h3>Summary</h3><div class="st-sum"><div><span>Items (${B.count()})</span>${B.money(B.total())}</div><div><span>Delivery</span>${B.money(S.delivery)} at checkout</div></div><div class="st-total"><span style="color:var(--mut)">Total incl. VAT</span><b>${B.money(B.total()+S.delivery)}</b></div>
+ <div style="display:grid;gap:.7rem;margin-top:1.4rem"><a class="btn" href="contact.html?from=basket" style="justify-content:center">Request a quote</a>${S.payNow?'<a class="btn ghost" href="checkout.html" style="justify-content:center">Pay now (demo)</a>':''}<button class="btn ghost" id="bk-print" style="justify-content:center">Print quote / save as PDF</button><a class="lnk" href="shop.html">Continue shopping</a><button class="lnk" id="bk-clear">Clear basket</button></div>
+ <p class="st-note">Delivery takes 4–6 weeks. Prices include 15% VAT. Delivery fee applies within Johannesburg and surrounding areas.</p>`}
+$('basket-list').onclick=e=>{const r=e.target.closest('[data-rm]'),q=e.target.closest('[data-q]');if(r)B.remove(r.dataset.rm);if(q){const i=B.list().find(x=>x.key===q.dataset.q);if(i)B.setQty(i.key,i.qty+Number(q.dataset.d))}};
+$('basket-sum').onclick=e=>{if(e.target.id==='bk-print')print();if(e.target.id==='bk-clear'&&confirm('Remove everything from your basket?'))B.clear()};
+B.onChange(render);render();
