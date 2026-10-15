@@ -50,8 +50,49 @@
    ],
    "x-brassconsole-spry": [
     "oyster"
+   ],
+   "sofa": [
+    "oyster"
+   ],
+   "chaise": [
+    "oyster"
+   ],
+   "armchair": [
+    "oyster"
+   ],
+   "dchair": [
+    "oyster"
+   ],
+   "dtable": [
+    "oyster"
+   ],
+   "coffee": [
+    "oyster"
+   ],
+   "dset": [
+    "oyster"
+   ],
+   "headboard": [
+    "oyster"
+   ],
+   "ottoman": [
+    "oyster"
+   ],
+   "bedside": [
+    "oyster"
+   ],
+   "tv": [
+    "oyster"
+   ],
+   "dresser": [
+    "oyster"
    ]
-  }
+  },
+  "deleted": [
+   "bar",
+   "console",
+   "dresser"
+  ]
  },
  "files": {
   "model:x-a-sdfj--4p5x": {
@@ -63,7 +104,67 @@
    "path": "models/brassconsole.glb",
    "type": "",
    "name": "BrassConsole.glb"
+  },
+  "model:armchair": {
+   "path": "models/woodfabric1seater.glb",
+   "type": "",
+   "name": "WoodFabric1Seater.glb"
+  },
+  "model:bedside": {
+   "path": "models/marbletaupenightstand.glb",
+   "type": "",
+   "name": "MarbleTaupeNightStand.glb"
+  },
+  "model:chaise": {
+   "path": "models/bryanstonchaisesofa.glb",
+   "type": "",
+   "name": "bryanstonchaisesofa.glb"
+  },
+  "model:coffee": {
+   "path": "models/walnutsidecoffetable.glb",
+   "type": "",
+   "name": "WalnutSideCoffeTable.glb"
+  },
+  "model:dchair": {
+   "path": "models/goldlegschair.glb",
+   "type": "",
+   "name": "GoldLegsChair.glb"
+  },
+  "model:dset": {
+   "path": "models/wooddiningset.glb",
+   "type": "",
+   "name": "WoodDiningSet.glb"
+  },
+  "model:dtable": {
+   "path": "models/redwooddining.glb",
+   "type": "",
+   "name": "RedWoodDining.glb"
+  },
+  "model:headboard": {
+   "path": "models/woodbasebed.glb",
+   "type": "",
+   "name": "WoodBaseBed.glb"
+  },
+  "model:ottoman": {
+   "path": "models/woodleather2seater.glb",
+   "type": "",
+   "name": "WoodLeather2Seater.glb"
+  },
+  "model:sofa": {
+   "path": "models/woodfabric3seater.glb",
+   "type": "",
+   "name": "WoodFabric3Seater.glb"
+  },
+  "model:tv": {
+   "path": "models/marbledining.glb",
+   "type": "",
+   "name": "MarbleDining.glb"
+  },
+  "model:x-granite-dining-table-02dj": {
+   "path": "models/blackgranitedining.glb",
+   "type": "",
+   "name": "BlackGraniteDining.glb"
   }
  },
- "version": 1792083914896
+ "version": 1792105795731
 }
