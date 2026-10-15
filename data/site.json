@@ -17,10 +17,28 @@
      51,
      32
     ]
+   },
+   {
+    "id": "x-brassconsole-spry",
+    "name": "BrassConsole",
+    "cat": "Tables",
+    "sub": "-",
+    "tag": "-",
+    "price": 3800,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     42,
+     68
+    ]
    }
   ],
   "pieceFabrics": {
    "x-a-sdfj--4p5x": [
+    "oyster"
+   ],
+   "x-brassconsole-spry": [
     "oyster"
    ]
   }
@@ -30,7 +48,12 @@
    "path": "models/uploads/x-a-sdfj-4p5x.glb",
    "type": "",
    "name": "BlackGraniteDining.glb"
+  },
+  "model:x-brassconsole-spry": {
+   "path": "models/uploads/x-brassconsole-spry.glb",
+   "type": "",
+   "name": "BrassConsole.glb"
   }
  },
- "version": 1792081734637
+ "version": 1792082803666
 }
