@@ -6,7 +6,7 @@ import * as Store from './store.js';
 import { FABRICS } from './products.js';
 import { applyFabric, DEFMAP } from './texture.js';
 import * as Basket from './basket.js';
-import { makeLoader } from './loader.js';
+import { loadGLTF } from './loader.js';
 import { openAR } from './ar.js';
 import { API } from './api.js';
 const C=Store.studioCfg(),$=id=>document.getElementById(id),R=n=>'R '+Math.round(n).toLocaleString('en-ZA');
@@ -19,7 +19,7 @@ COLS.forEach(c=>c.pieces.forEach(p=>{MODS[c.id+':'+p.id]={n:p.name,w:(p.w||90)/1
 const PR=t=>MODS[t].custom?MODS[t].price:C.prices[t];
 let touched=false;
 const cache=new Map();
-const loadPiece=url=>{if(!cache.has(url))cache.set(url,new Promise(res=>makeLoader().load(url,g=>res(g.scene),undefined,()=>res(null))));return cache.get(url)};
+const loadPiece=url=>{if(!cache.has(url))cache.set(url,loadGLTF(url).then(g=>g.scene).catch(()=>null));return cache.get(url)};
 let colour=FABRICS[0][1],curFab=FABRICS[0],lastBuild=null;
 const rb=(a,b,c,r=.07)=>new RoundedBoxGeometry(a,b,c,4,r);
 function buildModule(type,hex){const g=MODS[type].custom?buildCustom(type,hex):buildStd(type,hex);if(!MODS[type].custom)g.userData.ready=applyFabric(g.userData.T,curFab,DEFMAP);return g}

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { makeLoader } from './loader.js';
+import { loadGLTF } from './loader.js';
 import { applyFabric } from './texture.js';
 import * as Store from './store.js';
 import { build, PRODUCTS } from './products.js';
@@ -27,9 +27,9 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
  const setGlow=v=>{glow=v;obj.userData.glows.forEach(m=>m.emissiveIntensity=v*3);rim.intensity=12*v*BK};
  function set(n){fab=null;orig=[];if(obj)sc.remove(obj);colour=PRODUCTS.find(p=>p.id===n).fabrics[0][1];const u=Store.url('model:'+n)||Store.DATA.models?.[n];
   if(!u)obj=build(n,colour);else{obj=new THREE.Group();obj.userData={tints:[],glows:[],frames:[]};
-   makeLoader().load(u,gl=>{const s=gl.scene,b=new THREE.Box3().setFromObject(s),z=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3()),k=2.6/Math.max(z.x,z.y,z.z);
+   loadGLTF(u).then(gl=>{const s=gl.scene,b=new THREE.Box3().setFromObject(s),z=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3()),k=2.6/Math.max(z.x,z.y,z.z);
     s.scale.setScalar(k);s.position.set(-c.x*k,-b.min.y*k,-c.z*k);
-    const nm=[],al=[],fr=[];s.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;[].concat(o.material).forEach(m=>{if(m.name==='frame'){fr.push(m);return}if(!(m.transparent&&m.opacity<1)){al.push(m);if(m.name==='tint')nm.push(m)}})}});obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.add(s);snap();applyFrame();applyFab()},undefined,()=>obj.add(build(n,colour)))}
+    const nm=[],al=[],fr=[];s.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;[].concat(o.material).forEach(m=>{if(m.name==='frame'){fr.push(m);return}if(!(m.transparent&&m.opacity<1)){al.push(m);if(m.name==='tint')nm.push(m)}})}});obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.add(s);snap();applyFrame();applyFab()}).catch(()=>obj.add(build(n,colour)))}
   sc.add(obj);grow=0;setGlow(glow);snap();applyFrame();applyFab()}
  set(id);
  const size=()=>{const p=canvas.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};

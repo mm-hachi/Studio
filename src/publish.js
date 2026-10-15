@@ -14,7 +14,7 @@ const b64=blob=>new Promise((res,rej)=>{const f=new FileReader();f.onload=()=>re
 const EXT={'video/mp4':'mp4','video/webm':'webm','image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif','model/gltf-binary':'glb'};
 const ext=(name,type)=>(/\.([a-z0-9]{2,5})$/i.exec(name||'')||[])[1]?.toLowerCase()||EXT[type]||'bin';
 const pathFor=(k,name,type)=>{const e=ext(name,type);
- if(k.startsWith('model:'))return `models/uploads/${slug(k.slice(6))}.${e}`;
+ if(k.startsWith('model:'))return `models/${slug(name.replace(/\.[^.]+$/i,''))}.${e}`;
  if(k.startsWith('piece:')){const [,c,p]=k.split(':');return `models/collections/${slug(c)}/${slug(p)}.${e}`}
  if(k.startsWith('fabric:'))return `swatches/fabrics/${slug(k.slice(7))}.${e}`;
  return `media/${slug(k)}.${e}`};
@@ -23,13 +23,8 @@ export async function publish(log){
  const c=need(),br=c.branch||'main';
  log('Reading the repository…');
  const ref=await call(c,'GET',`/git/ref/heads/${br}`),head=ref.object.sha,commit=await call(c,'GET',`/git/commits/${head}`);
- // Carry forward the existing file registry from the repo, then apply local changes to it.
- // Binary files (models, images, videos) are NOT uploaded here — add them to the repo manually.
  const files={...(Store.DATA.files||{})};
- // Remove entries the admin marked as deleted
  for(const k of (Store.cfg._removed||[])) delete files[k];
- // For any locally-stored media, record the expected repo path in the registry so the
- // site knows where to find the file once you commit it manually — but do not upload it.
  for(const k of Store.localKeys()){
   const m=Store.localMedia(k),blob=await (await fetch(m.url)).blob(),path=pathFor(k,m.name,m.type||blob.type);
   log(`Noting path for ${path} (add this file to the repo manually)…`);
