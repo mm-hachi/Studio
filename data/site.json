@@ -31,5 +31,22 @@
    "file": "swatches/dekara-swatch-sheet.svg",
    "desc": "All fabrics on one sheet"
   }
- ]
+ ],
+ "config": {
+  "products": {},
+  "collections": [],
+  "pieceFabrics": {
+   "sofa": [
+    "oyster"
+   ]
+  }
+ },
+ "files": {
+  "model:sofa": {
+   "path": "models/uploads/sofa.glb",
+   "type": "",
+   "name": "WoodFabric3Seater.glb"
+  }
+ },
+ "version": 1792078817324
 }
