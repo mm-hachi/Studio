@@ -1,6 +1,16 @@
 {
  "config": {
-  "products": {},
+  "products": {
+   "x-a-sdfj--4p5x": {
+    "name": "Granite Dining Table",
+    "cat": "Tables",
+    "sub": "Dining Tables",
+    "tag": "-"
+   },
+   "x-brassconsole-spry": {
+    "sub": "Consoles"
+   }
+  },
   "collections": [],
   "added": [
    {
@@ -45,15 +55,15 @@
  },
  "files": {
   "model:x-a-sdfj--4p5x": {
-   "path": "models/uploads/x-a-sdfj-4p5x.glb",
+   "path": "models/blackgranitedining.glb",
    "type": "",
    "name": "BlackGraniteDining.glb"
   },
   "model:x-brassconsole-spry": {
-   "path": "models/uploads/x-brassconsole-spry.glb",
+   "path": "models/brassconsole.glb",
    "type": "",
    "name": "BrassConsole.glb"
   }
  },
- "version": 1792082803666
+ "version": 1792083914896
 }
