@@ -12,6 +12,8 @@ export const FABRIC_LIST=fl.map(f=>({...f,image:Store.url('fabric:'+f.id)||f.ima
 export const FABRICS=FABRIC_LIST.map(f=>[f.name,f.hex,f.id,f.image,f.desc,f.type]);
 const pf={...(D.pieceFabrics||{}),...(C.pieceFabrics||{})};
 const fabricsFor=id=>{const a=pf[id],L=a?FABRICS.filter(f=>a.includes(f[2])):FABRICS;return L.length?L:FABRICS};
+// "Original": the model's own materials and textures, shown unchanged (the default for every piece)
+export const ORIGINAL=['Original','#e4ddd0','original',null,'The material and texture this piece was made with, shown unchanged.','Original'];
 export const getMapping=(pid,fid)=>({...DEFMAP,...(D.mapping?.[pid]?.[fid]||{}),...(C.mapping?.[pid]?.[fid]||{})});
 // Extra pieces: from data/site.json ("products", repo-hosted) and from the admin panel (browser-only).
 const extra=[...(D.products||[]).map(p=>({...p})),...(C.added||[]).map(p=>({...p,added:true}))].map(p=>({kind:p.id,tag:'',mat:'',desc:'',dims:[100,100,100],...p,sub:p.sub||p.cat}));

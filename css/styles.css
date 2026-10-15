@@ -151,3 +151,5 @@ body.menu{overflow:hidden}
  #toast{left:.8rem;right:.8rem;bottom:4.2rem;justify-content:space-between}
 }
 @media(max-width:480px){.logo{font-size:.95rem;letter-spacing:.1em}.hdr{padding:.65rem .8rem}.bk{padding:.4rem .5rem}}
+
+.sw button.orig{background:linear-gradient(135deg,#fbf8f3 0 47%,#b9ad98 47% 53%,#e4ddd0 53%)}

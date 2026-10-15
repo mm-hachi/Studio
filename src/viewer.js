@@ -19,15 +19,18 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
  let ctl;if(orbit){ctl=new OrbitControls(cam,canvas);ctl.target.copy(look);ctl.enableDamping=true;ctl.enablePan=false;ctl.minDistance=4;ctl.maxDistance=12;ctl.maxPolarAngle=Math.PI*.49}
  let obj,grow=0,colour,glow=1,dim=[1,1,1],dead=false,fab=null;
  const tint=h=>{colour=h;fab=null;obj.userData.tints.forEach(m=>{m.map=null;m.color.set(h);m.needsUpdate=true})};
- const applyFab=()=>{if(fab)applyFabric(obj.userData.tints,fab.f,fab.m)};const setFabric=(f,m)=>{fab={f,m};applyFab()};
+ let orig=[];const snap=()=>{orig=obj.userData.tints.map(m=>({m,c:m.color.clone(),map:m.map}))};
+ const restore=()=>{orig.forEach(({m,c,map})=>{m.userData.fabTok=-1;if(m.map&&m.map!==map)m.map.dispose();m.map=map;m.color.copy(c);m.needsUpdate=true})};
+ const applyFab=()=>{if(fab)applyFabric(obj.userData.tints,fab.f,fab.m)};
+ const setFabric=(f,m)=>{if(!f||f[2]==='original'){fab=null;restore();return}fab={f,m};applyFab()};
  let frameHex=null;const applyFrame=()=>{if(frameHex)(obj.userData.frames||[]).forEach(m=>m.color.set(frameHex))};const setFrame=h=>{frameHex=h;applyFrame()};
  const setGlow=v=>{glow=v;obj.userData.glows.forEach(m=>m.emissiveIntensity=v*3);rim.intensity=12*v*BK};
- function set(n){fab=null;if(obj)sc.remove(obj);colour=PRODUCTS.find(p=>p.id===n).fabrics[0][1];const u=Store.url('model:'+n)||Store.DATA.models?.[n];
+ function set(n){fab=null;orig=[];if(obj)sc.remove(obj);colour=PRODUCTS.find(p=>p.id===n).fabrics[0][1];const u=Store.url('model:'+n)||Store.DATA.models?.[n];
   if(!u)obj=build(n,colour);else{obj=new THREE.Group();obj.userData={tints:[],glows:[],frames:[]};
    makeLoader().load(u,gl=>{const s=gl.scene,b=new THREE.Box3().setFromObject(s),z=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3()),k=2.6/Math.max(z.x,z.y,z.z);
     s.scale.setScalar(k);s.position.set(-c.x*k,-b.min.y*k,-c.z*k);
-    const nm=[],al=[],fr=[];s.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;[].concat(o.material).forEach(m=>{if(m.name==='frame'){fr.push(m);return}if(!(m.transparent&&m.opacity<1)){al.push(m);if(m.name==='tint')nm.push(m)}})}});obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.add(s);applyFrame();applyFab()},undefined,()=>obj.add(build(n,colour)))}
-  sc.add(obj);grow=0;setGlow(glow);applyFrame();applyFab()}
+    const nm=[],al=[],fr=[];s.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;[].concat(o.material).forEach(m=>{if(m.name==='frame'){fr.push(m);return}if(!(m.transparent&&m.opacity<1)){al.push(m);if(m.name==='tint')nm.push(m)}})}});obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.add(s);snap();applyFrame();applyFab()},undefined,()=>obj.add(build(n,colour)))}
+  sc.add(obj);grow=0;setGlow(glow);snap();applyFrame();applyFab()}
  set(id);
  const size=()=>{const p=canvas.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
  const ro=new ResizeObserver(size);ro.observe(canvas.parentElement);
