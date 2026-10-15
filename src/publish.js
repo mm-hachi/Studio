@@ -1,278 +1,461 @@
 
- // Publish only site settings, fabrics, prices and fabric mapping to GitHub.
- // Models, images, videos and other uploaded assets are never uploaded or deleted.
- import * as Store from './store.js';
+/*
+ * DEKARA DESIGNS — GitHub data-only publisher
+ *
+ * Publishes:
+ * - Site settings
+ * - Fabrics and materials
+ * - New and existing products
+ * - New and existing studio collections and their pieces
+ * - Prices, fabric availability and fabric mapping
+ *
+ * Does NOT upload or delete model, image, video or other asset files.
+ *
+ * Requires a fine-grained GitHub token with Contents: Read and write
+ * access to the target repository.
+ */
 
- const GH_KEY = 'dekara-gh';
+import * as Store from './store.js';
 
- export function ghConfig() {
-   let c = {};
-   try {
-     c = JSON.parse(localStorage.getItem(GH_KEY)) || {};
-   } catch {}
-   if (!c.owner && /\.github\.io$/.test(location.hostname)) {
-     c.owner = location.hostname.split('.')[0];
-     c.repo = c.repo || (location.pathname.split('/')[1] || location.hostname);
-   }
-   return { branch: 'main', ...c };
- }
+const GH_KEY = 'dekara-gh';
 
- export function ghSave(k, v) {
-   let c = {};
-   try {
-     c = JSON.parse(localStorage.getItem(GH_KEY)) || {};
-   } catch {}
-   c[k] = v;
-   localStorage.setItem(GH_KEY, JSON.stringify(c));
- }
+export function ghConfig() {
+  let c = {};
 
- const call = async (c, method, path, body) => {
-   const r = await fetch(
-     `https://api.github.com/repos/${c.owner}/${c.repo}${path}`,
-     {
-       method,
-       headers: {
-         Authorization: 'Bearer ' + c.token,
-         Accept: 'application/vnd.github+json',
-         'Content-Type': 'application/json',
-         'X-GitHub-Api-Version': '2022-11-28'
-       },
-       body: body ? JSON.stringify(body) : undefined
-     }
-   );
+  try {
+    c = JSON.parse(localStorage.getItem(GH_KEY)) || {};
+  } catch {}
 
-   if (!r.ok) {
-     let m = '';
-     try {
-       m = (await r.json()).message;
-     } catch {}
-     throw new Error(`GitHub ${r.status}: ${m || r.statusText}`);
-   }
-   return r.json();
- };
+  if (!c.owner && /\.github\.io$/i.test(location.hostname)) {
+    c.owner = location.hostname.split('.')[0];
+    c.repo = c.repo || location.pathname.split('/')[1] || '';
+  }
 
- const need = () => {
-   const c = ghConfig();
-   if (!c.owner || !c.repo || !c.token) {
-     throw new Error('Enter the owner, repository and token first.');
-   }
-   return c;
- };
+  return { branch: 'main', ...c };
+}
 
- const decodeBase64Utf8 = value => {
-   const binary = atob(String(value).replace(/\s/g, ''));
-   const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
-   return new TextDecoder().decode(bytes);
- };
+export function ghSave(key, value) {
+  let c = {};
 
- const encodeBase64Utf8 = value => {
-   const bytes = new TextEncoder().encode(value);
-   let binary = '';
-   for (let i = 0; i < bytes.length; i += 0x8000) {
-     binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-   }
-   return btoa(binary);
- };
+  try {
+    c = JSON.parse(localStorage.getItem(GH_KEY)) || {};
+  } catch {}
 
- const isObject = value =>
-   value !== null && typeof value === 'object' && !Array.isArray(value);
+  c[key] = value;
+  localStorage.setItem(GH_KEY, JSON.stringify(c));
+}
 
- const idOf = item =>
-   item?.id ?? item?.pid ?? item?.slug ?? item?.key ?? item?.name;
+async function call(c, method, path, body) {
+  const response = await fetch(
+    `https://api.github.com/repos/${c.owner}/${c.repo}${path}`,
+    {
+      method,
+      headers: {
+        Authorization: `Bearer ${c.token}`,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: body ? JSON.stringify(body) : undefined
+    }
+  );
 
- const assetKey =
-   /^(fileData|imageData|videoData|modelData|mediaData|uploadData|blob|binary|base64|rawBytes)$/i;
+  if (!response.ok) {
+    let message = '';
 
- function safeData(value) {
-   if (Array.isArray(value)) {
-     return value.map(safeData);
-   }
+    try {
+      message = (await response.json()).message || '';
+    } catch {}
 
-   if (!isObject(value)) {
-     if (
-       typeof value === 'string' &&
-       /^data:(image|video|model|application\/octet-stream)\//i.test(value)
-     ) {
-       return undefined;
-     }
-     return value;
-   }
+    throw new Error(
+      `GitHub ${response.status}: ${message || response.statusText}`
+    );
+  }
 
-   const out = {};
-   for (const [key, val] of Object.entries(value)) {
-     if (assetKey.test(key)) continue;
-     const cleaned = safeData(val);
-     if (cleaned !== undefined) out[key] = cleaned;
-   }
-   return out;
- }
+  return response.json();
+}
 
- const PRICE_KEYS = new Set([
-   'price', 'pricefrom', 'priceFrom', 'salePrice', 'sale_price',
-   'compareAtPrice', 'compare_at_price', 'currency'
- ]);
+function need() {
+  const c = ghConfig();
 
- const MAPPING_KEYS = new Set([
-   'fabrics', 'fabricIds', 'availableFabrics', 'availableFabricIds',
-   'fabricMapping', 'fabricMappings', 'mapping', 'mappings',
-   'lockedMapping', 'lockedMappings', 'fabricScale', 'fabricScales',
-   'scaleX', 'scaleY', 'rotation', 'location', 'mappingLocked', 'locked'
- ]);
+  if (!c.owner || !c.repo || !c.token) {
+    throw new Error(
+      'Enter the GitHub owner, repository and token first.'
+    );
+  }
 
- function mergeAllowedFields(existing, incoming) {
-   if (!isObject(existing) || !isObject(incoming)) return existing;
+  return c;
+}
 
-   const out = { ...existing };
+function isObject(value) {
+  return value !== null &&
+    typeof value === 'object' &&
+    !Array.isArray(value);
+}
 
-   for (const [key, value] of Object.entries(incoming)) {
-     if (PRICE_KEYS.has(key) || MAPPING_KEYS.has(key)) {
-       const cleaned = safeData(value);
-       if (cleaned !== undefined) out[key] = cleaned;
-     }
-   }
+function idOf(item) {
+  return item?.id ??
+    item?.pid ??
+    item?.slug ??
+    item?.key ??
+    item?.name;
+}
 
-   return out;
- }
+function decodeBase64Utf8(value) {
+  const binary = atob(String(value).replace(/\s/g, ''));
+  const bytes = Uint8Array.from(
+    binary,
+    character => character.charCodeAt(0)
+  );
 
- function mergeExistingRecords(existing, incoming) {
-   if (!Array.isArray(incoming)) return existing;
+  return new TextDecoder().decode(bytes);
+}
 
-   const old = Array.isArray(existing) ? existing : [];
-   const index = new Map(
-     old.map((item, i) => [String(idOf(item) ?? i), i])
-   );
-   const result = old.map(item => ({ ...item }));
+function encodeBase64Utf8(value) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = '';
 
-   for (let i = 0; i < incoming.length; i++) {
-     const item = incoming[i];
-     const key = String(idOf(item) ?? i);
-     const at = index.get(key);
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(
+      ...bytes.subarray(i, i + 0x8000)
+    );
+  }
 
-     // Do not create new product or collection records here.
-     if (at === undefined) continue;
+  return btoa(binary);
+}
 
-     result[at] = mergeAllowedFields(result[at], item);
-   }
+/*
+ * Fields commonly used to hold the actual contents of uploaded files.
+ * Ordinary asset paths such as models/chair.glb are NOT removed.
+ */
+const BINARY_FIELD =
+  /^(fileData|imageData|videoData|modelData|mediaData|uploadData|blob|binary|base64|rawBytes|fileBytes|modelBytes|imageBytes|videoBytes)$/i;
 
-   return result;
- }
+function isEmbeddedBinary(value) {
+  if (typeof value !== 'string') return false;
 
- async function readRepoSite(c, branch) {
-   const file = await call(
-     c, 'GET',
-     `/contents/data/site.json?ref=${encodeURIComponent(branch)}`
-   );
+  // Data URLs containing image, video, model or other file contents.
+  if (/^data:[^;,]+(?:;[^,]*)?,/i.test(value)) {
+    return true;
+  }
 
-   if (!file.content) {
-     throw new Error('GitHub returned data/site.json without file content.');
-   }
+  // Large raw base64 strings are likely uploaded file contents.
+  // This does not remove ordinary URL/path strings.
+  if (
+    value.length > 180000 &&
+    /^[A-Za-z0-9+/=\s]+$/.test(value)
+  ) {
+    return true;
+  }
 
-   return {
-     site: JSON.parse(decodeBase64Utf8(file.content)),
-     sha: file.sha
-   };
- }
+  return false;
+}
 
- export async function ghTest() {
-   const c = need();
-   const r = await call(c, 'GET', '');
+/*
+ * Remove embedded file bytes recursively without removing product
+ * metadata, dimensions, descriptions, prices or asset path strings.
+ */
+function safeData(value, parentKey = '') {
+  if (Array.isArray(value)) {
+    return value
+      .map(item => safeData(item))
+      .filter(item => item !== undefined);
+  }
 
-   return r.permissions?.push
-     ? `Connected to ${r.full_name}. Data-only publishing is available.`
-     : `Connected to ${r.full_name}, but this token cannot write. Give it Contents: Read and write.`;
- }
+  if (!isObject(value)) {
+    if (isEmbeddedBinary(value)) return undefined;
+    return value;
+  }
 
- export async function publish(log) {
-   const c = need();
-   const branch = c.branch || 'main';
+  const result = {};
 
-   log('Reading current GitHub site data…');
+  for (const [key, child] of Object.entries(value)) {
+    if (BINARY_FIELD.test(key)) continue;
 
-   const ref = await call(
-     c, 'GET',
-     `/git/ref/heads/${encodeURIComponent(branch)}`
-   );
-   const head = ref.object.sha;
+    const cleaned = safeData(child, key);
 
-   const commit = await call(c, 'GET', `/git/commits/${head}`);
-   const { site: remoteSite } = await readRepoSite(c, branch);
-   const localRaw = Store.RAW || {};
-   const next = { ...remoteSite };
+    if (cleaned !== undefined) {
+      result[key] = cleaned;
+    }
+  }
 
-   // Publish site settings only; preserve repository-managed file paths.
-   const config = { ...(Store.cfg || {}) };
-   delete config._removed;
-   delete config._publishedAt;
-   next.config = safeData(config);
+  return result;
+}
 
-   // Publish fabric metadata, excluding embedded binary data.
-   if (Array.isArray(localRaw.fabrics)) {
-     next.fabrics = safeData(localRaw.fabrics);
-   }
+/*
+ * Recursively merge metadata.
+ *
+ * Local values update the corresponding repository values.
+ * Repository fields that are absent locally remain intact, including
+ * existing model/image/video paths and other repository-managed data.
+ */
+function mergeObjects(existing, incoming) {
+  if (!isObject(existing) || !isObject(incoming)) {
+    return incoming;
+  }
 
-   // Update prices and fabric mapping on existing products and collections.
-   // Preserve all other product fields, including model and media paths.
-   for (const field of ['products', 'collections']) {
-     if (Array.isArray(localRaw[field])) {
-       next[field] = mergeExistingRecords(
-         remoteSite[field],
-         localRaw[field]
-       );
-     }
-   }
+  const result = { ...existing };
 
-   // Publish root-level mapping information when present.
-   for (const key of [
-     'mapping', 'mappings', 'fabricMapping',
-     'fabricMappings', 'priceMapping'
-   ]) {
-     if (localRaw[key] !== undefined) {
-       const cleaned = safeData(localRaw[key]);
-       if (cleaned !== undefined) next[key] = cleaned;
-     }
-   }
+  for (const [key, value] of Object.entries(incoming)) {
+    if (value === undefined) continue;
 
-   // Preserve the repository's file manifest.
-   if (remoteSite.files !== undefined) {
-     next.files = remoteSite.files;
-   }
+    if (isObject(value) && isObject(result[key])) {
+      result[key] = mergeObjects(result[key], value);
+    } else {
+      result[key] = value;
+    }
+  }
 
-   next.version = Date.now();
+  return result;
+}
 
-   log('Preparing data/site.json…');
+/*
+ * Merge records by ID while including NEW records.
+ *
+ * This is the key difference from the earlier version, which skipped
+ * any product or collection that did not already exist in the repo.
+ */
+function mergeRecords(existing, incoming) {
+  if (!Array.isArray(incoming)) return existing;
 
-   const blob = await call(c, 'POST', '/git/blobs', {
-     content: encodeBase64Utf8(JSON.stringify(next, null, 2)),
-     encoding: 'base64'
-   });
+  const result = Array.isArray(existing)
+    ? existing.map(item => isObject(item) ? { ...item } : item)
+    : [];
 
-   // The Git tree changes exactly one path: data/site.json.
-   const tree = await call(c, 'POST', '/git/trees', {
-     base_tree: commit.tree.sha,
-     tree: [{
-       path: 'data/site.json',
-       mode: '100644',
-       type: 'blob',
-       sha: blob.sha
-     }]
-   });
+  const indexes = new Map();
 
-   log('Creating data-only commit…');
+  result.forEach((item, index) => {
+    const id = idOf(item);
 
-   const newCommit = await call(c, 'POST', '/git/commits', {
-     message: 'Update site settings, fabrics, prices and mapping',
-     tree: tree.sha,
-     parents: [head]
-   });
+    if (id !== undefined && id !== null) {
+      indexes.set(String(id), index);
+    }
+  });
 
-   await call(
-     c, 'PATCH',
-     `/git/refs/heads/${encodeURIComponent(branch)}`,
-     { sha: newCommit.sha }
-   );
+  for (let i = 0; i < incoming.length; i++) {
+    const original = incoming[i];
 
-   Store.cfg._publishedAt = next.version;
-   Store.save();
+    if (!isObject(original)) continue;
 
-   return 'Published site settings, fabrics, prices and mapping. No model, image, video or other asset files were uploaded or deleted. Add corresponding assets to the repository manually.';
- }
+    const cleaned = safeData(original);
+
+    if (!isObject(cleaned)) continue;
+
+    const id = idOf(cleaned);
+    const key = id === undefined || id === null
+      ? null
+      : String(id);
+
+    const existingIndex = key === null
+      ? undefined
+      : indexes.get(key);
+
+    if (existingIndex === undefined) {
+      // New product or collection: publish its metadata and structure.
+      const newIndex = result.length;
+      result.push(cleaned);
+
+      if (key !== null) {
+        indexes.set(key, newIndex);
+      }
+    } else {
+      // Existing record: update all metadata, preserving fields omitted
+      // from the local record.
+      result[existingIndex] = mergeObjects(
+        result[existingIndex],
+        cleaned
+      );
+    }
+  }
+
+  return result;
+}
+
+async function readRepoSite(c, branch) {
+  const file = await call(
+    c,
+    'GET',
+    `/contents/data/site.json?ref=${encodeURIComponent(branch)}`
+  );
+
+  if (!file.content) {
+    throw new Error(
+      'GitHub returned data/site.json without file content.'
+    );
+  }
+
+  return {
+    site: JSON.parse(decodeBase64Utf8(file.content)),
+    sha: file.sha
+  };
+}
+
+export async function ghTest() {
+  const c = need();
+  const repository = await call(c, 'GET', '');
+
+  return repository.permissions?.push
+    ? `Connected to ${repository.full_name}. Publishing is available.`
+    : `Connected to ${repository.full_name}, but the token cannot write. Grant Contents: Read and write.`;
+}
+
+export async function publish(log = () => {}) {
+  const c = need();
+  const branch = c.branch || 'main';
+
+  log('Reading the current GitHub repository…');
+
+  const reference = await call(
+    c,
+    'GET',
+    `/git/ref/heads/${encodeURIComponent(branch)}`
+  );
+
+  const headSha = reference.object.sha;
+
+  const headCommit = await call(
+    c,
+    'GET',
+    `/git/commits/${headSha}`
+  );
+
+  const { site: remoteSite } = await readRepoSite(c, branch);
+  const localRaw = Store.RAW || {};
+  const next = { ...remoteSite };
+
+  /*
+   * 1. Site settings.
+   */
+  const config = safeData({ ...(Store.cfg || {}) }) || {};
+
+  delete config._removed;
+  delete config._publishedAt;
+
+  next.config = config;
+
+  /*
+   * 2. Fabrics and materials.
+   *
+   * Fabric metadata is published, but embedded texture image data
+   * is stripped. Existing asset paths remain ordinary strings.
+   */
+  if (Array.isArray(localRaw.fabrics)) {
+    next.fabrics = mergeRecords(
+      remoteSite.fabrics,
+      localRaw.fabrics
+    );
+  }
+
+  /*
+   * 3. Products and collections.
+   *
+   * Includes new products, new collections and nested component data.
+   * Existing repository records are merged rather than discarded.
+   */
+  for (const field of ['products', 'collections']) {
+    if (Array.isArray(localRaw[field])) {
+      next[field] = mergeRecords(
+        remoteSite[field],
+        localRaw[field]
+      );
+    }
+  }
+
+  /*
+   * 4. Root-level prices and fabric mapping, for site versions
+   * that store these separately from individual products.
+   */
+  const rootDataFields = [
+    'mapping',
+    'mappings',
+    'fabricMapping',
+    'fabricMappings',
+    'priceMapping'
+  ];
+
+  for (const key of rootDataFields) {
+    if (localRaw[key] !== undefined) {
+      const cleaned = safeData(localRaw[key]);
+
+      if (cleaned !== undefined) {
+        next[key] = cleaned;
+      }
+    }
+  }
+
+  /*
+   * Keep the repository's file manifest unchanged.
+   * The publisher never uploads or deletes actual asset files.
+   */
+  if (remoteSite.files !== undefined) {
+    next.files = remoteSite.files;
+  }
+
+  next.version = Date.now();
+
+  log('Preparing data/site.json without embedded file uploads…');
+
+  const json = JSON.stringify(next, null, 2);
+
+  /*
+   * Create a Git blob for the JSON data only.
+   */
+  const blob = await call(c, 'POST', '/git/blobs', {
+    content: encodeBase64Utf8(json),
+    encoding: 'base64'
+  });
+
+  /*
+   * Build a tree containing exactly one changed path.
+   * No models, images, videos or other binary files are committed.
+   */
+  const tree = await call(c, 'POST', '/git/trees', {
+    base_tree: headCommit.tree.sha,
+    tree: [
+      {
+        path: 'data/site.json',
+        mode: '100644',
+        type: 'blob',
+        sha: blob.sha
+      }
+    ]
+  });
+
+  log('Creating the data-only GitHub commit…');
+
+  const newCommit = await call(c, 'POST', '/git/commits', {
+    message: 'Update site settings, products, collections and fabrics',
+    tree: tree.sha,
+    parents: [headSha]
+  });
+
+  /*
+   * Update the branch only after the data commit has been created.
+   */
+  await call(
+    c,
+    'PATCH',
+    `/git/refs/heads/${encodeURIComponent(branch)}`,
+    { sha: newCommit.sha }
+  );
+
+  /*
+   * Record the successful publish locally.
+   */
+  if (Store.cfg) {
+    Store.cfg._publishedAt = next.version;
+
+    if (typeof Store.save === 'function') {
+      Store.save();
+    }
+  }
+
+  log('GitHub data publishing completed.');
+
+  return (
+    'Published site settings, fabrics, prices, mapping, products and ' +
+    'collections. Embedded file contents were excluded. Upload any ' +
+    'new model, image or video files manually to their referenced ' +
+    'repository paths. GitHub Pages usually updates within 1–2 minutes.'
+  );
+}
