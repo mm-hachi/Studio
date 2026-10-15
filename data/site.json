@@ -38,8 +38,28 @@
   "pieceFabrics": {
    "sofa": [
     "oyster"
+   ],
+   "x-granite-dining-table-02dj": [
+    "oyster"
    ]
-  }
+  },
+  "added": [
+   {
+    "id": "x-granite-dining-table-02dj",
+    "name": "Granite Dining Table",
+    "cat": "Tables",
+    "sub": "Dining Tables",
+    "tag": "",
+    "price": 35000,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     51,
+     32
+    ]
+   }
+  ]
  },
  "files": {
   "model:sofa": {
@@ -48,5 +68,5 @@
    "name": "WoodFabric3Seater.glb"
   }
  },
- "version": 1792078817324
+ "version": 1792080286095
 }
