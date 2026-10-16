@@ -106,12 +106,12 @@
    "name": "BrassConsole.glb"
   },
   "model:armchair": {
-   "path": "models/woodfabric1seater.glb",
+   "path": "models/WoodFabric1Seater.glb",
    "type": "",
    "name": "WoodFabric1Seater.glb"
   },
   "model:bedside": {
-   "path": "models/marbletaupenightstand.glb",
+   "path": "models/MarbleTaupeNightStand.glb",
    "type": "",
    "name": "MarbleTaupeNightStand.glb"
   },
@@ -121,42 +121,42 @@
    "name": "bryanstonchaisesofa.glb"
   },
   "model:coffee": {
-   "path": "models/walnutsidecoffetable.glb",
+   "path": "models/WalnutSideCoffeTable.glb",
    "type": "",
    "name": "WalnutSideCoffeTable.glb"
   },
   "model:dchair": {
-   "path": "models/goldlegschair.glb",
+   "path": "models/GoldLegsChair.glb",
    "type": "",
    "name": "GoldLegsChair.glb"
   },
   "model:dset": {
-   "path": "models/wooddiningset.glb",
+   "path": "models/WoodDiningSet.glb",
    "type": "",
    "name": "WoodDiningSet.glb"
   },
   "model:dtable": {
-   "path": "models/redwooddining.glb",
+   "path": "models/RedWoodDining.glb",
    "type": "",
    "name": "RedWoodDining.glb"
   },
   "model:headboard": {
-   "path": "models/woodbasebed.glb",
+   "path": "models/WoodBaseBed.glb",
    "type": "",
    "name": "WoodBaseBed.glb"
   },
   "model:ottoman": {
-   "path": "models/woodleather2seater.glb",
+   "path": "models/WoodLeather2Seater.glb",
    "type": "",
    "name": "WoodLeather2Seater.glb"
   },
   "model:sofa": {
-   "path": "models/woodfabric3seater.glb",
+   "path": "models/WoodFabric3Seater.glb",
    "type": "",
    "name": "WoodFabric3Seater.glb"
   },
   "model:tv": {
-   "path": "models/marbledining.glb",
+   "path": "models/MarbleDining.glb",
    "type": "",
    "name": "MarbleDining.glb"
   },
