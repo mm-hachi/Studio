@@ -11,59 +11,150 @@
     "sub": "Consoles"
    }
   },
-  "collections": [],
-  "added": [
+  "collections": [
    {
-    "id": "x-a-sdfj--4p5x",
-    "name": "a;sdfj;",
-    "cat": "Sofas",
-    "sub": "asdfasdf",
-    "tag": "asfsaf",
-    "price": 35000,
-    "mat": "",
-    "desc": "",
-    "dims": [
-     100,
-     51,
-     32
-    ]
-   },
-   {
-    "id": "x-brassconsole-spry",
-    "name": "BrassConsole",
-    "cat": "Tables",
-    "sub": "-",
-    "tag": "-",
-    "price": 3800,
-    "mat": "",
-    "desc": "",
-    "dims": [
-     100,
-     42,
-     68
+    "id": "cmvbge0o1",
+    "name": "Lemo Modular",
+    "pieces": [
+     {
+      "id": "pmvbgejt49v4",
+      "name": "arm lm",
+      "w": 26,
+      "d": 102,
+      "h": 63,
+      "price": 1000
+     },
+     {
+      "id": "pmvbgejvxxk0",
+      "name": "chaise lm",
+      "w": 97,
+      "d": 167,
+      "h": 44,
+      "price": 2500
+     },
+     {
+      "id": "pmvbgejx7ypc",
+      "name": "corner lm",
+      "w": 105,
+      "d": 105,
+      "h": 81,
+      "price": 3000
+     },
+     {
+      "id": "pmvbgejy2u74",
+      "name": "ottoman lm",
+      "w": 97,
+      "d": 102,
+      "h": 44,
+      "price": 2000
+     },
+     {
+      "id": "pmvbgejyzdh1",
+      "name": "seat lm",
+      "w": 97,
+      "d": 109,
+      "h": 91,
+      "price": 3000
+     }
     ]
    }
   ],
+  "added": [],
   "pieceFabrics": {
    "x-a-sdfj--4p5x": [
     "oyster"
    ],
    "x-brassconsole-spry": [
     "oyster"
+   ],
+   "sofa": [
+    "oyster"
+   ],
+   "chaise": [
+    "oyster"
+   ],
+   "armchair": [
+    "oyster"
+   ],
+   "dchair": [
+    "oyster"
+   ],
+   "dtable": [
+    "oyster"
+   ],
+   "coffee": [
+    "oyster"
+   ],
+   "dset": [
+    "oyster"
+   ],
+   "headboard": [
+    "oyster"
+   ],
+   "ottoman": [
+    "oyster"
+   ],
+   "bedside": [
+    "oyster"
+   ],
+   "tv": [
+    "oyster"
+   ],
+   "dresser": [
+    "oyster"
    ]
-  }
+  },
+  "deleted": [
+   "bar",
+   "console",
+   "dresser"
+  ],
+  "addedFabrics": [
+   {
+    "id": "f-lemo-grey-38z3",
+    "name": "Lemo Grey",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": ""
+   }
+  ]
  },
  "files": {
-  "model:x-a-sdfj--4p5x": {
+  "model:x-granite-dining-table-02dj": {
    "path": "models/blackgranitedining.glb",
    "type": "",
    "name": "BlackGraniteDining.glb"
   },
-  "model:x-brassconsole-spry": {
-   "path": "models/brassconsole.glb",
+  "fabric:f-lemo-grey-38z3": {
+   "path": "swatches/fabrics/f-lemo-grey-38z3.jpg",
+   "type": "image/jpeg",
+   "name": "Lemo Grey.jpg"
+  },
+  "piece:cmvbge0o1:pmvbgejt49v4": {
+   "path": "models/collections/cmvbge0o1/pmvbgejt49v4.glb",
    "type": "",
-   "name": "BrassConsole.glb"
+   "name": "arm_lm.glb"
+  },
+  "piece:cmvbge0o1:pmvbgejvxxk0": {
+   "path": "models/collections/cmvbge0o1/pmvbgejvxxk0.glb",
+   "type": "",
+   "name": "chaise_lm.glb"
+  },
+  "piece:cmvbge0o1:pmvbgejx7ypc": {
+   "path": "models/collections/cmvbge0o1/pmvbgejx7ypc.glb",
+   "type": "",
+   "name": "corner_lm.glb"
+  },
+  "piece:cmvbge0o1:pmvbgejy2u74": {
+   "path": "models/collections/cmvbge0o1/pmvbgejy2u74.glb",
+   "type": "",
+   "name": "ottoman_lm.glb"
+  },
+  "piece:cmvbge0o1:pmvbgejyzdh1": {
+   "path": "models/collections/cmvbge0o1/pmvbgejyzdh1.glb",
+   "type": "",
+   "name": "seat_lm.glb"
   }
  },
- "version": 1792083914896
+ "version": 1792185216475
 }
