@@ -20,6 +20,5 @@ export const BASE=[
 export const FEATURED=['sofa','armchair','coffee','ottoman'];
 export const FABRICS=[['Oyster','#d4cabb'],['Sage','#8a967c'],['Charcoal','#3a3a3c'],['Terracotta','#b0654a'],['Navy','#26344d'],['Mustard','#b8923a'],['Blush','#d7b5ab'],['Forest','#33473a']];
 export const FINISHES=[['Walnut','#5b3f26'],['Natural oak','#a8825a'],['Ebony','#1f1a17'],['Ash','#c2b59b']];
-export const DEFAULT_FINISH_TYPES=[{id:'frame',name:'Frame',target:'frame'}];
+export const DEFAULT_FINISH_TYPES=[{id:'frame',name:'Frame',target:'frame'},{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric'}];
 export const FABRIC_DESC={Oyster:'A soft, warm neutral with a hint of grey. Easy to live with, and pairs well with natural wood and brass.',Sage:'A muted green with a calm, earthy feel. Brings colour without overwhelming a room.',Charcoal:'A deep, versatile grey that anchors lighter interiors.',Terracotta:'A warm, clay-inspired red-orange that adds instant character.',Navy:'A rich, dark blue with a classic, tailored look.',Mustard:'A warm golden yellow for confident accent pieces.',Blush:'A gentle, dusty pink that softens a space.',Forest:'A deep green with a refined, traditional feel.'};
-

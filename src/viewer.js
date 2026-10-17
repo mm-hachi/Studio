@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadGLTF } from './loader.js';
-import { applyFabric } from './texture.js';
+import { applyFabric, DEFMAP } from './texture.js';
 import * as Store from './store.js';
 import { build, PRODUCTS } from './products.js';
 export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
@@ -29,11 +29,11 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
   Object.entries(curFinishes).forEach(([tgt,mat])=>{
    const list=(obj.userData.finMap?.[tgt])||(tgt==='frame'?obj.userData.frames:null);
    if(!list||!list.length)return;
-   if(typeof mat==='string'){list.forEach(m=>{m.map=null;m.color.set(mat);m.needsUpdate=true})}
-   else if(Array.isArray(mat)){applyFabric(list,mat,DEFMAP)}
+   if(typeof mat.mat==='string'){list.forEach(m=>{m.map=null;m.color.set(mat.mat);m.needsUpdate=true})}
+   else if(Array.isArray(mat.mat)){applyFabric(list,mat.mat,mat.m)}
   });
  };
- const setFinish=(tgt,mat)=>{const k=(tgt||'frame').toLowerCase().trim();curFinishes[k]=mat;applyFinishes()};
+ const setFinish=(tgt,mat,m=DEFMAP)=>{const k=(tgt||'frame').toLowerCase().trim();curFinishes[k]={mat,m};applyFinishes()};
  const setFrame=h=>{setFinish('frame',h)};
  const setGlow=v=>{glow=v;obj.userData.glows.forEach(m=>m.emissiveIntensity=v*3);rim.intensity=12*v*BK};
  function set(n){fab=null;orig=[];if(obj)sc.remove(obj);

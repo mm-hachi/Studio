@@ -53,16 +53,19 @@ export const delMapping=(pid,fid)=>{if(cfg.mapping?.[pid])delete cfg.mapping[pid
 export const setPieceFabrics=(pid,list)=>{(cfg.pieceFabrics??={})[pid]=list;save()};
 export const setPieceFinishes=(pid,ftid,list)=>{(((cfg.pieceFinishes??={})[pid]??={})[ftid]=list);save()};
 export const pieceFinishes=(pid,ftid)=>cfg.pieceFinishes?.[pid]?.[ftid]??DATA.pieceFinishes?.[pid]?.[ftid]??null;
-export const finishTypes=()=>(cfg.finishTypes??DATA.finishTypes??[{id:'frame',name:'Frame',target:'frame'}]);
+export const finishTypes=()=>{
+ const types=cfg.finishTypes??DATA.finishTypes??[{id:'frame',name:'Frame',target:'frame'}];
+ return types.some(ft=>ft.id==='fabric')?types:[...types,{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric'}];
+};
 export const addFinishType=ft=>{const l=[...finishTypes()];if(!l.some(x=>x.id===ft.id))l.push(ft);cfg.finishTypes=l;save()};
-export const deleteFinishType=id=>{cfg.finishTypes=finishTypes().filter(x=>x.id!==id);save()};
+export const deleteFinishType=id=>{if(id==='fabric')return;cfg.finishTypes=finishTypes().filter(x=>x.id!==id);save()};
 export const studioMaterials=()=>({fabrics:cfg.studioFabrics??DATA.studioFabrics??null,finishes:cfg.studioFinishes??DATA.studioFinishes??{}});
 export const setStudioFabrics=list=>{cfg.studioFabrics=list;save()};
 export const setStudioFinishes=(ftid,list)=>{((cfg.studioFinishes??={})[ftid]=list);save()};
+export const setMaterialOrder=list=>{cfg.materialOrder=[...list];save()};
 export const addFabric=f=>{(cfg.addedFabrics??=[]).push(f);save()};
 export const editFabric=(id,k,v)=>{((cfg.fabricEdits??={})[id]??={})[k]=v;save()};
 export const deleteFabric=id=>{const a=cfg.addedFabrics||[];if(a.some(f=>f.id===id))cfg.addedFabrics=a.filter(f=>f.id!==id);else(cfg.deletedFabrics??=[]).push(id);save()};
-export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.finishTypes;delete cfg.pieceFinishes;delete cfg.studioFabrics;delete cfg.studioFinishes;save()};
+export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.finishTypes;delete cfg.pieceFinishes;delete cfg.studioFabrics;delete cfg.studioFinishes;delete cfg.materialOrder;save()};
 export const deleteProduct=id=>{if((cfg.added||[]).some(p=>p.id===id))cfg.added=cfg.added.filter(p=>p.id!==id);else(cfg.deleted??=[]).push(id);save()};
 export const discardLocal=async()=>{await clearFiles();try{localStorage.removeItem(KEY)}catch{}};
-

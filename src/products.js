@@ -13,7 +13,10 @@ const BUILTIN_FABRICS=FBASE.map(([n,h])=>({id:slug(n),name:n,hex:h,type:'Fabric'
 // Materials library: built-in fabrics & frame materials + data/site.json + admin additions, minus deletions, with edits applied.
 const ml=[...BUILTIN_FABRICS,...BUILTIN_FINISH_MATS,...(D.fabrics||[]),...(D.materials||[]),...(C.addedFabrics||[])].filter(f=>!goneF.has(f.id)).map(f=>({type:f.type||'Fabric',desc:'',...f,...(D.fabricEdits?.[f.id]||{}),...(C.fabricEdits?.[f.id]||{})}));
 if(!ml.length)ml.push({id:'oyster',name:'Oyster',hex:'#d4cabb',type:'Fabric',desc:''});
-export const MATERIAL_LIST=ml.map(f=>({...f,image:Store.url('fabric:'+f.id)||f.image||null}));
+const materialOrder=C.materialOrder??D.materialOrder??[],materialPositions=new Map(materialOrder.map((id,i)=>[id,i]));
+export const MATERIAL_LIST=ml.map((f,i)=>({material:{...f,image:Store.url('fabric:'+f.id)||f.image||null},i}))
+ .sort((a,b)=>(materialPositions.get(a.material.id)??Number.MAX_SAFE_INTEGER)-(materialPositions.get(b.material.id)??Number.MAX_SAFE_INTEGER)||a.i-b.i)
+ .map(({material})=>material);
 export const FABRIC_LIST=MATERIAL_LIST;
 export const MATERIALS=MATERIAL_LIST.map(f=>[f.name,f.hex,f.id,f.image,f.desc,f.type]);
 export const FABRICS=MATERIALS;
@@ -26,6 +29,7 @@ const pf={...(D.pieceFabrics||{}),...(C.pieceFabrics||{})};
 const fabricsFor=id=>{const a=pf[id],L=a?MATERIALS.filter(f=>a.includes(f[2])):MATERIALS.filter(f=>f[5]!=='Wood'&&f[5]!=='Metal');return L.length?L:MATERIALS};
 
 export const finishesFor=(pid,ftid)=>{
+ if(ftid==='fabric')return fabricsFor(pid);
  const a=Store.pieceFinishes(pid,ftid);
  if(a&&a.length){const L=MATERIALS.filter(f=>a.includes(f[2]));if(L.length)return L}
  const def=MATERIALS.filter(m=>m[5]==='Wood'||m[5]==='Metal');
@@ -34,7 +38,13 @@ export const finishesFor=(pid,ftid)=>{
 
 // "Original" option removed from selectable list; kept only as fallback reference if needed
 export const ORIGINAL=MATERIALS[0];
-export const getMapping=(pid,fid)=>({...DEFMAP,...(D.mapping?.[pid]?.[fid]||{}),...(C.mapping?.[pid]?.[fid]||{})});
+export const mappingId=(fid,ftid=null)=>ftid===null?fid:`finish:${ftid}:${fid}`;
+export const getMapping=(pid,fid,ftid=null)=>{
+ const key=mappingId(fid,ftid);
+ const oldKey=ftid===null||ftid==='fabric'?fid:null;
+ const published=D.mapping?.[pid]||{},local=C.mapping?.[pid]||{};
+ return {...DEFMAP,...(published[key]|| (oldKey?published[oldKey]:null) || {}),...(local[key]|| (oldKey?local[oldKey]:null) || {})};
+};
 
 // Extra pieces: from data/site.json ("products", repo-hosted) and from the admin panel (browser-only).
 const extra=[...(D.products||[]).map(p=>({...p})),...(C.added||[]).map(p=>({...p,added:true}))].map(p=>({kind:p.id,tag:'',mat:'',desc:'',dims:[100,100,100],...p,sub:p.sub||p.cat}));
@@ -46,4 +56,3 @@ export const PRODUCTS=[...BASE,...extra].filter(p=>!gone.has(p.id)).map(p=>{
 });
 export const FEAT=(()=>{const L=FEATURED.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);return L.length?L:PRODUCTS.slice(0,4)})();
 export const build=(id,hex)=>buildKind(BASE.find(p=>p.id===id)?.kind||id,hex);
-

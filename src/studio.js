@@ -33,6 +33,7 @@ const ST_FABRICS=(()=>{
 })();
 const ST_FTYPES=Store.finishTypes();
 const studioFinishesFor=ftid=>{
+ if(ftid==='fabric')return ST_FABRICS;
  if(stm.finishes?.[ftid]&&stm.finishes[ftid].length){
   const L=MATERIALS.filter(f=>stm.finishes[ftid].includes(f[2]));
   if(L.length)return L;
@@ -283,22 +284,24 @@ document.querySelectorAll('.st-preset').forEach(b=>{b.hidden=!C.presets[b.datase
 const empLink=$('st-empty');if(empLink)empLink.onclick=e=>{e.preventDefault();$('st-start').style.display='none'};
 
 /* ---- Fabrics & Finishes ---- */
-$('st-fab').textContent=ST_FABRICS[0][0];$('st-sw').innerHTML=ST_FABRICS.map(([n,h,id,img],i)=>`<button class="${i?'':'on'}" style="background:${img?`url(${esc(img)}) center/cover`:esc(h)}" title="${esc(n)}" aria-label="${esc(n)}" data-i="${i}"></button>`).join('');
-$('st-sw').onclick=e=>{const b=e.target.closest('button');if(!b)return;colour=ST_FABRICS[b.dataset.i][1];$('st-sw').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));$('st-fab').textContent=ST_FABRICS[b.dataset.i][0];touched=true;curFab=ST_FABRICS[b.dataset.i];items.forEach(i=>applyFabric(i.g.userData.T,curFab,DEFMAP));refresh()};
-
 const finBox=$('st-fin-sections');
 if(finBox){
  finBox.innerHTML=ST_FTYPES.map(ft=>{
   const list=studioFinishesFor(ft.id),cur=curFinishes[ft.id]||list[0];
-  return `<div class="studio"><h3>${esc(ft.name)} · <span id="st-fin-${esc(ft.id)}" style="font-size:1.1rem">${esc(cur[0])}</span></h3><div class="sw" id="st-fsw-${esc(ft.id)}" style="margin-bottom:0">${list.map(([n,h,id,img],i)=>`<button class="${(cur&&cur[2]===id)?'on':''}" style="background:${img?`url(${esc(img)}) center/cover`:esc(h)}" title="${esc(n)}" aria-label="${esc(n)}" data-ft="${esc(ft.id)}" data-i="${i}"></button>`).join('')}</div></div>`;
+  const labelId=ft.id==='fabric'?'st-fab':`st-fin-${esc(ft.id)}`;
+  return `<div class="studio"><h3>${esc(ft.name)} · <span id="${labelId}" style="font-size:1.1rem">${esc(cur[0])}</span></h3><div class="sw" id="st-fsw-${esc(ft.id)}" style="margin-bottom:0">${list.map(([n,h,id,img],i)=>`<button class="${(cur&&cur[2]===id)?'on':''}" style="background:${img?`url(${esc(img)}) center/cover`:esc(h)}" title="${esc(n)}" aria-label="${esc(n)}" data-ft="${esc(ft.id)}" data-i="${i}"></button>`).join('')}</div></div>`;
  }).join('');
 
  finBox.onclick=e=>{
   const b=e.target.closest('button[data-ft]');if(!b)return;
   const ftid=b.dataset.ft,list=studioFinishesFor(ftid),m=list[b.dataset.i];if(!m)return;
   curFinishes[ftid]=m;
+  if(ftid==='fabric'){
+   curFab=m;colour=m[1];touched=true;
+   items.forEach(it=>applyFabric(it.g.userData.T,curFab,DEFMAP));
+  }
   $(`st-fsw-${ftid}`).querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
-  const t=$(`st-fin-${ftid}`);if(t)t.textContent=m[0];
+  const t=$(ftid==='fabric'?'st-fab':`st-fin-${ftid}`);if(t)t.textContent=m[0];
   items.forEach(it=>applyModuleFinishes(it.g));
   refresh();
  };
@@ -345,7 +348,7 @@ let last=performance.now();
  if(host.clientWidth){ctl.update();if(sel)helper.setFromObject(sel.g);r.render(sc,cam)}pv.tick(dt)})(last);
 refresh();
 const did=new URLSearchParams(location.search).get('design');
-if(did)API.designs().then(ds=>{const d=ds.find(x=>x.id===did);if(!d)return;let fi=ST_FABRICS.findIndex(f=>f[2]===d.fabricId);if(fi<0)fi=Math.min(Math.max(0,d.fabric|0),ST_FABRICS.length-1);colour=ST_FABRICS[fi][1];curFab=ST_FABRICS[fi];$('st-fab').textContent=ST_FABRICS[fi][0];
- $('st-sw').querySelectorAll('button').forEach((b,k)=>b.classList.toggle('on',k===fi));clear();
+if(did)API.designs().then(ds=>{const d=ds.find(x=>x.id===did);if(!d)return;let fi=ST_FABRICS.findIndex(f=>f[2]===d.fabricId);if(fi<0)fi=Math.min(Math.max(0,d.fabric|0),ST_FABRICS.length-1);colour=ST_FABRICS[fi][1];curFab=ST_FABRICS[fi];curFinishes.fabric=curFab;touched=true;$('st-fab').textContent=ST_FABRICS[fi][0];
+ $(`st-fsw-fabric`).querySelectorAll('button').forEach((b,k)=>b.classList.toggle('on',k===fi));clear();
  d.items.forEach(o=>{if(!MODS[o.type])return;const it={type:o.type,rot:o.rot||0,g:buildModule(o.type,colour)};it.g.position.set(o.x,0,o.z);it.g.rotation.y=it.rot*Math.PI/2;items.push(it);sc.add(it.g)});
  $('st-start').style.display='none';refresh()});
