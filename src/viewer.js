@@ -22,15 +22,41 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
  let orig=[];const snap=()=>{orig=obj.userData.tints.map(m=>({m,c:m.color.clone(),map:m.map}))};
  const restore=()=>{orig.forEach(({m,c,map})=>{m.userData.fabTok=-1;if(m.map&&m.map!==map)m.map.dispose();m.map=map;m.color.copy(c);m.needsUpdate=true})};
  const applyFab=()=>{if(fab)applyFabric(obj.userData.tints,fab.f,fab.m)};
- const setFabric=(f,m)=>{if(!f||f[2]==='original'){fab=null;restore();return}fab={f,m};applyFab()};
- let frameHex=null;const applyFrame=()=>{if(frameHex)(obj.userData.frames||[]).forEach(m=>m.color.set(frameHex))};const setFrame=h=>{frameHex=h;applyFrame()};
+ const setFabric=(f,m)=>{if(!f)return;fab={f,m};applyFab()};
+ const curFinishes={};
+ const applyFinishes=()=>{
+  if(!obj||!obj.userData)return;
+  Object.entries(curFinishes).forEach(([tgt,mat])=>{
+   const list=(obj.userData.finMap?.[tgt])||(tgt==='frame'?obj.userData.frames:null);
+   if(!list||!list.length)return;
+   if(typeof mat==='string'){list.forEach(m=>{m.map=null;m.color.set(mat);m.needsUpdate=true})}
+   else if(Array.isArray(mat)){applyFabric(list,mat,DEFMAP)}
+  });
+ };
+ const setFinish=(tgt,mat)=>{const k=(tgt||'frame').toLowerCase().trim();curFinishes[k]=mat;applyFinishes()};
+ const setFrame=h=>{setFinish('frame',h)};
  const setGlow=v=>{glow=v;obj.userData.glows.forEach(m=>m.emissiveIntensity=v*3);rim.intensity=12*v*BK};
- function set(n){fab=null;orig=[];if(obj)sc.remove(obj);colour=PRODUCTS.find(p=>p.id===n).fabrics[0][1];const u=Store.url('model:'+n)||Store.DATA.models?.[n];
-  if(!u)obj=build(n,colour);else{obj=new THREE.Group();obj.userData={tints:[],glows:[],frames:[]};
+ function set(n){fab=null;orig=[];if(obj)sc.remove(obj);
+  const prod=PRODUCTS.find(p=>p.id===n);colour=prod?.fabrics?.[0]?.[1]||'#d4cabb';const u=Store.url('model:'+n)||Store.DATA.models?.[n];
+  if(!u)obj=build(n,colour);else{obj=new THREE.Group();obj.userData={tints:[],glows:[],frames:[],finMap:{}};
    loadGLTF(u).then(gl=>{const s=gl.scene,b=new THREE.Box3().setFromObject(s),z=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3()),k=2.6/Math.max(z.x,z.y,z.z);
     s.scale.setScalar(k);s.position.set(-c.x*k,-b.min.y*k,-c.z*k);
-    const nm=[],al=[],fr=[];s.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;[].concat(o.material).forEach(m=>{if(m.name==='frame'){fr.push(m);return}if(!(m.transparent&&m.opacity<1)){al.push(m);if(m.name==='tint')nm.push(m)}})}});obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.add(s);snap();applyFrame();applyFab()}).catch(()=>obj.add(build(n,colour)))}
-  sc.add(obj);grow=0;setGlow(glow);snap();applyFrame();applyFab()}
+    const nm=[],al=[],fr=[],finMap={};
+    const ftypes=Store.finishTypes?Store.finishTypes():[{id:'frame',name:'Frame',target:'frame'}];
+    const targets=new Set(ftypes.map(t=>(t.target||t.name||'').toLowerCase().trim()));targets.add('frame');
+    s.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;[].concat(o.material).forEach(m=>{
+     const mn=(m.name||'').toLowerCase().trim();let matched=false;
+     targets.forEach(tgt=>{if(tgt&&mn===tgt){(finMap[tgt]??=[]).push(m);if(tgt==='frame')fr.push(m);matched=true}});
+     if(matched)return;
+     if(!(m.transparent&&m.opacity<1)){al.push(m);if(mn==='tint')nm.push(m)}
+    })}});
+    obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.userData.finMap=finMap;
+    obj.add(s);snap();applyFinishes();applyFab();
+    if(prod?.fabrics?.[0])setFabric(prod.fabrics[0]);
+   }).catch(()=>obj.add(build(n,colour)))}
+  sc.add(obj);grow=0;setGlow(glow);snap();applyFinishes();applyFab();
+  if(prod?.fabrics?.[0])setFabric(prod.fabrics[0]);
+ }
  set(id);
  const size=()=>{const p=canvas.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
  const ro=new ResizeObserver(size);ro.observe(canvas.parentElement);
@@ -41,5 +67,5 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
   grow=Math.min(1,grow+dt*1.5);{const e=.001+(1-Math.pow(1-grow,3))*.999;obj.scale.set(dim[0]*e,dim[1]*e,dim[2]*e)}
   if(orbit)ctl.update();else{obj.rotation.y=.6+t*spin+(scroll?scrollY*.003:0)+m.x*.9;cam.position.set(base.x,base.y-m.y*.8,base.z+(scroll?scrollY*.002:0));cam.lookAt(look)}
   r.render(sc,cam)})(last);
- return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),setId:set,setColour:tint,setFabric,setFrame,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
+ return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),setId:set,setColour:tint,setFabric,setFrame,setFinish,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
 }

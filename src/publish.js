@@ -17,6 +17,7 @@ const pathFor=(k,name,type)=>{const e=ext(name,type);
  if(k.startsWith('model:'))return `models/${slug(name.replace(/\.[^.]+$/i,''))}.${e}`;
  if(k.startsWith('piece:')){const [,c,p]=k.split(':');return `models/collections/${slug(c)}/${slug(p)}.${e}`}
  if(k.startsWith('fabric:'))return `swatches/fabrics/${slug(k.slice(7))}.${e}`;
+ if(k.startsWith('collection:'))return `models/collections/${slug(k.slice(11))}/preview.${e}`;
  return `media/${slug(k)}.${e}`};
 export async function ghTest(){const c=need(),r=await call(c,'GET','');return r.permissions?.push?`Connected to ${r.full_name}. This token can publish.`:`Connected to ${r.full_name}, but this token cannot write. Give it "Contents: Read and write".`}
 export async function publish(log){
