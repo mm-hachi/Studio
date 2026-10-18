@@ -75,6 +75,22 @@
      81
     ],
     "model": "models/x-molo-occasional-chair-bkmk.glb"
+   },
+   {
+    "id": "x-scarlet-custom-couch-svxv",
+    "name": "Scarlet Custom Couch",
+    "cat": "Sofas",
+    "sub": "Sofas",
+    "tag": "",
+    "price": 18100,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     64,
+     26
+    ],
+    "model": "models/x-scarlet-custom-couch-svxv.glb"
    }
   ],
   "pieceFabrics": {
@@ -144,7 +160,13 @@
     "mustard",
     "blush",
     "forest",
-    "f-lemo-grey-38z3"
+    "f-lemo-grey-38z3",
+    "f-velvet-chocolate-n2op"
+   ],
+   "x-scarlet-custom-couch-svxv": [
+    "oyster",
+    "sage",
+    "f-velvet-chocolate-n2op"
    ]
   },
   "deleted": [
@@ -167,6 +189,14 @@
     "hex": "#cccccc",
     "desc": "",
     "image": "swatches/fabrics/f-furnwood-qjlm.jpg"
+   },
+   {
+    "id": "f-velvet-chocolate-n2op",
+    "name": "Velvet Chocolate",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-velvet-chocolate-n2op.jpg"
    }
   ],
   "mapping": {
@@ -368,8 +398,8 @@
      "locked": true
     },
     "finish:fabric:sage": {
-     "sx": 2.65,
-     "sy": 2.65,
+     "sx": 2.9,
+     "sy": 2.9,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -430,11 +460,60 @@
      "ox": 0,
      "oy": 0,
      "locked": true
+    },
+    "finish:fabric:f-velvet-chocolate-n2op": {
+     "sx": 4.35,
+     "sy": 4.35,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:f-furnwood-qjlm": {
+     "sx": 1.6,
+     "sy": 1.6,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-scarlet-custom-couch-svxv": {
+    "finish:fabric:f-velvet-chocolate-n2op": {
+     "sx": 6.85,
+     "sy": 6.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:oyster": {
+     "sx": 7.8,
+     "sy": 7.8,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:sage": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
     }
    }
   },
   "pieceDefaults": {
    "x-molo-chair-9nfk": {
+    "fabric": "f-lemo-grey-38z3",
+    "frame": "f-furnwood-qjlm"
+   },
+   "x-scarlet-custom-couch-svxv": {
+    "fabric": "f-velvet-chocolate-n2op"
+   },
+   "x-molo-occasional-chair-bkmk": {
     "fabric": "f-lemo-grey-38z3",
     "frame": "f-furnwood-qjlm"
    }
@@ -443,6 +522,11 @@
    "x-molo-chair-9nfk": {
     "frame": [
      "f-furnwood-qjlm"
+    ]
+   },
+   "x-scarlet-custom-couch-svxv": {
+    "frame": [
+     "ebony"
     ]
    }
   }
@@ -534,9 +618,9 @@
    "name": "fabric-texture_1053-594.avif"
   },
   "fabric:sage": {
-   "path": "swatches/fabrics/sage.jpe",
-   "type": "image/jpeg",
-   "name": "images (1).jpe"
+   "path": "swatches/fabrics/sage.avif",
+   "type": "image/avif",
+   "name": "olive-green-one.avif"
   },
   "fabric:terracotta": {
    "path": "swatches/fabrics/terracotta.jpg",
@@ -552,10 +636,21 @@
    "path": "models/x-molo-occasional-chair-bkmk.glb",
    "type": "",
    "name": "molooccassionalchairv2.glb"
+  },
+  "fabric:f-velvet-chocolate-n2op": {
+   "path": "swatches/fabrics/f-velvet-chocolate-n2op.jpg",
+   "type": "image/jpeg",
+   "name": "brown-satin-one.jpg"
+  },
+  "model:x-scarlet-custom-couch-svxv": {
+   "path": "models/x-scarlet-custom-couch-svxv.glb",
+   "type": "",
+   "name": "brown-two-seater-chaise.glb"
   }
  },
- "version": 1792349309712,
+ "version": 1792359507402,
  "models": {
-  "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb"
+  "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
+  "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb"
  }
 }
