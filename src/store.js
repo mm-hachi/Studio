@@ -9,9 +9,8 @@ const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('dekara-media',1);r
 const tx=(mode,fn)=>idb().then(db=>new Promise((res,rej)=>{const t=db.transaction('f',mode),q=fn(t.objectStore('f'));t.oncomplete=()=>res(q.result);t.onerror=()=>rej(t.error)}));
 export const ready=(async()=>{
  try{const r=await fetch('data/site.json',{cache:'no-store'});if(r.ok){const j=await r.json();Object.assign(DATA,j);Object.assign(RAW,JSON.parse(JSON.stringify(j)))}}catch{}
- let local=LOCAL;
- // once the published repo has caught up with our last publish, drop the local copy and use the repo
- if(local._publishedAt&&(DATA.version||0)>=local._publishedAt){local={};try{localStorage.removeItem(KEY)}catch{}await tx('readwrite',s=>s.clear()).catch(()=>{})}
+ const local={...LOCAL};
+ delete local._publishedAt;
  Object.assign(cfg,JSON.parse(JSON.stringify(DATA.config||{})),local);cfg.products??={};
  if(!DATA.apiBase&&cfg.site?.apiBase)DATA.apiBase=cfg.site.apiBase;
  try{const keys=await tx('readonly',s=>s.getAllKeys()),all=await tx('readonly',s=>s.getAll());
@@ -53,6 +52,7 @@ export const delMapping=(pid,fid)=>{if(cfg.mapping?.[pid])delete cfg.mapping[pid
 export const setPieceFabrics=(pid,list)=>{(cfg.pieceFabrics??={})[pid]=list;save()};
 export const setPieceFinishes=(pid,ftid,list)=>{(((cfg.pieceFinishes??={})[pid]??={})[ftid]=list);save()};
 export const pieceFinishes=(pid,ftid)=>cfg.pieceFinishes?.[pid]?.[ftid]??DATA.pieceFinishes?.[pid]?.[ftid]??null;
+export const setPieceDefault=(pid,ftid,materialId)=>{(((cfg.pieceDefaults??={})[pid]??={})[ftid]=materialId);save()};
 export const finishTypes=()=>{
  const types=cfg.finishTypes??DATA.finishTypes??[{id:'frame',name:'Frame',target:'frame'}];
  return types.some(ft=>ft.id==='fabric')?types:[...types,{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric'}];
@@ -66,6 +66,6 @@ export const setMaterialOrder=list=>{cfg.materialOrder=[...list];save()};
 export const addFabric=f=>{(cfg.addedFabrics??=[]).push(f);save()};
 export const editFabric=(id,k,v)=>{((cfg.fabricEdits??={})[id]??={})[k]=v;save()};
 export const deleteFabric=id=>{const a=cfg.addedFabrics||[];if(a.some(f=>f.id===id))cfg.addedFabrics=a.filter(f=>f.id!==id);else(cfg.deletedFabrics??=[]).push(id);save()};
-export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.finishTypes;delete cfg.pieceFinishes;delete cfg.studioFabrics;delete cfg.studioFinishes;delete cfg.materialOrder;save()};
+export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.finishTypes;delete cfg.pieceFinishes;delete cfg.pieceDefaults;delete cfg.studioFabrics;delete cfg.studioFinishes;delete cfg.materialOrder;save()};
 export const deleteProduct=id=>{if((cfg.added||[]).some(p=>p.id===id))cfg.added=cfg.added.filter(p=>p.id!==id);else(cfg.deleted??=[]).push(id);save()};
 export const discardLocal=async()=>{await clearFiles();try{localStorage.removeItem(KEY)}catch{}};

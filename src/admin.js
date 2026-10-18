@@ -1,7 +1,6 @@
 import * as Store from './store.js';
-import { PRODUCTS, CATS, FABRIC_LIST } from './products.js';
+import { PRODUCTS, CATS, FABRIC_LIST, MATERIAL_LIST } from './products.js';
 import { measureGLB } from './loader.js';
-import { publish, ghTest, ghConfig, ghSave } from './publish.js';
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const hash=s=>crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''));
 const trig=document.createElement('button');trig.id='adm-trigger';trig.textContent='⚜';trig.setAttribute('aria-label','Steward access');document.body.append(trig);
@@ -28,7 +27,7 @@ const addHtml=()=>`<h4>Add a piece to the shop</h4><p class="note">Upload a GLB 
  <div class="acts"><button data-act="addprod">Add to shop</button></div>`;
 const collHtml=()=>{const L=Store.colls(),F=[['name','Name'],['price','Price (ZAR)'],['w','Width cm'],['d','Depth cm'],['h','Height cm']];
  return `<h4>Studio collections</h4><p class="note">Collections of GLB pieces that customers arrange on the Custom Studio canvas, just like the built-in modules. Each piece is stretched to the width, depth and height you set.</p>${L.map(c=>`<details><summary>${esc(c.name)} (${c.pieces.length})</summary><label>Collection name<input data-cn="${c.id}" value="${esc(c.name)}"></label>${row('Collection preview image','collection:'+c.id,'image/*')}${c.pieces.map(p=>`<div class="ar"><b>${esc(p.name)}</b>${F.map(([k,l])=>`<label>${l}<input ${k==='name'?'':'type="number" min="0"'} data-cp="${c.id}|${p.id}|${k}" value="${esc(p[k])}"></label>`).join('')}<button data-delpiece="${c.id}|${p.id}">Remove piece</button></div>`).join('')}<label>Add pieces (GLB, several allowed)<input type="file" multiple accept=".glb,.gltf" data-addpieces="${c.id}"></label><div class="acts"><button data-delcoll="${c.id}">Delete collection</button></div></details>`).join('')}
- <label>New collection name<input id="nc-name"></label><div class="acts"><button data-act="addcoll">Create collection</button><button data-act="expprod">Export additions for repo</button></div>`};
+ <label>New collection name<input id="nc-name"></label><div class="acts"><button data-act="addcoll">Create collection</button></div>`};
 const studioHtml=()=>{const c=Store.studioCfg(),N={seat:'Seat',corner:'Corner',chaise:'Chaise',ottoman:'Ottoman',arm:'Arm'},stm=Store.studioMaterials(),fts=Store.finishTypes();
  const num=(k,l,v)=>`<label>${l}<input type="number" min="0" data-st="${k}" value="${v}"></label>`;
  const chk=(k,l,v)=>`<label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-st="${k}" ${v?'checked':''} style="width:auto"> ${l}</label>`;
@@ -36,13 +35,106 @@ const studioHtml=()=>{const c=Store.studioCfg(),N={seat:'Seat',corner:'Corner',c
  <details><summary>Modules, prices and maximums</summary>${Object.keys(N).map(k=>`<div class="ar"><b>${N[k]}</b>${chk('enabled.'+k,'Available to customers',c.enabled[k])}${num('prices.'+k,'Price (ZAR)',c.prices[k])}${num('max.'+k,'Max of this type',c.max[k])}</div>`).join('')}</details>
  <details><summary>Starter sizes offered</summary>${[1,2,3,4].map(n=>chk('presets.'+n,n+'-seater',c.presets[n])).join('')}</details>
  <details><summary>Fabrics offered in Studio</summary><div class="ar"><b>Studio fabrics</b>${FABRIC_LIST.map(f=>chk2('data-stfab',f.id,f.name,stm.fabrics?stm.fabrics.includes(f.id):(f.type!=='Wood'&&f.type!=='Metal'))).join('')}</div></details>
- <details><summary>Finishes offered in Studio</summary>${fts.map(ft=>`<div class="ar"><b>${esc(ft.name)} finishes</b>${FABRIC_LIST.map(f=>chk2(`data-stfin="${ft.id}|${f.id}"`,f.id,f.name,stm.finishes?.[ft.id]?stm.finishes[ft.id].includes(f.id):(f.type==='Wood'||f.type==='Metal'))).join('')}</div>`).join('')}</details>`};
-const pubHtml=()=>{const g=ghConfig();const f=(k,l,t='text',ph='')=>`<label>${l}<input type="${t}" data-gh="${k}" value="${esc(g[k]||'')}" placeholder="${ph}" autocomplete="off"></label>`;
- return `<h4>Publish to GitHub</h4><p class="note">Publishes your settings, prices, fabrics and product data to <code>data/site.json</code>. <strong>Models, images and videos are NOT uploaded</strong> — add those files to the repo yourself (GitHub blocks large binary files). Create a fine-grained GitHub token limited to this one repository with "Contents: Read and write". The token is stored only in this browser.</p>${f('owner','GitHub owner (username or organisation)')}${f('repo','Repository')}${f('branch','Branch','text','main')}${f('token','Token','password')}
-
- <div class="acts"><button data-act="ghpub">Publish changes</button><button data-act="ghtest">Test connection</button><button data-act="ghdiscard">Discard local changes</button></div><p class="note" id="gh-st"></p>`};
+ <details><summary>Finishes offered in Studio</summary>${fts.map(ft=>`<div class="ar"><b>${esc(ft.name)} finishes</b>${MATERIAL_LIST.map(f=>chk2(`data-stfin="${ft.id}|${f.id}"`,f.id,f.name,stm.finishes?.[ft.id]?stm.finishes[ft.id].includes(f.id):(f.type==='Wood'||f.type==='Metal'))).join('')}</div>`).join('')}</details>`};
+let initialRepoStatus=sessionStorage.getItem('repo-pub-status')||'Ready. Click the button and choose the project folder containing package.json.';
+if(sessionStorage.getItem('repo-pub-running')==='1'){
+ initialRepoStatus='Previous preparation was interrupted by a page reload. Check git status and data/site.json before retrying; some files may already have been copied.';
+ sessionStorage.setItem('repo-pub-status',initialRepoStatus);sessionStorage.removeItem('repo-pub-running');
+}
+const initialRepoProgress=JSON.parse(sessionStorage.getItem('repo-pub-progress')||'null');
+const pubHtml=()=>`<h4>Publish to repo</h4><p class="note">Choose your local project folder to merge admin settings into data/site.json and copy uploaded files into place. Then review, commit and push the staged worktree from your terminal.</p><div class="acts"><button type="button" data-act="expprod">Prepare changes for GitHub</button></div><p class="note" id="repo-pub-status" role="status" aria-live="polite">${esc(initialRepoStatus)}</p><progress id="repo-pub-progress" max="${initialRepoProgress?.max||1}" value="${initialRepoProgress?.value||0}" ${initialRepoProgress?.hidden===false?'':'hidden'} style="width:100%"></progress>`;
 const FT=['Fabric','Leather','Velvet','Linen','Wood','Stone','Metal','Other'];
 const chk2=(attr,val,label,on)=>`<label style="display:flex;gap:.5rem;align-items:center;text-transform:none;letter-spacing:0;font-size:.9rem;margin:.3rem 0"><input type="checkbox" ${attr} value="${esc(val)}" ${on?'checked':''} style="width:auto">${esc(label)}</label>`;
+const defaultMaterial=(pid,ftid,materials,defaults)=>`<label>Default ${esc(ftid==='fabric'?'fabric':`${Store.finishTypes().find(ft=>ft.id===ftid)?.name||'finish'} finish`)}<select data-pdefault="${esc(pid)}|${esc(ftid)}">${materials.map(m=>`<option value="${esc(m[2])}"${(defaults?.[ftid]||materials[0]?.[2])===m[2]?' selected':''}>${esc(m[0])}</option>`).join('')}</select></label>`;
+const safePart=value=>{const s=String(value).replace(/[^a-z0-9_-]/gi,'-').replace(/^-+|-+$/g,'');if(!s)throw new Error('An uploaded file has an invalid ID for its repository path.');return s};
+const fileExt=(name,type)=>{const match=/\.([a-z0-9]{2,8})$/i.exec(name||'');if(match)return match[1].toLowerCase();
+ return ({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','video/mp4':'mp4','video/webm':'webm','model/gltf-binary':'glb','model/gltf+json':'gltf'}[type]||'bin')};
+const repoPath=(slot,file)=>{
+ const ext=fileExt(file.name,file.type),parts=slot.split(':');
+ if(parts[0]==='model'&&parts[1])return `models/${safePart(parts[1])}.${ext}`;
+ if(parts[0]==='piece'&&parts[1]&&parts[2])return `models/collections/${safePart(parts[1])}/${safePart(parts[2])}.${ext}`;
+ if(parts[0]==='collection'&&parts[1])return `models/collections/${safePart(parts[1])}/preview.${ext}`;
+ if(parts[0]==='fabric'&&parts[1])return `swatches/fabrics/${safePart(parts[1])}.${ext}`;
+ if(parts[0]==='gallery'&&parts[1]&&parts[2])return `media/products/${safePart(parts[1])}/gallery-${safePart(parts[2])}.${ext}`;
+ return `media/slots/${safePart(slot)}.${ext}`;
+};
+const writeRepoFile=async(root,path,data)=>{
+ const parts=path.split('/');if(parts.some(part=>!part||part==='.'||part==='..'))throw new Error(`Unsafe repository path: ${path}`);
+ let dir=root;for(const part of parts.slice(0,-1))dir=await dir.getDirectoryHandle(part,{create:true});
+ const handle=await dir.getFileHandle(parts[parts.length-1],{create:true}),writer=await handle.createWritable();
+ try{await writer.write(data);await writer.close()}catch(error){await writer.abort();throw error}
+};
+const showRepoStatus=async(message,done,total)=>{
+ const status=document.getElementById('repo-pub-status'),progress=document.getElementById('repo-pub-progress');
+ status.textContent=message;
+ sessionStorage.setItem('repo-pub-status',message);
+ progress.hidden=!(total>0);if(total>0){progress.max=total;progress.value=done;sessionStorage.setItem('repo-pub-progress',JSON.stringify({max:total,value:done,hidden:false}))}
+ else{sessionStorage.removeItem('repo-pub-progress')}
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+};
+const editableColls=()=>{if(!Array.isArray(Store.cfg.collections))Store.cfg.collections=(Store.DATA.collections||[]).map(c=>({...c,pieces:(c.pieces||[]).map(piece=>({...piece}))}));return Store.cfg.collections};
+async function prepareRepoChanges(root){
+ await showRepoStatus(`Folder selected: ${root.name}. Checking for package.json, data/site.json and existing settings…`);
+ await root.getFileHandle('package.json');
+ const dataDir=await root.getDirectoryHandle('data'),siteHandle=await dataDir.getFileHandle('site.json');
+ let site;try{site=JSON.parse(await (await siteHandle.getFile()).text())}catch(error){throw new Error(`Could not read data/site.json as valid JSON: ${error.message}`)}
+ if(!site||typeof site!=='object'||Array.isArray(site))throw new Error('data/site.json must contain a JSON object.');
+ for(const key of ['config','files','models'])if(site[key]!==undefined&&(!site[key]||typeof site[key]!=='object'||Array.isArray(site[key])))throw new Error(`data/site.json field "${key}" must be a JSON object.`);
+ const clean={...Store.cfg};delete clean._removed;delete clean._publishedAt;
+ const config={...(site.config||{}),...clean},files={...(site.files||{})},models={...(site.models||{})},removed=new Set(Store.cfg._removed||[]),local=Store.localKeys(),paths=new Map();
+ for(const slot of local){const file=Store.localMedia(slot),blob=await (await fetch(file.url)).blob(),path=repoPath(slot,{name:file.name,type:file.type||blob.type});paths.set(slot,{file,blob,path,type:file.type||blob.type})}
+ for(const slot of removed)delete files[slot];
+ for(const [slot,item] of paths)files[slot]={path:item.path,type:item.type,name:item.file.name};
+ for(const [slot,item] of paths){
+  const [,id]=slot.split(':');
+  if(slot.startsWith('model:'))models[id]=item.path;
+  if(slot.startsWith('fabric:')){
+   const fabric=(config.addedFabrics||[]).find(x=>x.id===id);if(fabric)fabric.image=item.path;
+   if(config.fabricEdits?.[id])config.fabricEdits[id]={...config.fabricEdits[id],image:item.path};
+  }
+  if(slot.startsWith('collection:')){
+   const collection=(config.collections||[]).find(x=>x.id===id);if(collection)collection.image=item.path;
+  }
+ }
+ config.added=(config.added||[]).map(product=>{
+  const model=paths.get('model:'+product.id);if(model)return {...product,model:model.path};
+  if(removed.has('model:'+product.id)){const cleanProduct={...product};delete cleanProduct.model;return cleanProduct}
+  return product;
+ });
+ config.collections=editableColls().map(collection=>{
+  const preview=paths.get('collection:'+collection.id);
+  const cleanCollection={...collection,...(preview?{image:preview.path}:{})};
+  if(removed.has('collection:'+collection.id))delete cleanCollection.image;
+  cleanCollection.pieces=collection.pieces.map(piece=>{
+   const model=paths.get(`piece:${collection.id}:${piece.id}`);
+   if(model)return {...piece,model:model.path};
+   if(removed.has(`piece:${collection.id}:${piece.id}`)){const cleanPiece={...piece};delete cleanPiece.model;return cleanPiece}
+   return piece;
+  });
+  return cleanCollection;
+ });
+ config.addedFabrics=(config.addedFabrics||[]).map(fabric=>{
+  if(paths.has('fabric:'+fabric.id))return {...fabric,image:paths.get('fabric:'+fabric.id).path};
+  if(removed.has('fabric:'+fabric.id)){const cleanFabric={...fabric};delete cleanFabric.image;return cleanFabric}
+  return fabric;
+ });
+ for(const slot of removed){
+  if(slot.startsWith('model:'))delete models[slot.slice(6)];
+  if(slot.startsWith('fabric:')&&config.fabricEdits?.[slot.slice(7)]){const edit={...config.fabricEdits[slot.slice(7)]};delete edit.image;config.fabricEdits[slot.slice(7)]=edit}
+ }
+ const total=paths.size+1;let done=0;
+ for(const [slot,item] of paths){
+  await showRepoStatus(`Copying ${done+1} of ${total-1}: ${item.path}`,done,total);
+  await writeRepoFile(root,item.path,item.blob);done++;
+ }
+ const output={...site,config,files,models,version:Date.now()};
+ await showRepoStatus(`Writing ${done+1} of ${total}: data/site.json`,done,total);
+ await writeRepoFile(root,'data/site.json',JSON.stringify(output,null,1));
+ done++;
+ await showRepoStatus(`Complete. Updated data/site.json and copied ${paths.size} uploaded file${paths.size===1?'':'s'}. Review the project folder, then commit and push from your terminal.`,done,total);
+ sessionStorage.removeItem('repo-pub-running');
+ return true;
+}
 const fabHtml=()=>{
  const fts=Store.finishTypes();
  return `<h4>Materials library</h4><p class="note">Add or delete fabrics and finishes customers can choose from. Tick which ones each piece and Custom Studio offer. Assign custom finish types (matching the material name in GLB models).</p>
@@ -50,25 +142,31 @@ const fabHtml=()=>{
  ${fts.map(ft=>`<div class="ar"><b>${esc(ft.name)}</b><small>Target in GLB: <code>${esc(ft.target||ft.name)}</code></small>${ft.id!=='fabric'&&fts.length>1?`<button data-delfintype="${esc(ft.id)}">Delete this finish type</button>`:''}</div>`).join('')}
  <label>New finish type name<input id="nft-name" placeholder="e.g. Legs or Base"></label><label>GLB material name (target)<input id="nft-target" placeholder="e.g. legs (matches GLB material name)"></label>
  <div class="acts"><button data-act="addfintype">Add finish type</button></div></details>
- <div id="adm-material-list">${FABRIC_LIST.map((f,i)=>`<details data-material-id="${esc(f.id)}"><summary>${esc(f.name)} (${esc(f.type||'Fabric')})</summary><div class="acts material-order"><button data-mat-order="up"${i===0?' disabled':''}>Move earlier</button><button data-mat-order="down"${i===FABRIC_LIST.length-1?' disabled':''}>Move later</button></div><label>Name<input data-fe="${f.id}|name" value="${esc(f.name)}"></label><label>Type<select data-fe="${f.id}|type">${FT.map(t=>`<option${t===f.type?' selected':''}>${t}</option>`).join('')}</select></label><label>Colour<input type="color" data-fe="${f.id}|hex" value="${esc(f.hex)}"></label><label>Description<textarea rows="3" data-fe="${f.id}|desc">${esc(f.desc)}</textarea></label>${row('Swatch / texture image','fabric:'+f.id,'image/*')}<div class="acts"><button data-delfab="${f.id}">Delete this material</button></div></details>`).join('')}</div>
+ <div id="adm-material-list">${MATERIAL_LIST.map((f,i)=>`<details data-material-id="${esc(f.id)}"><summary>${esc(f.name)} (${esc(f.type||'Fabric')})</summary><div class="acts material-order"><button data-mat-order="up"${i===0?' disabled':''}>Move earlier</button><button data-mat-order="down"${i===MATERIAL_LIST.length-1?' disabled':''}>Move later</button></div><label>Name<input data-fe="${f.id}|name" value="${esc(f.name)}"></label><label>Type<select data-fe="${f.id}|type">${FT.map(t=>`<option${t===f.type?' selected':''}>${t}</option>`).join('')}</select></label><label>Colour<input type="color" data-fe="${f.id}|hex" value="${esc(f.hex)}"></label><label>Description<textarea rows="3" data-fe="${f.id}|desc">${esc(f.desc)}</textarea></label>${row('Swatch / texture image','fabric:'+f.id,'image/*')}<div class="acts"><button data-delfab="${f.id}">Delete this material</button></div></details>`).join('')}</div>
  <label>New material name<input id="nf-name"></label><label>Type<select id="nf-type">${FT.map(t=>`<option>${t}</option>`).join('')}</select></label><label>Colour<input type="color" id="nf-hex" value="#cccccc"></label><label>Description<textarea id="nf-desc" rows="2"></textarea></label><label>Texture image (optional)<input type="file" id="nf-img" accept="image/*"></label>
  <div class="acts"><button data-act="addfab">Add material</button><button data-act="resetmat">Reset materials to default</button></div>`;
 };
-// Live "Mapping node" editor for the piece page: scale, rotation and location of the fabric on this piece
+// Live mapping editor for the piece page: scale, rotation and location per material.
+let savePendingMapping=()=>{};
 function fillMap(){const P=window.__prod,el=document.getElementById('map-body');if(!P||!el||!P.mappingOptions?.length)return;const f0=P.mappingOptions.find(x=>x.ft.id==='fabric'&&x.material[2]===P.current()[2])||P.mappingOptions[0],q=id=>document.getElementById(id),K=['sx','sy','rot','ox','oy'];
  const sl=(k,l,min,max,st)=>`<label>${l} <b id="v-${k}"></b><input type="range" id="mp-${k}" min="${min}" max="${max}" step="${st}"></label>`;
  el.innerHTML=`<p class="note">Choose a fabric or finish material to map. Each fabric and finish type/material has independent scale, rotation and location values.</p><label>Fabric / finish<select id="mp-f">${P.mappingOptions.map(o=>`<option value="${esc(o.key)}"${o.key===f0.key?' selected':''}>${esc(o.label)}</option>`).join('')}</select></label>
  ${sl('sx','Scale X',.05,40,.05)}${sl('sy','Scale Y',.05,40,.05)}<label style="display:flex;gap:.5rem;align-items:center;text-transform:none;letter-spacing:0"><input type="checkbox" id="mp-link" checked style="width:auto"> Link X and Y scale</label>${sl('rot','Rotation (degrees)',-180,180,1)}${sl('ox','Location X',-2,2,.01)}${sl('oy','Location Y',-2,2,.01)}
- <p class="note" id="mp-st"></p><div class="acts"><button data-mp="lock">Lock values</button><button data-mp="reset">Reset</button></div>`;
+ <p class="note" id="mp-st"></p><div class="acts"><button data-mp="lock">Lock values</button><button id="mp-all" data-mp="all">Apply to all</button><button data-mp="reset">Reset</button></div>`;
  const fid=()=>q('mp-f').value,read=()=>Object.fromEntries(K.map(k=>[k,Number(q('mp-'+k).value)]));
- const load=()=>{const m=P.mapping(fid());K.forEach(k=>{q('mp-'+k).value=m[k];q('v-'+k).textContent=m[k]});q('mp-st').textContent=m.locked?'Locked. Customers see these values.':'Not locked yet. Lock to save these values for customers.'};
- el.addEventListener('change',e=>{if(e.target.id==='mp-f'){P.selectMapping(fid());load()}});
+ let dirty=false,activeKey=f0.key;
+ const selected=()=>P.mappingOptions.find(o=>o.key===activeKey);
+ const updateAllLabel=()=>{const item=selected();q('mp-all').textContent=`Apply to all ${item.ft.id==='fabric'?'fabrics':`${item.ft.name.toLowerCase()} finishes`}`};
+ savePendingMapping=()=>{if(dirty){Store.setMapping(P.piece.id,activeKey,{...read(),locked:true});dirty=false}};
+ const load=key=>{activeKey=key;const m=P.mapping(key);K.forEach(k=>{q('mp-'+k).value=m[k];q('v-'+k).textContent=m[k]});q('mp-st').textContent=m.locked?'Locked. Customers see these values.':'Not locked yet. Lock to save these values for customers.';updateAllLabel()};
+ el.addEventListener('change',e=>{if(e.target.id==='mp-f'){savePendingMapping();const key=fid();P.selectMapping(key);load(key)}});
  el.addEventListener('input',e=>{const t=e.target;if(!/^mp-(sx|sy|rot|ox|oy)$/.test(t.id))return;
   if(q('mp-link').checked&&(t.id==='mp-sx'||t.id==='mp-sy'))q('mp-sx').value=q('mp-sy').value=t.value;
-  K.forEach(k=>q('v-'+k).textContent=q('mp-'+k).value);P.previewMapping(fid(),read());q('mp-st').textContent='Previewing. Lock to save these values for customers.'});
- el.addEventListener('click',e=>{const a=e.target.dataset.mp;if(a==='lock'){Store.setMapping(P.piece.id,fid(),{...read(),locked:true});q('mp-st').textContent='Locked. Customers see these values.'}
-  if(a==='reset'){Store.delMapping(P.piece.id,fid());P.selectMapping(fid());load()}});
- load()}
+  dirty=true;K.forEach(k=>q('v-'+k).textContent=q('mp-'+k).value);P.previewMapping(activeKey,read());q('mp-st').textContent='Previewing. Apply changes or lock to save these values for customers.'});
+ el.addEventListener('click',e=>{const a=e.target.closest('[data-mp]')?.dataset.mp;if(a==='lock'){Store.setMapping(P.piece.id,activeKey,{...read(),locked:true});dirty=false;q('mp-st').textContent='Locked. Customers see these values.'}
+  if(a==='all'){const item=selected(),mapping={...read(),locked:true},matches=P.mappingOptions.filter(o=>o.ft.id===item.ft.id);matches.forEach(o=>Store.setMapping(P.piece.id,o.key,mapping));dirty=false;q('mp-st').textContent=`Applied these values to all ${matches.length} ${item.ft.name.toLowerCase()} options.`}
+  if(a==='reset'){Store.delMapping(P.piece.id,activeKey);dirty=false;P.selectMapping(activeKey);load(activeKey)}});
+ load(f0.key)}
 function openPanel(){
  sessionStorage.admOpen='1';
  let p=document.getElementById('adm');if(p){p.classList.add('open');return}
@@ -76,17 +174,18 @@ function openPanel(){
  const slots=[...document.querySelectorAll('[data-slot]')].filter(s=>!s.dataset.slot.startsWith('gallery'));
  p.innerHTML=`<div class="adm-top"><header><h3>Steward's Chamber</h3><button data-act="close" aria-label="Close admin panel">✕</button></header><input id="adm-search" type="search" placeholder="Search admin settings…" aria-label="Search admin settings"></div>
  <div id="adm-scroll">
- <p class="note">Everything here is saved in this browser only. For a live site that all visitors see, these edits need a server or CMS behind them.</p>
- ${document.getElementById('p-canvas')?'<h4>Fabric mapping (this piece)</h4><div id="map-body"></div>':''}<h4>Media on this page</h4><p class="note">Every slot accepts an image or a video (MP4 or WebM; keep videos under about 50 MB). Background slots play silently on a loop; other videos show play controls.</p>${slots.map(s=>row(s.dataset.label||s.dataset.slot,s.dataset.slot,'image/*,video/*')).join('')||'<p class="note">No media slots on this page.</p>'}
+ <p class="note">Admin edits and uploaded files are stored in this browser until you publish the changes to your site.</p>
+ ${document.getElementById('p-canvas')?'<h4>Mapping</h4><div id="map-body"></div>':''}<h4>Media on this page</h4><p class="note">Every slot accepts an image or a video (MP4 or WebM; keep videos under about 50 MB). Background slots play silently on a loop; other videos show play controls.</p>${slots.map(s=>row(s.dataset.label||s.dataset.slot,s.dataset.slot,'image/*,video/*')).join('')||'<p class="note">No media slots on this page.</p>'}
  ${pubHtml()}${siteHtml()}${shopHtml()}${studioHtml()}${fabHtml()}${addHtml()}${collHtml()}<h4>Pieces</h4><div class="acts"><button data-act="restoredef">Restore deleted default pieces</button></div>${PRODUCTS.map(x=>`<details><summary>${esc(x.name)}</summary>${fld(x.id,'name','Name',x.name)}<label>Category<select data-pid="${x.id}" data-k="cat">${CATS.map(c=>`<option${c===x.cat?' selected':''}>${c}</option>`).join('')}</select></label>${fld(x.id,'sub','Subcategory',x.sub)}${fld(x.id,'tag','Tagline',x.tag)}${fld(x.id,'price','Price (ZAR)',x.price,'number')}${fld(x.id,'desc','Description',x.desc,'area')}<div class="ar"><b>Fabrics for this piece</b>${FABRIC_LIST.map(f=>chk2(`data-pf="${x.id}"`,f.id,f.name,x.fabrics.some(z=>z[2]===f.id))).join('')}<small>To set how each fabric is scaled on this piece, open its page with this panel open.</small><a href="product.html?id=${encodeURIComponent(x.id)}" style="border-bottom:1px solid var(--line);justify-self:start">Open piece page</a></div>
- ${Store.finishTypes().map(ft=>`<div class="ar"><b>${esc(ft.name)} finishes for this piece</b>${FABRIC_LIST.map(f=>chk2(`data-pfin="${x.id}|${ft.id}|${f.id}"`,f.id,f.name,(x.finishTypes?.find(t=>t.id===ft.id)?.finishes||[]).some(z=>z[2]===f.id))).join('')}</div>`).join('')}
+ <div class="ar"><b>First configuration customers see</b>${defaultMaterial(x.id,'fabric',x.fabrics,x.defaults)}${x.finishTypes.filter(ft=>ft.id!=='fabric').map(ft=>defaultMaterial(x.id,ft.id,ft.finishes,x.defaults)).join('')}</div>
+ ${x.finishTypes.filter(ft=>ft.id!=='fabric').map(ft=>`<div class="ar"><b>${esc(ft.name)} finishes for this piece</b>${ft.finishes.map(f=>chk2(`data-pfin="${x.id}|${ft.id}|${f[2]}"`,f[2],f[0],true)).join('')}</div>`).join('')}
  ${row('3D model (.glb / .gltf)','model:'+x.id,'.glb,.gltf,model/gltf-binary')}${[1,2,3].map(n=>row('Gallery photo or video '+n,`gallery:${x.id}:${n}`,'image/*,video/*')).join('')}<div class="acts"><button data-delprod="${x.id}">Delete this piece</button></div></details>`).join('')}
  </div><div class="acts" id="adm-final"><button data-act="apply">Apply changes</button><button data-act="export">Export text</button><button data-act="import">Import text</button><button data-act="reset">Reset everything</button><button data-act="lock">Lock</button></div>`;
  document.body.append(p);requestAnimationFrame(()=>p.classList.add('open'));
  // Each group of controls lives in its own collapsible "burger" section
  const scroll=p.querySelector('#adm-scroll');
  [...scroll.querySelectorAll(':scope>h4')].forEach(h=>{const d=document.createElement('details');d.className='sec';const s=document.createElement('summary');s.textContent='☰ '+h.textContent;d.append(s);
-  let n=h.nextSibling;while(n&&!(n.nodeType===1&&n.tagName==='H4')){const nx=n.nextSibling;d.append(n);n=nx}if(h.textContent.startsWith('Fabric mapping'))d.open=true;h.replaceWith(d)});
+  let n=h.nextSibling;while(n&&!(n.nodeType===1&&n.tagName==='H4')){const nx=n.nextSibling;d.append(n);n=nx}if(h.textContent==='Mapping')d.open=true;h.replaceWith(d)});
  const noResults=document.createElement('p');noResults.className='note';noResults.id='adm-no-results';noResults.textContent='No matching settings.';noResults.hidden=true;scroll.append(noResults);
  p.querySelector('#adm-search').addEventListener('input',e=>{
   const query=e.target.value.trim().toLocaleLowerCase();let found=false;
@@ -107,17 +206,17 @@ function openPanel(){
  });
  if(window.__prod)fillMap();addEventListener('prod-ready',fillMap);
  p.addEventListener('change',async e=>{const t=e.target;
-  if(t.dataset.gh){ghSave(t.dataset.gh,t.value.trim());return}
   if(t.dataset.fe){const [id,k]=t.dataset.fe.split('|');Store.editFabric(id,k,t.value);return}
+  if(t.dataset.pdefault){const [pid,ftid]=t.dataset.pdefault.split('|');Store.setPieceDefault(pid,ftid,t.value);return}
   if(t.dataset.pf){Store.setPieceFabrics(t.dataset.pf,[...p.querySelectorAll('[data-pf]')].filter(i=>i.dataset.pf===t.dataset.pf&&i.checked).map(i=>i.value));return}
   if(t.dataset.pfin){const [pid,ftid]=t.dataset.pfin.split('|');Store.setPieceFinishes(pid,ftid,[...p.querySelectorAll(`[data-pfin^="${pid}|${ftid}|"]`)].filter(i=>i.checked).map(i=>i.value));return}
   if(t.dataset.stfab!==undefined){Store.setStudioFabrics([...p.querySelectorAll('[data-stfab]')].filter(i=>i.checked).map(i=>i.value));return}
   if(t.dataset.stfin){const [ftid]=t.dataset.stfin.split('|');Store.setStudioFinishes(ftid,[...p.querySelectorAll(`[data-stfin^="${ftid}|"]`)].filter(i=>i.checked).map(i=>i.value));return}
   if(t.dataset.site){Store.setSite(t.dataset.site,t.type==='checkbox'?t.checked:t.type==='number'?Number(t.value):t.value.trim());return}
   if(t.id==='np-file'&&t.files[0]){try{const [w,d,h]=await measureGLB(t.files[0]);['np-w','np-d','np-h'].forEach((i,k)=>document.getElementById(i).value=[w,d,h][k])}catch{alert('Could not read that model. You can still enter the size manually.')}return}
-  if(t.dataset.cn){const c=Store.colls().find(x=>x.id===t.dataset.cn);if(c){c.name=t.value.trim()||c.name;Store.save()}return}
-  if(t.dataset.cp){const [cid,pid,k]=t.dataset.cp.split('|'),pc=Store.colls().find(x=>x.id===cid)?.pieces.find(x=>x.id===pid);if(pc){pc[k]=k==='name'?t.value.trim():Math.max(0,Number(t.value)||0);Store.save()}return}
-  if(t.dataset.addpieces&&t.files.length){const c=Store.colls().find(x=>x.id===t.dataset.addpieces);t.disabled=true;
+  if(t.dataset.cn){const c=editableColls().find(x=>x.id===t.dataset.cn);if(c){c.name=t.value.trim()||c.name;Store.save()}return}
+  if(t.dataset.cp){const [cid,pid,k]=t.dataset.cp.split('|'),pc=editableColls().find(x=>x.id===cid)?.pieces.find(x=>x.id===pid);if(pc){pc[k]=k==='name'?t.value.trim():Math.max(0,Number(t.value)||0);Store.save()}return}
+  if(t.dataset.addpieces&&t.files.length){const c=editableColls().find(x=>x.id===t.dataset.addpieces);if(!c){alert('Could not find that collection.');return}t.disabled=true;
    for(const f of t.files){const [w,d,h]=await measureGLB(f).catch(()=>[100,100,80]),id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);await Store.put('piece:'+c.id+':'+id,f);c.pieces.push({id,name:f.name.replace(/\.(glb|gltf)$/i,'').replace(/[-_]+/g,' '),w,d,h,price:0})}
    Store.save();reload();return}
   if(t.dataset.sh){Store.setShop(t.dataset.sh,t.type==='checkbox'?t.checked:Math.max(0,Number(t.value)||0));return}
@@ -131,16 +230,13 @@ function openPanel(){
   if(b.dataset.del){await Store.del(b.dataset.del);return reload()}
   const cd=b.dataset;
   if(cd.delprod){if(confirm('Delete this piece from the shop?')){Store.deleteProduct(cd.delprod);await Store.del('model:'+cd.delprod);reload()}return}
-  if(cd.delpiece){const [cid,pid]=cd.delpiece.split('|'),c=Store.colls().find(x=>x.id===cid);if(c&&confirm('Remove this piece?')){c.pieces=c.pieces.filter(x=>x.id!==pid);Store.save();await Store.del('piece:'+cid+':'+pid);reload()}return}
-  if(cd.delcoll){const c=Store.colls().find(x=>x.id===cd.delcoll);if(c&&confirm('Delete this whole collection?')){for(const p of c.pieces)await Store.del('piece:'+c.id+':'+p.id);Store.cfg.collections=Store.colls().filter(x=>x.id!==c.id);Store.save();reload()}return}
+  if(cd.delpiece){const [cid,pid]=cd.delpiece.split('|'),c=editableColls().find(x=>x.id===cid);if(c&&confirm('Remove this piece?')){c.pieces=c.pieces.filter(x=>x.id!==pid);Store.save();await Store.del('piece:'+cid+':'+pid);reload()}return}
+  if(cd.delcoll){const collections=editableColls(),c=collections.find(x=>x.id===cd.delcoll);if(c&&confirm('Delete this whole collection?')){for(const piece of c.pieces)await Store.del('piece:'+c.id+':'+piece.id);Store.cfg.collections=collections.filter(x=>x.id!==c.id);Store.save();reload()}return}
   if(cd.delfintype){if(Store.finishTypes().length<=1){alert('Keep at least one finish type.');return}if(confirm('Delete this finish type?')){Store.deleteFinishType(cd.delfintype);reload()}return}
-  if(cd.delfab){if(FABRIC_LIST.length<=1){alert('Keep at least one fabric.');return}if(confirm('Delete this fabric?')){Store.deleteFabric(cd.delfab);await Store.del('fabric:'+cd.delfab);reload()}return}
+  if(cd.delfab){if(FABRIC_LIST.some(f=>f.id===cd.delfab)&&FABRIC_LIST.length<=1){alert('Keep at least one fabric.');return}if(confirm('Delete this fabric?')){Store.deleteFabric(cd.delfab);await Store.del('fabric:'+cd.delfab);reload()}return}
   const a=b.dataset.act;
   if(a==='close'){p.classList.remove('open');sessionStorage.admOpen='0'}
-  if(a==='apply')reload();
-  if(a==='ghtest'||a==='ghpub'||a==='ghdiscard'){const st=document.getElementById('gh-st'),log=m=>{st.textContent=m};
-   if(a==='ghdiscard'){if(confirm('Discard all local changes and show what is published in the repository?')){await Store.discardLocal();reload()}return}
-   b.disabled=true;try{log(a==='ghtest'?await ghTest():await publish(log))}catch(x){log('Error: '+x.message)}b.disabled=false;return}
+  if(a==='apply'){savePendingMapping();reload()}
   if(a==='restoredef'){delete Store.cfg.deleted;Store.save();reload()}
   if(a==='restorefab'){delete Store.cfg.deletedFabrics;Store.save();reload()}
   if(a==='resetmat'){if(confirm('Reset all materials and finish settings to default?')){Store.restoreDefaultMaterials();reload()}return}
@@ -153,11 +249,14 @@ function openPanel(){
   if(a==='addprod'){const g=id=>document.getElementById(id),f=g('np-file').files[0],name=g('np-name').value.trim();if(!name||!f){alert('Please enter a name and choose a GLB model.');return}
    const id='x-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,24)+'-'+Date.now().toString(36).slice(-4);await Store.put('model:'+id,f);
    Store.addProduct({id,name,cat:g('np-cat').value,sub:g('np-sub').value.trim()||g('np-cat').value,tag:g('np-tag').value.trim(),price:Number(g('np-price').value)||0,mat:g('np-mat').value.trim(),desc:g('np-desc').value.trim(),dims:['np-w','np-d','np-h'].map(i=>Number(g(i).value)||100)});Store.setPieceFabrics(id,[...document.querySelectorAll('[data-npf]')].filter(c=>c.checked).map(c=>c.value));reload()}
-  if(a==='addcoll'){const n=document.getElementById('nc-name').value.trim();if(!n){alert('Please name the collection.');return}Store.colls().push({id:'c'+Date.now().toString(36),name:n,pieces:[]});Store.save();reload()}
-  if(a==='expprod'){const imgE={};FABRIC_LIST.forEach(f=>{if(Store.media('fabric:'+f.id))imgE[f.id]={image:`swatches/fabrics/${f.id}.jpg`}});const out={fabrics:(Store.cfg.addedFabrics||[]).map(f=>({...f,...(imgE[f.id]||{})})),fabricEdits:Object.fromEntries(Object.keys({...Store.cfg.fabricEdits,...imgE}).map(k=>[k,{...(Store.cfg.fabricEdits?.[k]||{}),...(imgE[k]||{})}])),finishTypes:Store.finishTypes(),materialOrder:Store.cfg.materialOrder||[],pieceFinishes:Store.cfg.pieceFinishes||{},studioFabrics:Store.cfg.studioFabrics||null,studioFinishes:Store.cfg.studioFinishes||{},mapping:Store.cfg.mapping||{},pieceFabrics:Store.cfg.pieceFabrics||{},deleted:Store.cfg.deleted||[],deletedFabrics:Store.cfg.deletedFabrics||[],products:(Store.cfg.added||[]).map(p=>({...p,model:`models/${p.id}.glb`})),collections:Store.colls().map(c=>({...c,image:Store.media('collection:'+c.id)?`models/collections/${c.id}/preview.jpg`:(c.image||null),pieces:c.pieces.map(p=>({...p,model:`models/collections/${c.id}/${p.id}.glb`}))}))};
-   const dl=(blob,name)=>{const l=document.createElement('a');l.href=URL.createObjectURL(blob);l.download=name;l.click()};dl(new Blob([JSON.stringify(out,null,1)],{type:'application/json'}),'dekara-additions.json');
-   const fl=[...FABRIC_LIST.map(f=>['fabric:'+f.id,'fabric_'+f.id+'.jpg']),...(Store.cfg.added||[]).map(p=>['model:'+p.id,p.id+'.glb']),...Store.colls().flatMap(c=>c.pieces.map(p=>['piece:'+c.id+':'+p.id,'collection_'+c.id+'_'+p.id+'.glb'])),...Store.colls().filter(c=>Store.media('collection:'+c.id)).map(c=>['collection:'+c.id,'collection_'+c.id+'.jpg'])];
-   for(const [k,n] of fl){const m=Store.media(k);if(m){dl(await (await fetch(m.url)).blob(),n);await new Promise(r=>setTimeout(r,400))}}}
+  if(a==='addcoll'){const n=document.getElementById('nc-name').value.trim();if(!n){alert('Please name the collection.');return}editableColls().push({id:'c'+Date.now().toString(36),name:n,pieces:[]});Store.save();reload()}
+  if(a==='expprod'){e.preventDefault();e.stopPropagation();const status=document.getElementById('repo-pub-status'),progress=document.getElementById('repo-pub-progress');
+   if(typeof window.showDirectoryPicker!=='function'){await showRepoStatus('This browser cannot write to a selected folder. Use current Chrome or Edge, or export the changes another way.');return}
+   let folderPromise;try{folderPromise=window.showDirectoryPicker({mode:'readwrite'})}catch(error){await showRepoStatus(`Could not open the folder picker: ${error.message}`);console.error(error);return}
+   b.disabled=true;progress.hidden=true;sessionStorage.setItem('repo-pub-running','1');sessionStorage.removeItem('repo-pub-progress');status.textContent='Folder picker opened. Select the Studio project folder containing package.json.';sessionStorage.setItem('repo-pub-status',status.textContent);
+   try{const root=await folderPromise;savePendingMapping();await prepareRepoChanges(root)}
+   catch(error){const message=error.name==='AbortError'?'Folder selection cancelled. No files were written.':`Could not prepare repository changes: ${error.message}`;await showRepoStatus(message);sessionStorage.removeItem('repo-pub-running');console.error(error)}
+   finally{b.disabled=false}return}
   if(a==='orders'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([localStorage.getItem('dekara-orders')||'[]'],{type:'application/json'}));l.download='demo-orders.json';l.click()}
   if(a==='clearorders'&&confirm('Clear all demo orders?')){localStorage.removeItem('dekara-orders');reload()}
   if(a==='lock'){sessionStorage.clear();location.reload()}

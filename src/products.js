@@ -17,16 +17,19 @@ const materialOrder=C.materialOrder??D.materialOrder??[],materialPositions=new M
 export const MATERIAL_LIST=ml.map((f,i)=>({material:{...f,image:Store.url('fabric:'+f.id)||f.image||null},i}))
  .sort((a,b)=>(materialPositions.get(a.material.id)??Number.MAX_SAFE_INTEGER)-(materialPositions.get(b.material.id)??Number.MAX_SAFE_INTEGER)||a.i-b.i)
  .map(({material})=>material);
-export const FABRIC_LIST=MATERIAL_LIST;
+const isFabricType=type=>['fabric','leather','velvet','linen'].includes(String(type||'').toLowerCase());
+if(!MATERIAL_LIST.some(f=>isFabricType(f.type))){let id=BUILTIN_FABRICS[0].id;while(MATERIAL_LIST.some(f=>f.id===id))id+='-fallback';MATERIAL_LIST.push({...BUILTIN_FABRICS[0],id,image:null})}
+export const FABRIC_LIST=MATERIAL_LIST.filter(f=>isFabricType(f.type));
 export const MATERIALS=MATERIAL_LIST.map(f=>[f.name,f.hex,f.id,f.image,f.desc,f.type]);
-export const FABRICS=MATERIALS;
+export const FABRICS=MATERIALS.filter(f=>isFabricType(f[5]));
 
 // Finish types: e.g. [{ id: 'frame', name: 'Frame', target: 'frame' }, ...]
 export const FINISH_TYPES=(()=>{const l=Store.finishTypes();return (l&&l.length)?l:DEFAULT_FINISH_TYPES})();
 export const FINISHES=MATERIALS.filter(m=>m[5]==='Wood'||m[5]==='Metal');
 
 const pf={...(D.pieceFabrics||{}),...(C.pieceFabrics||{})};
-const fabricsFor=id=>{const a=pf[id],L=a?MATERIALS.filter(f=>a.includes(f[2])):MATERIALS.filter(f=>f[5]!=='Wood'&&f[5]!=='Metal');return L.length?L:MATERIALS};
+const pieceDefaults={...(D.pieceDefaults||{}),...(C.pieceDefaults||{})};
+const fabricsFor=id=>{const a=pf[id],L=a?FABRICS.filter(f=>a.includes(f[2])):FABRICS;return L.length?L:FABRICS};
 
 export const finishesFor=(pid,ftid)=>{
  if(ftid==='fabric')return fabricsFor(pid);
@@ -52,7 +55,7 @@ extra.forEach(p=>{if(p.model)D.models[p.id]=p.model});
 export const PRODUCTS=[...BASE,...extra].filter(p=>!gone.has(p.id)).map(p=>{
  const f=fabricsFor(p.id);
  const ft=FINISH_TYPES.map(t=>({...t,finishes:finishesFor(p.id,t.id)}));
- return {...p,...(C.products[p.id]||{}),fabrics:f,finishTypes:ft};
+ return {...p,...(C.products[p.id]||{}),fabrics:f,finishTypes:ft,defaults:pieceDefaults[p.id]||{}};
 });
 export const FEAT=(()=>{const L=FEATURED.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);return L.length?L:PRODUCTS.slice(0,4)})();
 export const build=(id,hex)=>buildKind(BASE.find(p=>p.id===id)?.kind||id,hex);

@@ -4,7 +4,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadGLTF } from './loader.js';
 import { applyFabric, DEFMAP } from './texture.js';
 import * as Store from './store.js';
-import { build, PRODUCTS } from './products.js';
+import { build, getMapping, PRODUCTS } from './products.js';
 export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
  const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
  r.setPixelRatio(Math.min(devicePixelRatio,2));r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.1;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -37,7 +37,7 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
  const setFrame=h=>{setFinish('frame',h)};
  const setGlow=v=>{glow=v;obj.userData.glows.forEach(m=>m.emissiveIntensity=v*3);rim.intensity=12*v*BK};
  function set(n){fab=null;orig=[];if(obj)sc.remove(obj);
-  const prod=PRODUCTS.find(p=>p.id===n);colour=prod?.fabrics?.[0]?.[1]||'#d4cabb';const u=Store.url('model:'+n)||Store.DATA.models?.[n];
+  const prod=PRODUCTS.find(p=>p.id===n),fabrics=prod?.fabrics||[],firstFabric=fabrics.find(f=>f[2]===prod?.defaults?.fabric)||fabrics[0];colour=firstFabric?.[1]||'#d4cabb';const u=Store.url('model:'+n)||Store.DATA.models?.[n];
   if(!u)obj=build(n,colour);else{obj=new THREE.Group();obj.userData={tints:[],glows:[],frames:[],finMap:{}};
    loadGLTF(u).then(gl=>{const s=gl.scene,b=new THREE.Box3().setFromObject(s),z=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3()),k=2.6/Math.max(z.x,z.y,z.z);
     s.scale.setScalar(k);s.position.set(-c.x*k,-b.min.y*k,-c.z*k);
@@ -52,10 +52,12 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
     })}});
     obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.userData.finMap=finMap;
     obj.add(s);snap();applyFinishes();applyFab();
-    if(prod?.fabrics?.[0])setFabric(prod.fabrics[0]);
+    if(firstFabric)setFabric(firstFabric,getMapping(n,firstFabric[2],'fabric'));
    }).catch(()=>obj.add(build(n,colour)))}
   sc.add(obj);grow=0;setGlow(glow);snap();applyFinishes();applyFab();
-  if(prod?.fabrics?.[0])setFabric(prod.fabrics[0]);
+  Object.keys(curFinishes).forEach(k=>delete curFinishes[k]);
+  prod?.finishTypes?.forEach(ft=>{const material=ft.finishes.find(m=>m[2]===prod.defaults?.[ft.id])||ft.finishes[0];if(material)setFinish(ft.target||ft.name,material,getMapping(n,material[2],ft.id))});
+  if(firstFabric)setFabric(firstFabric,getMapping(n,firstFabric[2],'fabric'));
  }
  set(id);
  const size=()=>{const p=canvas.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};

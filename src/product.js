@@ -11,10 +11,10 @@ $('p-tag').textContent=p.cat+' · '+p.tag;$('p-name').textContent=p.name;$('p-de
 $('p-spec').innerHTML=`<div><span>Construction</span>${esc(p.mat)}</div><div><span>Delivery</span>4–6 weeks</div>`;
 const v=viewer($('p-canvas'),p.id,{orbit:true});
 const opts=(p.fabrics&&p.fabrics.length)?p.fabrics:[['Oyster','#d4cabb','oyster',null,'']];
-let fabric=opts[0],cur,override=null;
+let fabric=opts.find(m=>m[2]===p.defaults?.fabric)||opts[0],cur,override=null;
 const ftypes=(p.finishTypes&&p.finishTypes.length)?p.finishTypes:[{id:'frame',name:'Frame',target:'frame',finishes:FINISHES},{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric',finishes:opts}];
 const curFinishes={};
-ftypes.forEach(ft=>{curFinishes[ft.id]=ft.finishes[0]||FINISHES[0]});
+ftypes.forEach(ft=>{curFinishes[ft.id]=ft.finishes.find(m=>m[2]===p.defaults?.[ft.id])||ft.finishes[0]||FINISHES[0]});
 const paint=()=>v.setFabric(fabric,override||getMapping(p.id,fabric[2],'fabric'));
 
 const selectFabric=id=>{const f=opts.find(z=>z[2]===id);if(!f)return;fabric=f;override=null;paint();update()};

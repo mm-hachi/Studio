@@ -59,7 +59,24 @@
     ]
    }
   ],
-  "added": [],
+  "added": [
+   {
+    "id": "x-molo-occasional-chair-bkmk",
+    "name": "Molo Occasional Chair",
+    "cat": "Chairs",
+    "sub": "Armchairs",
+    "tag": "Chairs · Armchair · Made to order",
+    "price": 6800,
+    "mat": "Timber frame with upholstered seat",
+    "desc": "Molo pairs a timber frame with a soft upholstered seat, a chair that shows its craftsmanship and still invites you to sit. Cream, pure white, beige or green.",
+    "dims": [
+     89,
+     100,
+     81
+    ],
+    "model": "models/x-molo-occasional-chair-bkmk.glb"
+   }
+  ],
   "pieceFabrics": {
    "x-a-sdfj--4p5x": [
     "oyster"
@@ -68,7 +85,11 @@
     "oyster"
    ],
    "sofa": [
-    "oyster"
+    "oyster",
+    "sage",
+    "charcoal",
+    "terracotta",
+    "navy"
    ],
    "chaise": [
     "oyster"
@@ -102,6 +123,28 @@
    ],
    "dresser": [
     "oyster"
+   ],
+   "x-molo-chair-9nfk": [
+    "oyster",
+    "sage",
+    "charcoal",
+    "terracotta",
+    "navy",
+    "mustard",
+    "blush",
+    "forest",
+    "f-lemo-grey-38z3"
+   ],
+   "x-molo-occasional-chair-bkmk": [
+    "oyster",
+    "sage",
+    "charcoal",
+    "terracotta",
+    "navy",
+    "mustard",
+    "blush",
+    "forest",
+    "f-lemo-grey-38z3"
    ]
   },
   "deleted": [
@@ -116,8 +159,293 @@
     "type": "Fabric",
     "hex": "#cccccc",
     "desc": ""
+   },
+   {
+    "id": "f-furnwood-qjlm",
+    "name": "Furnwood",
+    "type": "Wood",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-furnwood-qjlm.jpg"
    }
-  ]
+  ],
+  "mapping": {
+   "sofa": {
+    "finish:fabric:oyster": {
+     "sx": 7.4,
+     "sy": 7.4,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:terracotta": {
+     "sx": 2.9,
+     "sy": 2.9,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:charcoal": {
+     "sx": 0.05,
+     "sy": 0.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-molo-chair-9nfk": {
+    "finish:frame:walnut": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:oyster": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-lemo-grey-38z3": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:f-furnwood-qjlm": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:sage": {
+     "sx": 3.25,
+     "sy": 3.25,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:charcoal": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:terracotta": {
+     "sx": 23.35,
+     "sy": 23.35,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:navy": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:mustard": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:blush": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:forest": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:walnut": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:natural-oak": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:ebony": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:ash": {
+     "sx": 3.75,
+     "sy": 3.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:natural-oak": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:ebony": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:ash": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-molo-occasional-chair-bkmk": {
+    "finish:fabric:oyster": {
+     "sx": 2.05,
+     "sy": 2.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:natural-oak": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 90,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:ebony": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 90,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:sage": {
+     "sx": 2.65,
+     "sy": 2.65,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:charcoal": {
+     "sx": 4.45,
+     "sy": 4.45,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:terracotta": {
+     "sx": 17.05,
+     "sy": 17.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:navy": {
+     "sx": 3.15,
+     "sy": 3.15,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:mustard": {
+     "sx": 2.45,
+     "sy": 2.45,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:blush": {
+     "sx": 3.15,
+     "sy": 3.15,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:forest": {
+     "sx": 2.65,
+     "sy": 2.65,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-lemo-grey-38z3": {
+     "sx": 2.65,
+     "sy": 2.65,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   }
+  },
+  "pieceDefaults": {
+   "x-molo-chair-9nfk": {
+    "fabric": "f-lemo-grey-38z3",
+    "frame": "f-furnwood-qjlm"
+   }
+  },
+  "pieceFinishes": {
+   "x-molo-chair-9nfk": {
+    "frame": [
+     "f-furnwood-qjlm"
+    ]
+   }
+  }
  },
  "files": {
   "model:x-granite-dining-table-02dj": {
@@ -154,7 +482,80 @@
    "path": "models/collections/cmvbge0o1/pmvbgejyzdh1.glb",
    "type": "",
    "name": "seat_lm.glb"
+  },
+  "fabric:ash": {
+   "path": "swatches/fabrics/ash.avif",
+   "type": "image/avif",
+   "name": "ash.avif"
+  },
+  "fabric:blush": {
+   "path": "swatches/fabrics/blush.jpe",
+   "type": "image/jpeg",
+   "name": "images (3).jpe"
+  },
+  "fabric:charcoal": {
+   "path": "swatches/fabrics/charcoal.jpg",
+   "type": "image/jpeg",
+   "name": "6874 (1).jpg"
+  },
+  "fabric:ebony": {
+   "path": "swatches/fabrics/ebony.jpe",
+   "type": "image/jpeg",
+   "name": "ebony.jpe"
+  },
+  "fabric:f-furnwood-qjlm": {
+   "path": "swatches/fabrics/f-furnwood-qjlm.jpg",
+   "type": "image/jpeg",
+   "name": "istockphoto-1699183067-612x612.jpg"
+  },
+  "fabric:forest": {
+   "path": "swatches/fabrics/forest.avif",
+   "type": "image/avif",
+   "name": "linen-canvas-texture_1373-426.avif"
+  },
+  "fabric:mustard": {
+   "path": "swatches/fabrics/mustard.jpe",
+   "type": "image/jpeg",
+   "name": "images (2).jpe"
+  },
+  "fabric:natural-oak": {
+   "path": "swatches/fabrics/natural-oak.jpe",
+   "type": "image/jpeg",
+   "name": "natural-oak.jpe"
+  },
+  "fabric:navy": {
+   "path": "swatches/fabrics/navy.avif",
+   "type": "image/avif",
+   "name": "blue-texture_1122-942.avif"
+  },
+  "fabric:oyster": {
+   "path": "swatches/fabrics/oyster.avif",
+   "type": "image/avif",
+   "name": "fabric-texture_1053-594.avif"
+  },
+  "fabric:sage": {
+   "path": "swatches/fabrics/sage.jpe",
+   "type": "image/jpeg",
+   "name": "images (1).jpe"
+  },
+  "fabric:terracotta": {
+   "path": "swatches/fabrics/terracotta.jpg",
+   "type": "image/jpeg",
+   "name": "1255 (1).jpg"
+  },
+  "fabric:walnut": {
+   "path": "swatches/fabrics/walnut.avif",
+   "type": "image/avif",
+   "name": "walnut.avif"
+  },
+  "model:x-molo-occasional-chair-bkmk": {
+   "path": "models/x-molo-occasional-chair-bkmk.glb",
+   "type": "",
+   "name": "molooccassionalchairv2.glb"
   }
  },
- "version": 1792185216475
+ "version": 1792349309712,
+ "models": {
+  "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb"
+ }
 }

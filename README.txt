@@ -113,6 +113,9 @@ available in the floating action bar at the bottom. In Materials library,
 expand a material and use Move earlier / Move later to reorder finish and
 fabric swatches; the order is shared wherever those material choices appear.
 Click Apply changes to refresh the choices on the current page after reordering.
+Fabric selectors only include materials whose type is Fabric, Leather, Velvet
+or Linen. Wood, Stone, Metal and Other remain in the materials library for
+finish selectors and are not offered as upholstery fabrics.
 
 Admin sections:
 
@@ -121,7 +124,9 @@ Fabric mapping (on a product page)
   adjust scale X/Y, rotation and location, then choose Lock values to save.
   Each finish-type/material mapping is independent. Reset removes that
   material's custom mapping. The Fabric finish type is also the product page's
-  fabric selector; there is no second fabric swatch selector there.
+  fabric selector; there is no second fabric swatch selector there. The Apply
+  to all control has a dedicated label target so opening the mapping editor
+  does not trigger a null textContent error.
 
 Media on this page
   Upload images/videos to the visible slots on the current page. These uploads
@@ -154,19 +159,24 @@ Pieces
 
 Add a piece to the shop
   Supply product information, dimensions and a GLB/GLTF model. The uploaded
-  model and its product record are initially browser-local. Use Export
-  additions for repo, then copy the exported JSON and files into the repository
-  as described below.
+  model and its product record are initially browser-local. Use Prepare changes
+  for GitHub in Publish to repo to write the record and model into your project.
 
 Studio collections
   Create a collection, add multiple GLB/GLTF modules, adjust each module's
   name, price and dimensions, and upload a preview image. Collection additions
-  are browser-local until exported/published and their model files are copied
-  into the repository.
+  are browser-local until you use Prepare changes for GitHub to merge their
+  records and copy the model and preview files into the repository.
 
-Publish to GitHub
-  Publishes the current settings to data/site.json through the GitHub API.
-  "Apply changes" reloads the page; it does not publish.
+Publish to repo
+  Prepare changes for GitHub opens a folder picker. Select the project root
+  (the folder containing package.json). The admin merges its current settings
+  into data/site.json and copies browser-uploaded assets into the matching
+  repository paths. The status message shows folder selection, each file copy,
+  progress, completion, or a specific error. If you cancel the folder picker,
+  it confirms that no files were written. It does not run Git commands. Review
+  the changed files, then commit and push them from a terminal. Use a current
+  Chrome or Edge browser with folder access support.
 
 Export text / Import text
   Export or replace this browser's admin configuration as JSON. Keep a backup
@@ -185,22 +195,34 @@ There are three different places changes can live:
 1. Browser-local edits
    Admin text/settings are saved in localStorage. Uploaded images, videos,
    models and collection pieces are stored in IndexedDB. They are not visible
-   to other visitors or devices.
+   to other visitors or devices until staged in the project folder.
 
-2. Published site configuration
-   Publish changes writes settings and file-path references to data/site.json.
-   It does NOT upload the binary model, image or video files. The publish
-   status message lists paths that still need to be added to the repository.
-   The GitHub token is kept in this browser; use a fine-grained token limited
-   to this repository with Contents: Read and write permission.
+2. Prepare changes for GitHub
+   Choose the root of your local project folder. The admin preserves existing
+   top-level site data and merges its current browser settings into the
+   "config" object in data/site.json. It updates the "files" and "models"
+   references for uploaded assets and copies the files into the project.
+   Cancel folder selection to leave the project unchanged.
+   The workspace Live Server settings ignore data/site.json and the models,
+   swatches and media folders so Live Server does not reload the page while
+   this button is writing those files. If Live Server was already running
+   when these settings were added, restart it before preparing changes.
 
-3. Repository assets
-   Copy uploaded binary files into the paths recorded in data/site.json, commit
-   them along with the configuration, and push to the deployment branch.
-   Alternatively, use Export additions for repo for new products/collections:
-   it downloads a JSON file and the media/model files separately. Merge the
-   exported data into data/site.json; do not overwrite unrelated published
-   products/settings. Place the downloaded files at the paths in the export.
+3. Review and push
+   Check the staged changes in VS Code or with git status. The button writes
+   files to the chosen project folder but does not stage them in Git, commit,
+   or push. When the changes look right, commit and push from the terminal.
+   Uploaded file paths are chosen automatically for product models, collection
+   pieces/previews, fabric swatches, gallery media and other page slots.
+   Status is retained across a page reload. If the page reloads mid-run, the
+   admin warns that the operation was interrupted; check the worktree because
+   some files may already have been copied.
+   Run git status, then stage data/site.json and each desired asset path with
+   git add. For example:
+     git add data/site.json
+     git add models/your-model.glb
+     git commit -m "Publish admin updates"
+     git push origin main
 
 GitHub Pages deployment is configured by .github/workflows/deploy.yml. A push
 to main deploys the repository; the workflow can also be run manually from
@@ -241,7 +263,10 @@ plus a Lemo Modular collection under models/collections/.
 ADDING MATERIALS AND TEXTURE IMAGES
 -----------------------------------
 The admin Materials library creates materials with a stable material ID,
-display name, type, hex colour, description and optional image. Product fabric
+display name, type, hex colour, description and optional image. Fabric
+selectors include Fabric, Leather, Velvet and Linen types. Other types, such as
+Wood, Stone and Metal, remain available for finishes, but are excluded from
+fabric checklists for products and the Custom Studio. Product fabric
 availability is configured under each product. Studio fabrics and studio
 finishes are configured separately in the Custom Studio section.
 
@@ -363,7 +388,8 @@ Useful implementation map:
   src/products.js     Effective products, materials, finishes and mappings
   src/store.js        Browser persistence and published data loading
   src/admin.js        Steward admin UI and local configuration workflows
-  src/publish.js      GitHub API publishing of data/site.json
+  src/publish.js      Legacy GitHub API publishing helper; not exposed in the
+                      current admin panel
   src/product.js      Product page selectors and product interactions
   src/viewer.js       Three.js model viewing and finish application
   src/texture.js      Fabric textures and texture mapping values

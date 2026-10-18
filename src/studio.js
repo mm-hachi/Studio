@@ -25,11 +25,10 @@ const loadPiece=url=>{if(!cache.has(url))cache.set(url,loadGLTF(url).then(g=>g.s
 const stm=Store.studioMaterials();
 const ST_FABRICS=(()=>{
  if(stm.fabrics&&stm.fabrics.length){
-  const L=MATERIALS.filter(f=>stm.fabrics.includes(f[2]));
+  const L=FABRICS.filter(f=>stm.fabrics.includes(f[2]));
   if(L.length)return L;
  }
- const def=MATERIALS.filter(f=>f[5]!=='Wood'&&f[5]!=='Metal');
- return def.length?def:MATERIALS;
+ return FABRICS;
 })();
 const ST_FTYPES=Store.finishTypes();
 const studioFinishesFor=ftid=>{
