@@ -50,8 +50,7 @@ export const removeProduct=id=>{cfg.added=(cfg.added||[]).filter(p=>p.id!==id);s
 export const setMapping=(pid,fid,m)=>{((cfg.mapping??={})[pid]??={})[fid]=m;save()};
 export const delMapping=(pid,fid)=>{if(cfg.mapping?.[pid])delete cfg.mapping[pid][fid];save()};
 export const setPieceFabrics=(pid,list)=>{(cfg.pieceFabrics??={})[pid]=list;save()};
-export const setPieceFinishes=(pid,ftid,list)=>{(((cfg.pieceFinishes??={})[pid]??={})[ftid]=list);save()};
-export const pieceFinishes=(pid,ftid)=>cfg.pieceFinishes?.[pid]?.[ftid]??DATA.pieceFinishes?.[pid]?.[ftid]??null;
+export const setPieceFinishAvailability=(pid,ftid,available)=>{(((cfg.pieceFinishAvailability??={})[pid]??={})[ftid]=available);save()};
 export const setPieceDefault=(pid,ftid,materialId)=>{(((cfg.pieceDefaults??={})[pid]??={})[ftid]=materialId);save()};
 export const finishTypes=()=>{
  const types=cfg.finishTypes??DATA.finishTypes??[{id:'frame',name:'Frame',target:'frame'}];
@@ -65,7 +64,8 @@ export const setStudioFinishes=(ftid,list)=>{((cfg.studioFinishes??={})[ftid]=li
 export const setMaterialOrder=list=>{cfg.materialOrder=[...list];save()};
 export const addFabric=f=>{(cfg.addedFabrics??=[]).push(f);save()};
 export const editFabric=(id,k,v)=>{((cfg.fabricEdits??={})[id]??={})[k]=v;save()};
+export const setMaterialFinishTypes=(id,list)=>{(cfg.materialFinishTypes??={})[id]=[...list];save()};
 export const deleteFabric=id=>{const a=cfg.addedFabrics||[];if(a.some(f=>f.id===id))cfg.addedFabrics=a.filter(f=>f.id!==id);else(cfg.deletedFabrics??=[]).push(id);save()};
-export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.finishTypes;delete cfg.pieceFinishes;delete cfg.pieceDefaults;delete cfg.studioFabrics;delete cfg.studioFinishes;delete cfg.materialOrder;save()};
+export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.materialFinishTypes;delete cfg.finishTypes;delete cfg.pieceFinishes;delete cfg.pieceFinishAvailability;delete cfg.pieceDefaults;delete cfg.pieceOptions;delete cfg.studioFabrics;delete cfg.studioFinishes;delete cfg.materialOrder;save()};
 export const deleteProduct=id=>{if((cfg.added||[]).some(p=>p.id===id))cfg.added=cfg.added.filter(p=>p.id!==id);else(cfg.deleted??=[]).push(id);save()};
 export const discardLocal=async()=>{await clearFiles();try{localStorage.removeItem(KEY)}catch{}};

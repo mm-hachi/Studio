@@ -9,15 +9,19 @@ const gone=new Set([...(D.deleted||[]),...(C.deleted||[])]),goneF=new Set([...(D
 // Built-in materials: original fabrics + wood finish materials
 const BUILTIN_FINISH_MATS=BASE_FINISHES.map(([n,h])=>({id:slug(n),name:n,hex:h,type:'Wood',desc:`${n} wood finish.`}));
 const BUILTIN_FABRICS=FBASE.map(([n,h])=>({id:slug(n),name:n,hex:h,type:'Fabric',desc:FABRIC_DESC[n]||''}));
+const isFabricType=type=>['fabric','leather','velvet','linen'].includes(String(type||'').toLowerCase());
+const defaultFinishTypes=material=>isFabricType(material.type)?['fabric']:['Wood','Metal'].includes(material.type)?['frame']:[];
 
 // Materials library: built-in fabrics & frame materials + data/site.json + admin additions, minus deletions, with edits applied.
-const ml=[...BUILTIN_FABRICS,...BUILTIN_FINISH_MATS,...(D.fabrics||[]),...(D.materials||[]),...(C.addedFabrics||[])].filter(f=>!goneF.has(f.id)).map(f=>({type:f.type||'Fabric',desc:'',...f,...(D.fabricEdits?.[f.id]||{}),...(C.fabricEdits?.[f.id]||{})}));
+const ml=[...BUILTIN_FABRICS,...BUILTIN_FINISH_MATS,...(D.fabrics||[]),...(D.materials||[]),...(C.addedFabrics||[])].filter(f=>!goneF.has(f.id)).map(f=>{
+ const material={type:f.type||'Fabric',desc:'',...f,...(D.fabricEdits?.[f.id]||{}),...(C.fabricEdits?.[f.id]||{})};
+ return {...material,finishTypes:C.materialFinishTypes?.[f.id]??D.materialFinishTypes?.[f.id]??material.finishTypes??defaultFinishTypes(material)};
+});
 if(!ml.length)ml.push({id:'oyster',name:'Oyster',hex:'#d4cabb',type:'Fabric',desc:''});
 const materialOrder=C.materialOrder??D.materialOrder??[],materialPositions=new Map(materialOrder.map((id,i)=>[id,i]));
 export const MATERIAL_LIST=ml.map((f,i)=>({material:{...f,image:Store.url('fabric:'+f.id)||f.image||null},i}))
  .sort((a,b)=>(materialPositions.get(a.material.id)??Number.MAX_SAFE_INTEGER)-(materialPositions.get(b.material.id)??Number.MAX_SAFE_INTEGER)||a.i-b.i)
  .map(({material})=>material);
-const isFabricType=type=>['fabric','leather','velvet','linen'].includes(String(type||'').toLowerCase());
 if(!MATERIAL_LIST.some(f=>isFabricType(f.type))){let id=BUILTIN_FABRICS[0].id;while(MATERIAL_LIST.some(f=>f.id===id))id+='-fallback';MATERIAL_LIST.push({...BUILTIN_FABRICS[0],id,image:null})}
 export const FABRIC_LIST=MATERIAL_LIST.filter(f=>isFabricType(f.type));
 export const MATERIALS=MATERIAL_LIST.map(f=>[f.name,f.hex,f.id,f.image,f.desc,f.type]);
@@ -27,16 +31,37 @@ export const FABRICS=MATERIALS.filter(f=>isFabricType(f[5]));
 export const FINISH_TYPES=(()=>{const l=Store.finishTypes();return (l&&l.length)?l:DEFAULT_FINISH_TYPES})();
 export const FINISHES=MATERIALS.filter(m=>m[5]==='Wood'||m[5]==='Metal');
 
-const pf={...(D.pieceFabrics||{}),...(C.pieceFabrics||{})};
 const pieceDefaults={...(D.pieceDefaults||{}),...(C.pieceDefaults||{})};
-const fabricsFor=id=>{const a=pf[id],L=a?FABRICS.filter(f=>a.includes(f[2])):FABRICS;return L.length?L:FABRICS};
+const pieceFinishTypeAvailable=(pid,ftid)=>C.pieceFinishAvailability?.[pid]?.[ftid]??D.pieceFinishAvailability?.[pid]?.[ftid]??true;
+const finishDefault=(pid,ftid)=>{
+ const fallback=MATERIALS.find(f=>f[2]===pieceDefaults[pid]?.[ftid])||MATERIALS.find(m=>m[5]==='Wood'||m[5]==='Metal')||MATERIALS[0];
+ return fallback?[fallback]:[];
+};
+const fabricDefault=pid=>{
+ const fallback=FABRICS.find(f=>f[2]===pieceDefaults[pid]?.fabric)||FABRICS.find(f=>MATERIAL_LIST.find(item=>item.id===f[2])?.finishTypes?.includes('fabric'))||FABRICS[0];
+ return fallback?[fallback]:[];
+};
+const withFinishDefault=(list,pid,ftid)=>{
+ const fallback=finishDefault(pid,ftid)[0];
+ return fallback&&!list.some(m=>m[2]===fallback[2])?[fallback,...list]:list;
+};
+const withFabricDefault=(list,pid)=>{
+ const fallback=fabricDefault(pid)[0];
+ return fallback&&!list.some(m=>m[2]===fallback[2])?[fallback,...list]:list;
+};
+export const assignedFinishesFor=(pid,ftid)=>{
+ if(ftid==='fabric'){
+ const assigned=FABRICS.filter(f=>MATERIAL_LIST.find(item=>item.id===f[2])?.finishTypes?.includes('fabric'));
+ return withFabricDefault(assigned,pid);
+ }
+ const assigned=MATERIALS.filter(m=>MATERIAL_LIST.find(item=>item.id===m[2])?.finishTypes?.includes(ftid));
+ return withFinishDefault(assigned,pid,ftid);
+};
+const fabricsFor=id=>pieceFinishTypeAvailable(id,'fabric')?assignedFinishesFor(id,'fabric'):[];
 
 export const finishesFor=(pid,ftid)=>{
- if(ftid==='fabric')return fabricsFor(pid);
- const a=Store.pieceFinishes(pid,ftid);
- if(a&&a.length){const L=MATERIALS.filter(f=>a.includes(f[2]));if(L.length)return L}
- const def=MATERIALS.filter(m=>m[5]==='Wood'||m[5]==='Metal');
- return def.length?def:MATERIALS;
+ if(!pieceFinishTypeAvailable(pid,ftid))return [];
+ return assignedFinishesFor(pid,ftid);
 };
 
 // "Original" option removed from selectable list; kept only as fallback reference if needed
@@ -54,7 +79,7 @@ const extra=[...(D.products||[]).map(p=>({...p})),...(C.added||[]).map(p=>({...p
 extra.forEach(p=>{if(p.model)D.models[p.id]=p.model});
 export const PRODUCTS=[...BASE,...extra].filter(p=>!gone.has(p.id)).map(p=>{
  const f=fabricsFor(p.id);
- const ft=FINISH_TYPES.map(t=>({...t,finishes:finishesFor(p.id,t.id)}));
+ const ft=FINISH_TYPES.filter(t=>pieceFinishTypeAvailable(p.id,t.id)).map(t=>({...t,finishes:finishesFor(p.id,t.id)}));
  return {...p,...(C.products[p.id]||{}),fabrics:f,finishTypes:ft,defaults:pieceDefaults[p.id]||{}};
 });
 export const FEAT=(()=>{const L=FEATURED.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);return L.length?L:PRODUCTS.slice(0,4)})();

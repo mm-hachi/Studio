@@ -91,6 +91,38 @@
      26
     ],
     "model": "models/x-scarlet-custom-couch-svxv.glb"
+   },
+   {
+    "id": "x-asante-couch-c11i",
+    "name": "Asante Couch",
+    "cat": "Sofas",
+    "sub": "Sofas",
+    "tag": "",
+    "price": 14700,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     49,
+     37
+    ],
+    "model": "models/x-asante-couch-c11i.glb"
+   },
+   {
+    "id": "x-ina-chair-1ycj",
+    "name": "Ina Chair",
+    "cat": "Chairs",
+    "sub": "Chairs",
+    "tag": "",
+    "price": 5000,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     56,
+     70,
+     100
+    ],
+    "model": "models/x-ina-chair-1ycj.glb"
    }
   ],
   "pieceFabrics": {
@@ -454,8 +486,8 @@
      "locked": true
     },
     "finish:fabric:f-lemo-grey-38z3": {
-     "sx": 2.65,
-     "sy": 2.65,
+     "sx": 1.1,
+     "sy": 1.1,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -503,6 +535,24 @@
      "oy": 0,
      "locked": true
     }
+   },
+   "x-asante-couch-c11i": {
+    "finish:fabric:f-velvet-chocolate-n2op": {
+     "sx": 9.2,
+     "sy": 9.2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:pillows:sage": {
+     "sx": 0.05,
+     "sy": 0.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
    }
   },
   "pieceDefaults": {
@@ -516,6 +566,16 @@
    "x-molo-occasional-chair-bkmk": {
     "fabric": "f-lemo-grey-38z3",
     "frame": "f-furnwood-qjlm"
+   },
+   "x-asante-couch-c11i": {
+    "frame": "walnut",
+    "fabric": "f-velvet-chocolate-n2op",
+    "pillows": "f-velvet-chocolate-n2op"
+   },
+   "x-ina-chair-1ycj": {
+    "frame": "walnut",
+    "fabric": "oyster",
+    "pillows": "sage"
    }
   },
   "pieceFinishes": {
@@ -528,6 +588,49 @@
     "frame": [
      "ebony"
     ]
+   }
+  },
+  "finishTypes": [
+   {
+    "id": "frame",
+    "name": "Frame",
+    "target": "frame"
+   },
+   {
+    "id": "fabric",
+    "name": "Fabric",
+    "target": "fabric",
+    "materialType": "Fabric"
+   },
+   {
+    "id": "pillows",
+    "name": "Pillows",
+    "target": "pillows"
+   }
+  ],
+  "materialFinishTypes": {
+   "f-velvet-chocolate-n2op": [
+    "fabric",
+    "pillows"
+   ],
+   "sage": [
+    "fabric",
+    "pillows"
+   ]
+  },
+  "pieceFinishAvailability": {
+   "dchair": {
+    "pillows": false
+   },
+   "x-asante-couch-c11i": {
+    "frame": false,
+    "fabric": true,
+    "pillows": true
+   },
+   "x-ina-chair-1ycj": {
+    "frame": true,
+    "fabric": true,
+    "pillows": false
    }
   }
  },
@@ -646,11 +749,23 @@
    "path": "models/x-scarlet-custom-couch-svxv.glb",
    "type": "",
    "name": "brown-two-seater-chaise.glb"
+  },
+  "model:x-asante-couch-c11i": {
+   "path": "models/x-asante-couch-c11i.glb",
+   "type": "",
+   "name": "asante1.glb"
+  },
+  "model:x-ina-chair-1ycj": {
+   "path": "models/x-ina-chair-1ycj.glb",
+   "type": "",
+   "name": "ina-chair.glb"
   }
  },
- "version": 1792359507402,
+ "version": 1792449488153,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
-  "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb"
+  "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",
+  "x-asante-couch-c11i": "models/x-asante-couch-c11i.glb",
+  "x-ina-chair-1ycj": "models/x-ina-chair-1ycj.glb"
  }
 }

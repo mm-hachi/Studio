@@ -74,7 +74,9 @@ function buildCustom(type,hex){
   o.traverse(x=>{if(x.isMesh){x.castShadow=x.receiveShadow=true;x.material=Array.isArray(x.material)?x.material.map(a=>a.clone()):x.material.clone()}});
   const wrap=new THREE.Group();wrap.add(o);let b=new THREE.Box3().setFromObject(wrap);const z=b.getSize(new THREE.Vector3());
   wrap.scale.set(m.w/Math.max(z.x,.001),m.h/Math.max(z.y,.001),m.d/Math.max(z.z,.001));wrap.updateMatrixWorld(true);
-  b=new THREE.Box3().setFromObject(wrap);const c=b.getCenter(new THREE.Vector3());wrap.position.set(-c.x,-b.min.y,-c.z);g.add(wrap);
+  b=new THREE.Box3().setFromObject(wrap);const c=b.getCenter(new THREE.Vector3());
+  const cornerLift=type==='cmvbge0o1:pmvbgejx7ypc'?.03:0;
+  wrap.position.set(-c.x,-b.min.y+cornerLift,-c.z);g.add(wrap);
   const nm=[],al=[],finMap={},targets=new Set(ST_FTYPES.map(t=>(t.target||t.name||'').toLowerCase().trim()));targets.add('frame');
   wrap.traverse(x=>{if(x.isMesh)[].concat(x.material).forEach(mm=>{
    const mn=(mm.name||'').toLowerCase().trim();let matched=false;

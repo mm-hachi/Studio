@@ -1,4 +1,4 @@
-import { PRODUCTS, FINISHES, getMapping, mappingId, ORIGINAL } from './products.js';
+import { PRODUCTS, FINISH_TYPES, assignedFinishesFor, FINISHES, getMapping, mappingId, ORIGINAL } from './products.js';
 import { viewer } from './viewer.js';
 import * as Basket from './basket.js';
 import { fit, openAR } from './ar.js';
@@ -12,7 +12,7 @@ $('p-spec').innerHTML=`<div><span>Construction</span>${esc(p.mat)}</div><div><sp
 const v=viewer($('p-canvas'),p.id,{orbit:true});
 const opts=(p.fabrics&&p.fabrics.length)?p.fabrics:[['Oyster','#d4cabb','oyster',null,'']];
 let fabric=opts.find(m=>m[2]===p.defaults?.fabric)||opts[0],cur,override=null;
-const ftypes=(p.finishTypes&&p.finishTypes.length)?p.finishTypes:[{id:'frame',name:'Frame',target:'frame',finishes:FINISHES},{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric',finishes:opts}];
+const ftypes=p.finishTypes||[{id:'frame',name:'Frame',target:'frame',finishes:FINISHES},{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric',finishes:opts}];
 const curFinishes={};
 ftypes.forEach(ft=>{curFinishes[ft.id]=ft.finishes.find(m=>m[2]===p.defaults?.[ft.id])||ft.finishes[0]||FINISHES[0]});
 const paint=()=>v.setFabric(fabric,override||getMapping(p.id,fabric[2],'fabric'));
@@ -45,18 +45,22 @@ $('p-gallery').innerHTML=[1,2,3].map(n=>`<div data-slot="gallery:${p.id}:${n}" d
 $('p-wish').dataset.wish=p.id;$('p-cmp').dataset.cmp=p.id;
 $('p-ar').onclick=()=>{const o=fit(v.getModel().object,cur.d);openAR(o,p.name,'dekara-'+p.id)};
 initReviews(p.id);
-const mappingOptions=[
- ...ftypes.flatMap(ft=>(ft.finishes||[]).map(material=>({key:mappingId(material[2],ft.id),label:`${ft.name}: ${material[0]}`,kind:'finish',material,ft})))
-];
+const mappingOptions=FINISH_TYPES.flatMap(ft=>assignedFinishesFor(p.id,ft.id).map(material=>({
+ key:mappingId(material[2],ft.id),label:`${ft.name}: ${material[0]}`,kind:'finish',material,ft
+})));
 // Hooks for the admin panel's per-material mapping preview.
 window.__prod={piece:p,fabrics:p.fabrics,current:()=>fabric||p.fabrics[0],mappingOptions,
  mapping:key=>{const item=mappingOptions.find(x=>x.key===key);return item?getMapping(p.id,item.material[2],item.ft?.id):getMapping(p.id,key)},
  selectMapping:key=>{const item=mappingOptions.find(x=>x.key===key);if(!item)return;
-  item.ft.select(item.material)},
+  if(item.ft.select)item.ft.select(item.material);
+  else if(item.ft.id==='fabric'){fabric=item.material;override=null;v.setFabric(item.material,getMapping(p.id,item.material[2],'fabric'))}
+  else v.setFinish(item.ft.target||item.ft.name,item.material,getMapping(p.id,item.material[2],item.ft.id));
+  update()},
  previewMapping:(key,m)=>{const item=mappingOptions.find(x=>x.key===key);if(!item)return;
-  item.ft.select(item.material);
-  if(item.ft.id==='fabric'){override=m;v.setFabric(item.material,m)}
-  v.setFinish(item.ft.target||item.ft.name,item.material,m);update()
+  if(item.ft.select)item.ft.select(item.material);
+  if(item.ft.id==='fabric'){fabric=item.material;override=m;v.setFabric(item.material,m)}
+  else v.setFinish(item.ft.target||item.ft.name,item.material,m);
+  update()
  }};
 dispatchEvent(new Event('prod-ready'));
 }
