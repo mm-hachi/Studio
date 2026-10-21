@@ -65,9 +65,13 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
  const size=()=>{const p=canvas.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
  const ro=new ResizeObserver(size);ro.observe(canvas.parentElement);
  const stage=canvas.parentElement,full=document.createElement('button');full.type='button';full.className='viewport-fullscreen';full.setAttribute('aria-label','Maximize 3D viewport');full.title='Maximize 3D viewport';full.textContent='⛶';stage.append(full);
- const toggleFull=async()=>{try{if(document.fullscreenElement===stage)await document.exitFullscreen();else await stage.requestFullscreen()}catch(e){console.error('Could not change 3D viewport fullscreen state.',e)}};
+ const toggleFull=async()=>{
+  if(stage.classList.contains('viewport-fullscreen-fallback')){stage.classList.remove('viewport-fullscreen-fallback');size();return}
+  try{if(document.fullscreenElement===stage)await document.exitFullscreen();else if(stage.requestFullscreen)await stage.requestFullscreen();else{stage.classList.add('viewport-fullscreen-fallback');size()}}
+  catch(e){console.error('Could not change 3D viewport fullscreen state.',e);stage.classList.add('viewport-fullscreen-fallback');size()}
+ };
  full.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFull()});
- const fullChange=()=>{const active=document.fullscreenElement===stage;full.setAttribute('aria-label',active?'Exit fullscreen 3D viewport':'Maximize 3D viewport');full.title=active?'Exit fullscreen':'Maximize 3D viewport';size()};
+ const fullChange=()=>{const active=document.fullscreenElement===stage||stage.classList.contains('viewport-fullscreen-fallback');full.setAttribute('aria-label',active?'Exit fullscreen 3D viewport':'Maximize 3D viewport');full.title=active?'Exit fullscreen':'Maximize 3D viewport';size()};
  document.addEventListener('fullscreenchange',fullChange);
  let vis=true;const vio=new IntersectionObserver(e=>vis=e[0].isIntersecting);vio.observe(canvas);
  const m={x:0,y:0};const mv=e=>{m.x=e.clientX/innerWidth-.5;m.y=e.clientY/innerHeight-.5};addEventListener('pointermove',mv);

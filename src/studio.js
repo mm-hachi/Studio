@@ -332,8 +332,13 @@ const pv=(()=>{const cv=$('st-preview'),pr=new THREE.WebGLRenderer({canvas:cv,an
  $('st-prev-hint').textContent=`Live preview${view.pan?' · drag to pan':''} · scroll to zoom`;
  const sz=()=>{const p=cv.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;pr.setSize(w,h,false);pc.aspect=w/h;pc.updateProjectionMatrix()};new ResizeObserver(sz).observe(cv.parentElement);
  const stage=cv.parentElement,full=document.createElement('button');full.type='button';full.className='viewport-fullscreen';full.setAttribute('aria-label','Maximize live preview');full.title='Maximize live preview';full.textContent='⛶';stage.append(full);
- full.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();(document.fullscreenElement===stage?document.exitFullscreen():stage.requestFullscreen()).catch(error=>console.error('Could not change live preview fullscreen state.',error))});
- const fullChange=()=>{const active=document.fullscreenElement===stage;full.setAttribute('aria-label',active?'Exit fullscreen live preview':'Maximize live preview');full.title=active?'Exit fullscreen':'Maximize live preview';sz()};
+ const toggleFull=async()=>{
+  if(stage.classList.contains('viewport-fullscreen-fallback')){stage.classList.remove('viewport-fullscreen-fallback');sz();return}
+  try{if(document.fullscreenElement===stage)await document.exitFullscreen();else if(stage.requestFullscreen)await stage.requestFullscreen();else{stage.classList.add('viewport-fullscreen-fallback');sz()}}
+  catch(error){console.error('Could not change live preview fullscreen state.',error);stage.classList.add('viewport-fullscreen-fallback');sz()}
+ };
+ full.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFull()});
+ const fullChange=()=>{const active=document.fullscreenElement===stage||stage.classList.contains('viewport-fullscreen-fallback');full.setAttribute('aria-label',active?'Exit fullscreen live preview':'Maximize live preview');full.title=active?'Exit fullscreen':'Maximize live preview';sz()};
  document.addEventListener('fullscreenchange',fullChange);
  let vis=true;new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(cv);
  return {update(){grp.clear();$('st-pv-empty').style.display=items.length?'none':'grid';if(!items.length)return;
