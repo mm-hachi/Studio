@@ -9,24 +9,43 @@ const productsEl=$('room-products'),itemsEl=$('room-items'),startButton=$('room-
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const templates=new Map(),placed=[];
 let xr,scene,camera,modules=[],pending=null,movingId=null,selectedId=null,active=false,serial=0,enginePromise=null,engineReady=false,selectionToken=0;
+const canvasHome=canvas.parentElement,canvasNext=canvas.nextSibling,canvasStyle=canvas.getAttribute('style'),canvasWidth=canvas.width,canvasHeight=canvas.height;
 const enabled=()=>Store.siteCfg().roomBuilderEnabled!==false;
 const setStatus=text=>{status.textContent=text};
 window.THREE=THREE;
 
-function loadEngine(){
- if(window.XR8)return Promise.resolve(window.XR8);
- if(enginePromise)return enginePromise;
- enginePromise=new Promise((resolve,reject)=>{
-  const script=document.createElement('script');
-  const cleanup=()=>{window.removeEventListener('xrloaded',ready);script.removeEventListener('error',failed)};
-  const ready=()=>{cleanup();if(window.XR8)resolve(window.XR8);else{enginePromise=null;reject(new Error('The 8th Wall engine loaded without initializing.'))}};
-  const failed=()=>{cleanup();enginePromise=null;reject(new Error('Could not load the AR engine. Check your internet connection and try again.'))};
-  window.addEventListener('xrloaded',ready,{once:true});
+function loadScript(src,readyEvent){
+ return new Promise((resolve,reject)=>{
+  const existing=document.querySelector(`script[src="${src}"]`);
+  if(readyEvent&&window.XR8)return resolve(window.XR8);
+  if(!readyEvent&&window.XRExtras)return resolve(window.XRExtras);
+  const script=existing||document.createElement('script');
+  let readyTimeout;
+  const cleanup=()=>{if(readyEvent)window.removeEventListener(readyEvent,loaded);script.removeEventListener('load',loaded);script.removeEventListener('error',failed);clearTimeout(readyTimeout)};
+  const loaded=()=>{
+   if(readyEvent&&!window.XR8)return;
+   if(!readyEvent&&!window.XRExtras)return;
+   cleanup();resolve(readyEvent?window.XR8:window.XRExtras);
+  };
+  const failed=()=>{cleanup();reject(new Error(`Could not load ${readyEvent?'the AR engine':'the AR canvas helper'}. Check your internet connection and try again.`))};
+  if(readyEvent)window.addEventListener(readyEvent,loaded);
+  script.addEventListener('load',loaded,{once:true});
   script.addEventListener('error',failed,{once:true});
-  script.async=true;script.crossOrigin='anonymous';script.dataset.preloadChunks='slam';
-  script.src='https://cdn.jsdelivr.net/npm/@8thwall/engine-binary@1.0.0/dist/xr.js';
-  document.head.append(script);
+  if(!existing){
+   script.async=true;script.crossOrigin='anonymous';
+   if(readyEvent)script.dataset.preloadChunks='slam';
+   script.src=src;document.head.append(script);
+  }
+  readyTimeout=setTimeout(()=>{cleanup();reject(new Error(`Timed out loading ${readyEvent?'the AR engine':'the AR canvas helper'}.`))},30000);
  });
+}
+
+function loadEngine(){
+ if(enginePromise)return enginePromise;
+ enginePromise=Promise.all([
+  loadScript('https://cdn.jsdelivr.net/npm/@8thwall/engine-binary@1.0.0/dist/xr.js','xrloaded'),
+  loadScript('https://cdn.jsdelivr.net/npm/@8thwall/xrextras@1.0.0/dist/xrextras.js')
+ ]).then(([engine])=>engine).catch(error=>{enginePromise=null;throw error});
  return enginePromise;
 }
 
@@ -160,7 +179,7 @@ async function start(){
   if(!enabled())return;
   if(!xr.XrController||!xr.Threejs||!xr.GlTextureRenderer)throw new Error('This browser does not support the AR engine.');
   window.THREE=THREE;
-  const xrc=xr.XrController.pipelineModule(),gl=xr.GlTextureRenderer.pipelineModule(),three=xr.Threejs.pipelineModule();
+  const xrc=xr.XrController.pipelineModule(),gl=xr.GlTextureRenderer.pipelineModule(),fullWindow=window.XRExtras.FullWindowCanvas.pipelineModule(),three=xr.Threejs.pipelineModule();
   const roomModule={name:'dekara-room-placement',onStart:()=>{
    ({scene,camera}=xr.Threejs.xrScene());
    scene.add(new THREE.HemisphereLight(0xffffff,0x80756a,2));
@@ -172,15 +191,17 @@ async function start(){
    console.error('The room AR engine reported an error.',error);
    setStatus(error?.message||'The AR session encountered an error. Stop and try again.');
   }};
-  modules=[xrc,gl,three,roomModule];
+  modules=[xrc,gl,fullWindow,three,roomModule];
   xr.addCameraPipelineModules(modules);
   xr.XrController.configure({enableLighting:true});
-  xr.run({canvas,cameraConfig:{direction:xr.XrConfig.camera().BACK},allowedDevices:xr.XrConfig.device().MOBILE});
   active=true;document.body.classList.add('room-ar-active');
+  xr.run({canvas,cameraConfig:{direction:xr.XrConfig.camera().BACK},allowedDevices:xr.XrConfig.device().MOBILE});
   startButton.hidden=true;stopButton.hidden=false;renderItems();
  }catch(error){
   console.error('Could not start the room AR experience.',error);
   if(xr&&modules.length){try{xr.stop();modules.forEach(module=>xr.removeCameraPipelineModule(module.name))}catch(stopError){console.error('Could not clean up the failed AR startup.',stopError)}}
+  restoreCameraCanvas();
+  active=false;document.body.classList.remove('room-ar-active');
   modules=[];scene=null;camera=null;
   setStatus(error.message||'Could not start the camera. Check browser support and camera permission.');
   startButton.disabled=false;
@@ -194,10 +215,17 @@ function stop(){
  }
  active=false;scene=null;camera=null;modules=[];
  document.body.classList.remove('room-ar-active');
+ restoreCameraCanvas();
  startButton.disabled=false;stopButton.hidden=true;startButton.hidden=!enabled();
  selectionToken++;placed.length=0;pending=null;movingId=null;selectedId=null;
  renderItems();
  if(enabled())setStatus('Camera stopped. Your room arrangement has been cleared.');
+}
+
+function restoreCameraCanvas(){
+ if(canvas.parentElement!==canvasHome)canvasHome.insertBefore(canvas,canvasNext?.parentElement===canvasHome?canvasNext:null);
+ if(canvasStyle===null)canvas.removeAttribute('style');else canvas.setAttribute('style',canvasStyle);
+ canvas.width=canvasWidth;canvas.height=canvasHeight;
 }
 
 function runAction(action){

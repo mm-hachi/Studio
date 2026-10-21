@@ -137,7 +137,7 @@ Add references to them under `"documents"` in `data/site.json`.
 
 - The **Build your room** links on Shop and Custom Studio are controlled by the **Room builder** checkbox in the admin panel.
 - The room builder requests camera access only after the visitor starts it, and requires HTTPS plus a compatible mobile browser/device.
-- It loads the 8th Wall Engine Binary on the room-builder page from jsDelivr. No API key or hosted 8th Wall account is required. The binary includes world tracking under its separate license; see the visible attribution and license link in the experience.
+- It loads the 8th Wall Engine Binary and XR Extras from jsDelivr on the room-builder page. XR Extras keeps the camera canvas sized to the full viewport. No API key or hosted 8th Wall account is required. The binary includes world tracking under its separate license; see the visible attribution and license link in the experience.
 - Furniture placement is session-only; stopping the camera clears the current arrangement.
 
 ---
