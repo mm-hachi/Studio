@@ -25,7 +25,7 @@ export const put=(slot,f)=>{if(cfg._removed?.includes(slot)){cfg._removed=cfg._r
 export const del=async slot=>{try{await tx('readwrite',s=>s.delete(slot))}catch{}if(DATA.files?.[slot]){const r=(cfg._removed??=[]);if(!r.includes(slot))r.push(slot);save()}};
 export const clearFiles=()=>tx('readwrite',s=>s.clear());
 export const save=()=>localStorage.setItem(KEY,JSON.stringify(cfg));
-export const setProduct=(id,k,v)=>{(cfg.products[id]??={})[k]=k==='price'?(Number(v)||0):v;save()};
+export const setProduct=(id,k,v)=>{(cfg.products[id]??={})[k]=k==='price'?(Number(v)||0):k==='dims'?v.map(n=>Math.max(1,Math.round(Number(n)||1))):v;save()};
 export const replaceCfg=o=>{Object.keys(cfg).forEach(k=>delete cfg[k]);Object.assign(cfg,o);cfg.products??={};save()};
 // Custom Studio limits (editable in the admin panel)
 export const STUDIO_DEF={maxPieces:12,maxWidth:500,maxDepth:400,snap:true,
@@ -41,6 +41,12 @@ export const setShop=(k,v)=>{(cfg.shop??={})[k]=v;save()};
 // Business details shown in the footer, contact page and WhatsApp button (editable in the admin panel)
 export const siteCfg=()=>cfg.site||{};
 export const setSite=(k,v)=>{(cfg.site??={})[k]=v;save()};
+export const viewportCfg=()=>{
+ const c=siteCfg(),minZoom=Number(c.viewportMinZoom),maxZoom=Number(c.viewportMaxZoom);
+ let min=Number.isFinite(minZoom)&&minZoom>0?minZoom:4,max=Number.isFinite(maxZoom)&&maxZoom>0?maxZoom:12;
+ if(max<=min){min=4;max=12}
+ return {pan:c.viewportPan===true,minZoom:min,maxZoom:max};
+};
 // Pieces added in the admin panel and Custom Studio collections (browser-only; export them for the repo)
 // Pieces added in the admin panel and Custom Studio collections (browser-only; export them for the repo)
 export const colls=()=>(cfg.collections??DATA.collections??[]).map(c=>({...c,image:url('collection:'+c.id)||c.image||null}));

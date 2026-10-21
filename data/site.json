@@ -9,6 +9,70 @@
    },
    "x-brassconsole-spry": {
     "sub": "Consoles"
+   },
+   "x-scarlet-custom-couch-svxv": {
+    "dims": [
+     220,
+     93,
+     85
+    ],
+    "dimsLocked": true
+   },
+   "x-asante-couch-c11i": {
+    "dims": [
+     220,
+     93,
+     83
+    ],
+    "dimsLocked": true
+   },
+   "x-boucle-chanel-couch-d71j": {
+    "dims": [
+     220,
+     93,
+     83
+    ],
+    "dimsLocked": true
+   },
+   "x-cloud-l-shape-kic4": {
+    "dims": [
+     220,
+     93,
+     83
+    ],
+    "dimsLocked": true
+   },
+   "x-macre-nopy": {
+    "dims": [
+     220,
+     93,
+     83
+    ],
+    "dimsLocked": true
+   },
+   "x-vonia-3-seater-0n8h": {
+    "dims": [
+     220,
+     98,
+     83
+    ],
+    "dimsLocked": true
+   },
+   "x-tuft-supreme-oeqb": {
+    "dims": [
+     220,
+     90,
+     80
+    ],
+    "dimsLocked": true
+   },
+   "x-classic-dining-r8ev": {
+    "dims": [
+     220,
+     90,
+     60
+    ],
+    "dimsLocked": true
    }
   },
   "collections": [
@@ -384,6 +448,46 @@
     "hex": "#cccccc",
     "desc": "",
     "image": "swatches/fabrics/f-velvet-chocolate-n2op.jpg"
+   },
+   {
+    "id": "f-boucle-mustard-2nrd",
+    "name": "Boucle Mustard",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-boucle-mustard-2nrd.jpe"
+   },
+   {
+    "id": "f-light-brown-suede-3jb6",
+    "name": "Light Brown Suede",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-light-brown-suede-3jb6.jpe"
+   },
+   {
+    "id": "f-navy-suede-41x9",
+    "name": "Navy Suede",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-navy-suede-41x9.jpe"
+   },
+   {
+    "id": "f-orange-suede-4opl",
+    "name": "Orange Suede",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-orange-suede-4opl.jpe"
+   },
+   {
+    "id": "f-purple-suede-56n5",
+    "name": "Purple Suede",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-purple-suede-56n5.jpe"
    }
   ],
   "mapping": {
@@ -663,12 +767,28 @@
      "ox": 0,
      "oy": 0,
      "locked": true
+    },
+    "finish:pillows:f-purple-suede-56n5": {
+     "sx": 1.25,
+     "sy": 1.25,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-purple-suede-56n5": {
+     "sx": 4.7,
+     "sy": 4.7,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
     }
    },
    "x-scarlet-custom-couch-svxv": {
     "finish:fabric:f-velvet-chocolate-n2op": {
-     "sx": 6.85,
-     "sy": 6.85,
+     "sx": 25.75,
+     "sy": 25.75,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -1014,6 +1134,26 @@
    "f-lemo-grey-38z3": [
     "fabric",
     "pillows"
+   ],
+   "f-boucle-mustard-2nrd": [
+    "fabric",
+    "pillows"
+   ],
+   "f-light-brown-suede-3jb6": [
+    "fabric",
+    "pillows"
+   ],
+   "f-navy-suede-41x9": [
+    "fabric",
+    "pillows"
+   ],
+   "f-orange-suede-4opl": [
+    "fabric",
+    "pillows"
+   ],
+   "f-purple-suede-56n5": [
+    "fabric",
+    "pillows"
    ]
   },
   "pieceFinishAvailability": {
@@ -1078,6 +1218,10 @@
     "fabric": true,
     "pillows": false
    }
+  },
+  "site": {
+   "viewportPan": true,
+   "viewportMinZoom": 3
   }
  },
  "files": {
@@ -1250,9 +1394,34 @@
    "path": "models/x-vonia-3-seater-0n8h.glb",
    "type": "",
    "name": "vonia-couch.glb"
+  },
+  "fabric:f-boucle-mustard-2nrd": {
+   "path": "swatches/fabrics/f-boucle-mustard-2nrd.jpe",
+   "type": "image/jpeg",
+   "name": "boucle-mustard.jpe"
+  },
+  "fabric:f-light-brown-suede-3jb6": {
+   "path": "swatches/fabrics/f-light-brown-suede-3jb6.jpe",
+   "type": "image/jpeg",
+   "name": "light-brown-suede.jpe"
+  },
+  "fabric:f-navy-suede-41x9": {
+   "path": "swatches/fabrics/f-navy-suede-41x9.jpe",
+   "type": "image/jpeg",
+   "name": "navy-suede-one.jpe"
+  },
+  "fabric:f-orange-suede-4opl": {
+   "path": "swatches/fabrics/f-orange-suede-4opl.jpe",
+   "type": "image/jpeg",
+   "name": "orange-suede-one.jpe"
+  },
+  "fabric:f-purple-suede-56n5": {
+   "path": "swatches/fabrics/f-purple-suede-56n5.jpe",
+   "type": "image/jpeg",
+   "name": "purple-suede-one.jpe"
   }
  },
- "version": 1792545281116,
+ "version": 1792572213692,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",

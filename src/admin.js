@@ -17,7 +17,8 @@ const reload=()=>{sessionStorage.admOpen='1';location.reload()};
 const row=(label,slot,accept)=>{const m=Store.media(slot);return `<div class="ar"><b>${esc(label)}</b><small>${m?'Custom: '+esc(m.name):'Default'}</small><input type="file" accept="${accept}" data-slot="${esc(slot)}">${m?`<button data-del="${esc(slot)}">Remove custom file</button>`:''}</div>`};
 const fld=(id,k,l,v,t='text')=>`<label>${l}${t==='area'?`<textarea rows="4" data-pid="${id}" data-k="${k}">${esc(v)}</textarea>`:`<input type="${t}" data-pid="${id}" data-k="${k}" value="${esc(v)}">`}</label>`;
 const siteHtml=()=>{const c=Store.siteCfg();const t=(k,l,ph)=>`<label>${l}<input type="text" data-site="${k}" value="${esc(c[k]||'')}" placeholder="${ph}"></label>`;
- return `<h4>Business details</h4><p class="note">Shown in the footer and contact page. A WhatsApp number adds a floating chat button.</p>${t('phone','Phone','e.g. 010 000 0000')}${t('email','Email','e.g. info@yourdomain.co.za')}${t('whatsapp','WhatsApp number (with country code)','e.g. 27821234567')}<label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-site="backlight" ${c.backlight===false?'':'checked'} style="width:auto"> Backlight on main viewports</label>${t('apiBase','Backend API URL (when your backend is live)','https://your-api.workers.dev')}<label>Backlight strength (%)<input type="number" min="0" max="300" data-site="backlightStrength" value="${c.backlightStrength??100}"></label>`};
+ const v=Store.viewportCfg();
+ return `<h4>Business details</h4><p class="note">Shown in the footer and contact page. A WhatsApp number adds a floating chat button.</p>${t('phone','Phone','e.g. 010 000 0000')}${t('email','Email','e.g. info@yourdomain.co.za')}${t('whatsapp','WhatsApp number (with country code)','e.g. 27821234567')}<label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-site="backlight" ${c.backlight===false?'':'checked'} style="width:auto"> Backlight on main viewports</label>${t('apiBase','Backend API URL (when your backend is live)','https://your-api.workers.dev')}<label>Backlight strength (%)<input type="number" min="0" max="300" data-site="backlightStrength" value="${c.backlightStrength??100}"></label><h4>3D viewports</h4><p class="note">Set camera controls for shop cards, product views, and the Custom Studio live preview. Zoom distances use scene units; smaller minimum values zoom closer.</p><label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-site="viewportPan" ${v.pan?'checked':''} style="width:auto"> Enable panning in shop, product, and Custom Studio preview viewports</label><label>Closest zoom distance<input type="number" min="0.5" max="99" step="0.5" data-site="viewportMinZoom" value="${v.minZoom}"></label><label>Farthest zoom distance<input type="number" min="1" max="100" step="0.5" data-site="viewportMaxZoom" value="${v.maxZoom}"></label>`};
 const shopHtml=()=>{const c=Store.shopCfg();let o=[];try{o=JSON.parse(localStorage.getItem('dekara-orders'))||[]}catch{}
  return `<h4>Basket and checkout</h4><label>Delivery fee (ZAR)<input type="number" min="0" data-sh="delivery" value="${c.delivery}"></label><label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-sh="payNow" ${c.payNow?'checked':''} style="width:auto"> Offer "Pay now" (demo payments)</label>
  <details><summary>Demo orders (${o.length})</summary>${o.slice(0,20).map(x=>`<div class="ar"><b>${esc(x.ref)}</b><small>${esc(x.name)} · ${esc(String(x.date).slice(0,10))} · R ${Math.round(x.total).toLocaleString('en-ZA')}</small></div>`).join('')||'<p class="note">No orders yet.</p>'}<div class="acts"><button data-act="orders">Export orders</button><button data-act="clearorders">Clear orders</button></div></details>`};
@@ -28,7 +29,7 @@ const addHtml=()=>{
  <label>Name<input id="np-name"></label><label>Category<select id="np-cat">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></label><label>Subcategory<input id="np-sub"></label><label>Tagline<input id="np-tag"></label><label>Price (ZAR)<input id="np-price" type="number" min="0"></label><label>Materials<input id="np-mat"></label><label>Description<textarea id="np-desc" rows="3"></textarea></label>
  <label>3D model (.glb)<input type="file" id="np-file" accept=".glb,.gltf"></label>
  ${fts.map(ft=>{const defaultList=defaultOptions(ft.id,undefined),selected=defaultList[0]?.[2];return `<div class="ar"><b>${esc(ft.name)} customization</b>${chk2(`data-npoptions="${ft.id}"`,'true',`Offer ${ft.name.toLowerCase()} as a customizable option`,true)}${defSelect(ft.id,defaultList,selected)}</div>`}).join('')}
- <label>Width cm<input id="np-w" type="number" min="1"></label><label>Depth cm<input id="np-d" type="number" min="1"></label><label>Height cm<input id="np-h" type="number" min="1"></label>
+ <div class="ar"><b>Model dimensions (cm)</b><label>Width<input id="np-w" type="number" min="1" step="1"></label><label>Depth<input id="np-d" type="number" min="1" step="1"></label><label>Height<input id="np-h" type="number" min="1" step="1"></label><label style="display:flex;gap:.5rem;align-items:center"><input id="np-dims-lock" type="checkbox" style="width:auto"> Lock dimensions</label></div>
  <div class="acts"><button data-act="addprod">Add to shop</button></div>`;
 };
 const collHtml=()=>{const L=Store.colls(),F=[['name','Name'],['price','Price (ZAR)'],['w','Width cm'],['d','Depth cm'],['h','Height cm']];
@@ -197,6 +198,7 @@ function openPanel(){
  <p class="note">Admin edits and uploaded files are stored in this browser until you publish the changes to your site.</p>
  ${document.getElementById('p-canvas')?'<h4>Mapping</h4><div id="map-body"></div>':''}
  ${pubHtml()}${siteHtml()}${shopHtml()}${studioHtml()}${fabHtml()}${addHtml()}${collHtml()}<h4>Pieces</h4><div class="acts"><button data-act="restoredef">Restore deleted default pieces</button></div>${PRODUCTS.map(x=>`<details><summary>${esc(x.name)}</summary>${fld(x.id,'name','Name',x.name)}<label>Category<select data-pid="${x.id}" data-k="cat">${CATS.map(c=>`<option${c===x.cat?' selected':''}>${c}</option>`).join('')}</select></label>${fld(x.id,'sub','Subcategory',x.sub)}${fld(x.id,'tag','Tagline',x.tag)}${fld(x.id,'price','Price (ZAR)',x.price,'number')}${fld(x.id,'desc','Description',x.desc,'area')}
+ <div class="ar"><b>Model dimensions (cm)</b>${[['Width',0],['Depth',1],['Height',2]].map(([label,index])=>`<label>${label}<input type="number" min="1" step="1" data-pid="${x.id}" data-dim="${index}" value="${x.dims[index]}" ${x.dimsLocked?'disabled':''}></label>`).join('')}<label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-dims-lock="${x.id}" ${x.dimsLocked?'checked':''} style="width:auto"> Lock dimensions</label></div>
  ${Store.finishTypes().map(ft=>`<div class="ar"><b>${esc(ft.name)} customization</b>${chk2(`data-pieceavailability="${x.id}|${ft.id}"`,'true',`Offer ${ft.name.toLowerCase()} as a customizable option`,pieceTypeAvailable(x.id,ft.id))}${defaultMaterial(x.id,ft.id,defaultOptions(ft.id,x.defaults?.[ft.id]),x.defaults)}${ft.id==='fabric'?'<a href="product.html?id='+encodeURIComponent(x.id)+'" style="border-bottom:1px solid var(--line);justify-self:start">Open piece page to edit fabric texture mapping</a>':''}</div>`).join('')}
  ${row('3D model (.glb / .gltf)','model:'+x.id,'.glb,.gltf,model/gltf-binary')}${[1,2,3].map(n=>row('Gallery photo or video '+n,`gallery:${x.id}:${n}`,'image/*,video/*')).join('')}<div class="acts"><button data-delprod="${x.id}">Delete this piece</button></div></details>`).join('')}
  </div><div class="acts" id="adm-final"><button data-act="apply">Apply changes</button><button data-act="export">Export text</button><button data-act="import">Import text</button><button data-act="reset">Reset everything</button><button data-act="lock">Lock</button></div>`;
@@ -232,6 +234,9 @@ function openPanel(){
    p.querySelectorAll('[data-newmft]').forEach(i=>i.checked=defaults.includes(i.value));return
   }
   if(t.dataset.npdefault)return;
+  if(t.dataset.npDimsLock!==undefined){['np-w','np-d','np-h'].forEach(id=>document.getElementById(id).disabled=t.checked);return}
+  if(t.dataset.dimsLock){Store.setProduct(t.dataset.dimsLock,'dimsLocked',t.checked);t.closest('details').querySelectorAll('[data-dim]').forEach(i=>i.disabled=t.checked);return}
+  if(t.dataset.dim!==undefined){const fields=[...t.closest('details').querySelectorAll('[data-dim]')],dims=fields.map(i=>Math.max(1,Math.round(Number(i.value)||1)));fields.forEach((input,index)=>input.value=dims[index]);Store.setProduct(t.dataset.pid,'dims',dims);return}
   if(t.dataset.pdefault){
    const [pid,ftid]=t.dataset.pdefault.split('|');Store.setPieceDefault(pid,ftid,t.value);
    return
@@ -240,8 +245,14 @@ function openPanel(){
   if(t.dataset.npoptions)return;
   if(t.dataset.stfab!==undefined){Store.setStudioFabrics([...p.querySelectorAll('[data-stfab]')].filter(i=>i.checked).map(i=>i.value));return}
   if(t.dataset.stfin){const [ftid]=t.dataset.stfin.split('|');Store.setStudioFinishes(ftid,[...p.querySelectorAll(`[data-stfin^="${ftid}|"]`)].filter(i=>i.checked).map(i=>i.value));return}
-  if(t.dataset.site){Store.setSite(t.dataset.site,t.type==='checkbox'?t.checked:t.type==='number'?Number(t.value):t.value.trim());return}
-  if(t.id==='np-file'&&t.files[0]){try{const [w,d,h]=await measureGLB(t.files[0]);['np-w','np-d','np-h'].forEach((i,k)=>document.getElementById(i).value=[w,d,h][k])}catch{alert('Could not read that model. You can still enter the size manually.')}return}
+  if(t.dataset.site){
+   if(t.dataset.site==='viewportMinZoom'||t.dataset.site==='viewportMaxZoom'){
+    const value=Number(t.value),v=Store.viewportCfg(),valid=Number.isFinite(value)&&value>0&&(t.dataset.site==='viewportMinZoom'?value<v.maxZoom:value>v.minZoom);
+    if(!valid){alert('Zoom distances must be positive, and the farthest distance must be greater than the closest distance.');t.value=t.dataset.site==='viewportMinZoom'?v.minZoom:v.maxZoom;return}
+   }
+   Store.setSite(t.dataset.site,t.type==='checkbox'?t.checked:t.type==='number'?Number(t.value):t.value.trim());return
+  }
+  if(t.id==='np-file'&&t.files[0]){if(!document.getElementById('np-dims-lock').checked){try{const [w,d,h]=await measureGLB(t.files[0]);['np-w','np-d','np-h'].forEach((i,k)=>document.getElementById(i).value=[w,d,h][k])}catch{alert('Could not read that model. You can still enter the size manually.')}}return}
   if(t.dataset.cn){const c=editableColls().find(x=>x.id===t.dataset.cn);if(c){c.name=t.value.trim()||c.name;Store.save()}return}
   if(t.dataset.cp){const [cid,pid,k]=t.dataset.cp.split('|'),pc=editableColls().find(x=>x.id===cid)?.pieces.find(x=>x.id===pid);if(pc){pc[k]=k==='name'?t.value.trim():Math.max(0,Number(t.value)||0);Store.save()}return}
   if(t.dataset.addpieces&&t.files.length){const c=editableColls().find(x=>x.id===t.dataset.addpieces);if(!c){alert('Could not find that collection.');return}t.disabled=true;
@@ -277,7 +288,7 @@ function openPanel(){
    Store.setMaterialFinishTypes(id,[...p.querySelectorAll('[data-newmft]')].filter(i=>i.checked).map(i=>i.value));reload()}
   if(a==='addprod'){const g=id=>document.getElementById(id),f=g('np-file').files[0],name=g('np-name').value.trim();if(!name||!f){alert('Please enter a name and choose a GLB model.');return}
    const id='x-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,24)+'-'+Date.now().toString(36).slice(-4);await Store.put('model:'+id,f);
-   Store.addProduct({id,name,cat:g('np-cat').value,sub:g('np-sub').value.trim()||g('np-cat').value,tag:g('np-tag').value.trim(),price:Number(g('np-price').value)||0,mat:g('np-mat').value.trim(),desc:g('np-desc').value.trim(),dims:['np-w','np-d','np-h'].map(i=>Number(g(i).value)||100)});
+   Store.addProduct({id,name,cat:g('np-cat').value,sub:g('np-sub').value.trim()||g('np-cat').value,tag:g('np-tag').value.trim(),price:Number(g('np-price').value)||0,mat:g('np-mat').value.trim(),desc:g('np-desc').value.trim(),dims:['np-w','np-d','np-h'].map(i=>Number(g(i).value)||100),dimsLocked:g('np-dims-lock').checked});
    p.querySelectorAll('[data-npdefault]').forEach(s=>{if(s.value)Store.setPieceDefault(id,s.dataset.npdefault,s.value)});
    p.querySelectorAll('[data-npoptions]').forEach(i=>Store.setPieceFinishAvailability(id,i.dataset.npoptions,i.checked));
    reload()}

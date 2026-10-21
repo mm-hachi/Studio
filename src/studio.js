@@ -327,12 +327,19 @@ const pv=(()=>{const cv=$('st-preview'),pr=new THREE.WebGLRenderer({canvas:cv,an
  const fl=new THREE.Mesh(new THREE.CircleGeometry(5,64),new THREE.ShadowMaterial({opacity:.22}));fl.rotation.x=-Math.PI/2;fl.receiveShadow=true;s.add(fl);
  const ring=new THREE.Mesh(new THREE.RingGeometry(2.3,2.33,128),new THREE.MeshBasicMaterial({color:0x9c7a4d,transparent:true,opacity:.35,side:2}));ring.rotation.x=-Math.PI/2;ring.position.y=.005;s.add(ring);
  const grp=new THREE.Group();s.add(grp);const pc=new THREE.PerspectiveCamera(32,1,.1,100);pc.position.set(5,3,6.5);pc.lookAt(0,.7,0);
+ const view=Store.viewportCfg(),pvCtl=new OrbitControls(pc,cv);pvCtl.target.set(0,.7,0);pvCtl.enableDamping=true;pvCtl.enableRotate=false;pvCtl.enablePan=view.pan;pvCtl.minDistance=view.minZoom;pvCtl.maxDistance=view.maxZoom;
+ if(view.pan)pvCtl.mouseButtons.LEFT=THREE.MOUSE.PAN;
+ $('st-prev-hint').textContent=`Live preview${view.pan?' · drag to pan':''} · scroll to zoom`;
  const sz=()=>{const p=cv.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;pr.setSize(w,h,false);pc.aspect=w/h;pc.updateProjectionMatrix()};new ResizeObserver(sz).observe(cv.parentElement);
+ const stage=cv.parentElement,full=document.createElement('button');full.type='button';full.className='viewport-fullscreen';full.setAttribute('aria-label','Maximize live preview');full.title='Maximize live preview';full.textContent='⛶';stage.append(full);
+ full.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();(document.fullscreenElement===stage?document.exitFullscreen():stage.requestFullscreen()).catch(error=>console.error('Could not change live preview fullscreen state.',error))});
+ const fullChange=()=>{const active=document.fullscreenElement===stage;full.setAttribute('aria-label',active?'Exit fullscreen live preview':'Maximize live preview');full.title=active?'Exit fullscreen':'Maximize live preview';sz()};
+ document.addEventListener('fullscreenchange',fullChange);
  let vis=true;new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(cv);
  return {update(){grp.clear();$('st-pv-empty').style.display=items.length?'none':'grid';if(!items.length)return;
    const inner=new THREE.Group();items.forEach(it=>{const m=buildModule(it.type,colour);m.position.copy(it.g.position);m.rotation.y=it.rot*Math.PI/2;applyModuleFinishes(m);inner.add(m)});
    const {sx,sz:dz,cx,cz}=bbox();inner.position.set(-cx,0,-cz);grp.add(inner);grp.scale.setScalar(Math.min(1.8,3.4/Math.max(sx,dz,.5)))},
-  tick(dt){if(!vis)return;grp.rotation.y+=dt*.45;pr.render(s,pc)}}})();
+  tick(dt){if(!vis)return;grp.rotation.y+=dt*.45;pvCtl.update();pr.render(s,pc)}}})();
 
 function refresh(){
  const cnt={};items.forEach(i=>cnt[i.type]=(cnt[i.type]||0)+1);const total=items.reduce((a,i)=>a+PR(i.type),0);
