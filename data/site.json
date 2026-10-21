@@ -123,6 +123,150 @@
      100
     ],
     "model": "models/x-ina-chair-1ycj.glb"
+   },
+   {
+    "id": "x-boucle-chanel-couch-d71j",
+    "name": "Boucle Chanel Couch",
+    "cat": "Sofas",
+    "sub": "Sofas",
+    "tag": "",
+    "price": 14900,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     54,
+     26
+    ],
+    "model": "models/x-boucle-chanel-couch-d71j.glb"
+   },
+   {
+    "id": "x-cloud-l-shape-kic4",
+    "name": "Cloud L-Shape",
+    "cat": "Sofas",
+    "sub": "Sofas",
+    "tag": "",
+    "price": 16800,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     56,
+     25
+    ],
+    "model": "models/x-cloud-l-shape-kic4.glb"
+   },
+   {
+    "id": "x-macre-nopy",
+    "name": "Macre",
+    "cat": "Sofas",
+    "sub": "Sofas",
+    "tag": "",
+    "price": 19599,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     44,
+     33
+    ],
+    "model": "models/x-macre-nopy.glb"
+   },
+   {
+    "id": "x-mulo-occassional-chair-tuln",
+    "name": "Mulo Occassional Chair",
+    "cat": "Chairs",
+    "sub": "Armchairs",
+    "tag": "",
+    "price": 5800,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     95,
+     94
+    ],
+    "model": "models/x-mulo-occassional-chair-tuln.glb"
+   },
+   {
+    "id": "x-vonia-3-seater-0n8h",
+    "name": "Vonia 3 Seater",
+    "cat": "Sofas",
+    "sub": "Sofas",
+    "tag": "",
+    "price": 10800,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     98,
+     32
+    ],
+    "model": "models/x-vonia-3-seater-0n8h.glb"
+   },
+   {
+    "id": "x-office-one-kxcy",
+    "name": "Office One",
+    "cat": "Chairs",
+    "sub": "Office Chairs",
+    "tag": "",
+    "price": 5000,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     75,
+     70,
+     100
+    ],
+    "model": "models/x-office-one-kxcy.glb"
+   },
+   {
+    "id": "x-tuft-supreme-oeqb",
+    "name": "Tuft Supreme",
+    "cat": "Sofas",
+    "sub": "Sofas",
+    "tag": "",
+    "price": 18100,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     64,
+     26
+    ],
+    "model": "models/x-tuft-supreme-oeqb.glb"
+   },
+   {
+    "id": "x-classic-dining-r8ev",
+    "name": "Classic Dining",
+    "cat": "Tables",
+    "sub": "Dining Tables",
+    "tag": "",
+    "price": 15400,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     53,
+     38
+    ],
+    "model": "models/x-classic-dining-r8ev.glb"
+   },
+   {
+    "id": "x-office-two-zihe",
+    "name": "Office Two",
+    "cat": "Chairs",
+    "sub": "Office Chairs",
+    "tag": "",
+    "price": 4200,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     66,
+     69,
+     99
+    ],
+    "model": "models/x-office-two-zihe.glb"
    }
   ],
   "pieceFabrics": {
@@ -204,7 +348,18 @@
   "deleted": [
    "bar",
    "console",
-   "dresser"
+   "dresser",
+   "sofa",
+   "chaise",
+   "armchair",
+   "dchair",
+   "dtable",
+   "coffee",
+   "dset",
+   "ottoman",
+   "headboard",
+   "bedside",
+   "tv"
   ],
   "addedFabrics": [
    {
@@ -546,6 +701,170 @@
      "locked": true
     },
     "finish:pillows:sage": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:oyster": {
+     "sx": 3.15,
+     "sy": 3.15,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-ina-chair-1ycj": {
+    "finish:fabric:f-lemo-grey-38z3": {
+     "sx": 2.3,
+     "sy": 2.3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:walnut": {
+     "sx": 2.8,
+     "sy": 2.8,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-boucle-chanel-couch-d71j": {
+    "finish:fabric:blush": {
+     "sx": 6,
+     "sy": 6,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:pillows:f-velvet-chocolate-n2op": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-cloud-l-shape-kic4": {
+    "finish:fabric:oyster": {
+     "sx": 9.2,
+     "sy": 9.2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-macre-nopy": {
+    "finish:fabric:sage": {
+     "sx": 2.8,
+     "sy": 2.8,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:terracotta": {
+     "sx": 20.85,
+     "sy": 20.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:pillows:terracotta": {
+     "sx": 7.55,
+     "sy": 7.55,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-mulo-occassional-chair-tuln": {
+    "finish:fabric:charcoal": {
+     "sx": 4.9,
+     "sy": 4.9,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:pillows:oyster": {
+     "sx": 0.75,
+     "sy": 0.75,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-vonia-3-seater-0n8h": {
+    "finish:fabric:f-lemo-grey-38z3": {
+     "sx": 8.95,
+     "sy": 8.95,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-office-one-kxcy": {
+    "finish:fabric:oyster": {
+     "sx": 8,
+     "sy": 8,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:ebony": {
+     "sx": 0.05,
+     "sy": 0.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-tuft-supreme-oeqb": {
+    "finish:fabric:navy": {
+     "sx": 11.1,
+     "sy": 11.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-classic-dining-r8ev": {
+    "finish:frame:ash": {
+     "sx": 4.2,
+     "sy": 4.2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-office-two-zihe": {
+    "finish:fabric:sage": {
+     "sx": 4.9,
+     "sy": 4.9,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:detail1:ebony": {
      "sx": 0.05,
      "sy": 0.05,
      "rot": 0,
@@ -564,18 +883,64 @@
     "fabric": "f-velvet-chocolate-n2op"
    },
    "x-molo-occasional-chair-bkmk": {
-    "fabric": "f-lemo-grey-38z3",
+    "fabric": "forest",
     "frame": "f-furnwood-qjlm"
    },
    "x-asante-couch-c11i": {
     "frame": "walnut",
-    "fabric": "f-velvet-chocolate-n2op",
-    "pillows": "f-velvet-chocolate-n2op"
+    "fabric": "oyster",
+    "pillows": "sage"
    },
    "x-ina-chair-1ycj": {
     "frame": "walnut",
-    "fabric": "oyster",
+    "fabric": "f-lemo-grey-38z3",
     "pillows": "sage"
+   },
+   "x-boucle-chanel-couch-d71j": {
+    "frame": "walnut",
+    "fabric": "blush",
+    "pillows": "f-velvet-chocolate-n2op"
+   },
+   "x-cloud-l-shape-kic4": {
+    "frame": "walnut",
+    "fabric": "oyster",
+    "pillows": "oyster"
+   },
+   "x-macre-nopy": {
+    "frame": "walnut",
+    "fabric": "terracotta",
+    "pillows": "terracotta"
+   },
+   "x-mulo-occassional-chair-tuln": {
+    "frame": "walnut",
+    "fabric": "charcoal",
+    "pillows": "oyster"
+   },
+   "x-vonia-3-seater-0n8h": {
+    "frame": "walnut",
+    "fabric": "f-lemo-grey-38z3",
+    "pillows": "oyster"
+   },
+   "x-office-one-kxcy": {
+    "frame": "ebony",
+    "fabric": "oyster",
+    "pillows": "oyster"
+   },
+   "x-tuft-supreme-oeqb": {
+    "frame": "walnut",
+    "fabric": "navy",
+    "pillows": "oyster"
+   },
+   "x-classic-dining-r8ev": {
+    "frame": "ash",
+    "fabric": "oyster",
+    "pillows": "oyster"
+   },
+   "x-office-two-zihe": {
+    "frame": "f-furnwood-qjlm",
+    "fabric": "sage",
+    "pillows": "oyster",
+    "detail1": "ebony"
    }
   },
   "pieceFinishes": {
@@ -606,6 +971,11 @@
     "id": "pillows",
     "name": "Pillows",
     "target": "pillows"
+   },
+   {
+    "id": "detail1",
+    "name": "Detail1",
+    "target": "detail1"
    }
   ],
   "materialFinishTypes": {
@@ -614,6 +984,34 @@
     "pillows"
    ],
    "sage": [
+    "fabric",
+    "pillows"
+   ],
+   "oyster": [
+    "fabric",
+    "pillows"
+   ],
+   "charcoal": [
+    "fabric",
+    "pillows"
+   ],
+   "terracotta": [
+    "fabric",
+    "pillows"
+   ],
+   "navy": [
+    "fabric",
+    "pillows"
+   ],
+   "blush": [
+    "fabric",
+    "pillows"
+   ],
+   "forest": [
+    "fabric",
+    "pillows"
+   ],
+   "f-lemo-grey-38z3": [
     "fabric",
     "pillows"
    ]
@@ -628,6 +1026,54 @@
     "pillows": true
    },
    "x-ina-chair-1ycj": {
+    "frame": true,
+    "fabric": true,
+    "pillows": false
+   },
+   "x-molo-occasional-chair-bkmk": {
+    "pillows": false
+   },
+   "x-boucle-chanel-couch-d71j": {
+    "frame": false,
+    "fabric": true,
+    "pillows": true
+   },
+   "x-cloud-l-shape-kic4": {
+    "frame": false,
+    "fabric": true,
+    "pillows": false
+   },
+   "x-macre-nopy": {
+    "frame": false,
+    "fabric": true,
+    "pillows": true
+   },
+   "x-mulo-occassional-chair-tuln": {
+    "frame": true,
+    "fabric": true,
+    "pillows": true
+   },
+   "x-vonia-3-seater-0n8h": {
+    "frame": false,
+    "fabric": true,
+    "pillows": false
+   },
+   "x-office-one-kxcy": {
+    "frame": true,
+    "fabric": true,
+    "pillows": false
+   },
+   "x-tuft-supreme-oeqb": {
+    "frame": false,
+    "fabric": true,
+    "pillows": false
+   },
+   "x-classic-dining-r8ev": {
+    "frame": true,
+    "fabric": false,
+    "pillows": false
+   },
+   "x-office-two-zihe": {
     "frame": true,
     "fabric": true,
     "pillows": false
@@ -759,13 +1205,67 @@
    "path": "models/x-ina-chair-1ycj.glb",
    "type": "",
    "name": "ina-chair.glb"
+  },
+  "model:x-boucle-chanel-couch-d71j": {
+   "path": "models/x-boucle-chanel-couch-d71j.glb",
+   "type": "",
+   "name": "boucle-chanel-couch.glb"
+  },
+  "model:x-classic-dining-r8ev": {
+   "path": "models/x-classic-dining-r8ev.glb",
+   "type": "",
+   "name": "wood-dining-table.glb"
+  },
+  "model:x-cloud-l-shape-kic4": {
+   "path": "models/x-cloud-l-shape-kic4.glb",
+   "type": "",
+   "name": "cloud-couch.glb"
+  },
+  "model:x-macre-nopy": {
+   "path": "models/x-macre-nopy.glb",
+   "type": "",
+   "name": "macre-couch.glb"
+  },
+  "model:x-mulo-occassional-chair-tuln": {
+   "path": "models/x-mulo-occassional-chair-tuln.glb",
+   "type": "",
+   "name": "mulo-occassional-chair.glb"
+  },
+  "model:x-office-one-kxcy": {
+   "path": "models/x-office-one-kxcy.glb",
+   "type": "",
+   "name": "offic-chair-one.glb"
+  },
+  "model:x-office-two-zihe": {
+   "path": "models/x-office-two-zihe.glb",
+   "type": "",
+   "name": "office-chair-two.glb"
+  },
+  "model:x-tuft-supreme-oeqb": {
+   "path": "models/x-tuft-supreme-oeqb.glb",
+   "type": "",
+   "name": "three-seater-tuft-supreme.glb"
+  },
+  "model:x-vonia-3-seater-0n8h": {
+   "path": "models/x-vonia-3-seater-0n8h.glb",
+   "type": "",
+   "name": "vonia-couch.glb"
   }
  },
- "version": 1792449488153,
+ "version": 1792545281116,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",
   "x-asante-couch-c11i": "models/x-asante-couch-c11i.glb",
-  "x-ina-chair-1ycj": "models/x-ina-chair-1ycj.glb"
+  "x-ina-chair-1ycj": "models/x-ina-chair-1ycj.glb",
+  "x-boucle-chanel-couch-d71j": "models/x-boucle-chanel-couch-d71j.glb",
+  "x-classic-dining-r8ev": "models/x-classic-dining-r8ev.glb",
+  "x-cloud-l-shape-kic4": "models/x-cloud-l-shape-kic4.glb",
+  "x-macre-nopy": "models/x-macre-nopy.glb",
+  "x-mulo-occassional-chair-tuln": "models/x-mulo-occassional-chair-tuln.glb",
+  "x-office-one-kxcy": "models/x-office-one-kxcy.glb",
+  "x-office-two-zihe": "models/x-office-two-zihe.glb",
+  "x-tuft-supreme-oeqb": "models/x-tuft-supreme-oeqb.glb",
+  "x-vonia-3-seater-0n8h": "models/x-vonia-3-seater-0n8h.glb"
  }
 }

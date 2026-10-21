@@ -9,6 +9,19 @@ if(!p)location.replace('shop.html');else{
 document.title=`${p.name} | Dekara Designs`;
 $('p-tag').textContent=p.cat+' · '+p.tag;$('p-name').textContent=p.name;$('p-desc').textContent=p.desc;
 $('p-spec').innerHTML=`<div><span>Construction</span>${esc(p.mat)}</div><div><span>Delivery</span>4–6 weeks</div>`;
+const [width,depth,height]=p.dims;
+$('p-dim-width').textContent=`WIDTH · ${width} cm`;
+$('p-dim-depth').textContent=`DEPTH · ${depth} cm`;
+$('p-dim-height').textContent=`HEIGHT · ${height} cm`;
+const dimensionsToggle=$('p-dimensions-toggle'),dimensionsOverlay=$('p-dimensions');
+dimensionsOverlay.setAttribute('aria-label',`Model dimensions: width ${width} cm, depth ${depth} cm, height ${height} cm`);
+dimensionsToggle.onclick=()=>{
+ const visible=dimensionsToggle.getAttribute('aria-expanded')!=='true';
+ dimensionsToggle.setAttribute('aria-expanded',String(visible));
+ dimensionsToggle.textContent=visible?'Hide dimensions':'Show dimensions';
+ dimensionsOverlay.hidden=!visible;
+ dimensionsOverlay.setAttribute('aria-hidden',String(!visible));
+};
 const v=viewer($('p-canvas'),p.id,{orbit:true});
 const opts=(p.fabrics&&p.fabrics.length)?p.fabrics:[['Oyster','#d4cabb','oyster',null,'']];
 let fabric=opts.find(m=>m[2]===p.defaults?.fabric)||opts[0],cur,override=null;
