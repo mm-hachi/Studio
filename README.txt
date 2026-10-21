@@ -98,7 +98,7 @@ OPENING THE ADMIN PANEL
 On any page, use one of:
   - Click the faint fleur-de-lis in the bottom-left corner.
   - Press Ctrl+Shift+A.
-  - On touch devices, tap the footer logo five times quickly.
+  - On mobile, tap the footer copyright text five times quickly.
 
 The first time, choose a steward passcode of at least four characters. The
 passcode hash and "unlocked this session" state are stored in this browser.

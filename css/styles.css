@@ -51,6 +51,7 @@ input,select,textarea{background:#fff;border:1px solid var(--line);color:var(--i
 .reveal{opacity:0;transform:translateY(36px);transition:1s cubic-bezier(.2,.7,.2,1)}.reveal.in{opacity:1;transform:none}
 .tour .hdr,.tour .notice,.tour #adm-trigger{opacity:0}.tour{cursor:none}
 #adm-trigger{position:fixed;left:10px;bottom:10px;z-index:90;width:30px;height:30px;border:0;background:none;color:var(--bronze);font-size:18px;opacity:.08;cursor:pointer;transition:.3s}#adm-trigger:hover,#adm-trigger:focus{opacity:.9}
+@media(max-width:960px){#adm-trigger{display:none}}
 #adm{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:100;display:flex;flex-direction:column;background:#fff;border-left:1px solid var(--ink);overflow:hidden;transform:translateX(100%);transition:.35s;font-size:.95rem;box-shadow:-20px 0 60px rgba(0,0,0,.15)}#adm.open{transform:none}
 #adm .adm-top{flex:none;padding:1rem 1.2rem .8rem;background:#fff;border-bottom:1px solid var(--line)}#adm .adm-top header{display:flex;justify-content:space-between;align-items:center}#adm .adm-top input{width:100%;margin-top:.6rem;padding:.55rem .7rem;border:1px solid var(--line);font:inherit;font-size:.9rem;background:#fff}
 #adm-scroll{flex:1;min-height:0;overflow:auto;padding:0 1.2rem 1rem}#adm #adm-final{flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;margin:0;padding:.7rem 1.2rem;background:#fff;border-top:1px solid var(--line);box-shadow:0 -5px 14px rgba(31,28,25,.06)}#adm #adm-final button{min-width:0;padding:.4rem .25rem;font-size:.72rem;line-height:1.3}

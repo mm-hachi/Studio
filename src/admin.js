@@ -320,5 +320,5 @@ function openPanel(){
   if(a==='reset'&&confirm('Remove all custom text and uploaded files?')){await Store.discardLocal();reload()}});
 }
 if(sessionStorage.adm==='1'&&sessionStorage.admOpen==='1')openPanel();
-// Open the admin on touch devices: tap the footer logo 5 times quickly
-{let n=0,t0=0;document.addEventListener('click',e=>{if(!e.target.closest('.ftr .logo'))return;const now=Date.now();n=now-t0>2000?1:n+1;t0=now;if(n>=5){n=0;trig.click()}})}
+// Open the admin on mobile: tap the footer text 5 times quickly
+{let n=0,t0=0;document.addEventListener('click',e=>{if(!matchMedia('(max-width: 960px)').matches||!e.target.closest('.ftr .fine'))return;const now=Date.now();n=now-t0>2000?1:n+1;t0=now;if(n>=5){n=0;trig.click()}})}

@@ -95,7 +95,7 @@ Add references to them under `"documents"` in `data/site.json`.
 
 ### Opening the Admin Panel
 - **Desktop**: Click the subtle fleur-de-lis icon (⚜) in the bottom-left corner of any page, or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd>.
-- **Mobile / Touch**: Tap the footer logo **5 times quickly**.
+- **Mobile / Touch**: Tap the footer copyright text **5 times quickly**.
 
 ### Features in Admin
 1. **Materials Library**:
