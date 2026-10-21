@@ -25,9 +25,6 @@ const siteHtml=()=>{
  <label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-site="backlight" ${c.backlight===false?'':'checked'} style="width:auto"> Backlight on main viewports</label>
  ${t('apiBase','Backend API URL (when your backend is live)','https://your-api.workers.dev')}
  <label>Backlight strength (%)<input type="number" min="0" max="300" data-site="backlightStrength" value="${c.backlightStrength??100}"></label>
- <h4>Room builder</h4>
- <p class="note">The room builder needs camera permission and an HTTPS site. The AR engine loads only on the room builder page.</p>
- <label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-site="roomBuilderEnabled" ${c.roomBuilderEnabled===false?'':'checked'} style="width:auto"> Show "Build your room" buttons on Shop and Custom Studio</label>
  <h4>3D viewports</h4>
  <p class="note">Set camera controls for shop cards, product views, and the Custom Studio live preview. Zoom distances use scene units; smaller minimum values zoom closer.</p>
  <label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-site="viewportPan" ${v.pan?'checked':''} style="width:auto"> Enable panning in shop, product, and Custom Studio preview viewports</label>

@@ -3,8 +3,6 @@ import { ready } from './store.js';
 ready.then(async()=>{
  const has=id=>document.getElementById(id);
  await import('./main.js');
- if(document.querySelector('[data-room-builder-entry]'))await import('./room-entry.js');
- if(has('room-builder-app'))await import('./room-builder.js');
  if(has('hero-canvas'))await import('./hero.js');
  if(document.querySelector('[data-cards]'))await import('./cards.js');
  if(has('p-canvas'))await import('./product.js');
