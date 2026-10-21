@@ -16,9 +16,24 @@ addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='
 const reload=()=>{sessionStorage.admOpen='1';location.reload()};
 const row=(label,slot,accept)=>{const m=Store.media(slot);return `<div class="ar"><b>${esc(label)}</b><small>${m?'Custom: '+esc(m.name):'Default'}</small><input type="file" accept="${accept}" data-slot="${esc(slot)}">${m?`<button data-del="${esc(slot)}">Remove custom file</button>`:''}</div>`};
 const fld=(id,k,l,v,t='text')=>`<label>${l}${t==='area'?`<textarea rows="4" data-pid="${id}" data-k="${k}">${esc(v)}</textarea>`:`<input type="${t}" data-pid="${id}" data-k="${k}" value="${esc(v)}">`}</label>`;
-const siteHtml=()=>{const c=Store.siteCfg();const t=(k,l,ph)=>`<label>${l}<input type="text" data-site="${k}" value="${esc(c[k]||'')}" placeholder="${ph}"></label>`;
- const v=Store.viewportCfg();
- return `<h4>Business details</h4><p class="note">Shown in the footer and contact page. A WhatsApp number adds a floating chat button.</p>${t('phone','Phone','e.g. 010 000 0000')}${t('email','Email','e.g. info@yourdomain.co.za')}${t('whatsapp','WhatsApp number (with country code)','e.g. 27821234567')}<label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-site="backlight" ${c.backlight===false?'':'checked'} style="width:auto"> Backlight on main viewports</label>${t('apiBase','Backend API URL (when your backend is live)','https://your-api.workers.dev')}<label>Backlight strength (%)<input type="number" min="0" max="300" data-site="backlightStrength" value="${c.backlightStrength??100}"></label><h4>3D viewports</h4><p class="note">Set camera controls for shop cards, product views, and the Custom Studio live preview. Zoom distances use scene units; smaller minimum values zoom closer.</p><label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-site="viewportPan" ${v.pan?'checked':''} style="width:auto"> Enable panning in shop, product, and Custom Studio preview viewports</label><label>Closest zoom distance<input type="number" min="0.5" max="99" step="0.5" data-site="viewportMinZoom" value="${v.minZoom}"></label><label>Farthest zoom distance<input type="number" min="1" max="100" step="0.5" data-site="viewportMaxZoom" value="${v.maxZoom}"></label>`};
+const siteHtml=()=>{
+ const c=Store.siteCfg(),v=Store.viewportCfg();
+ const t=(k,l,ph)=>`<label>${l}<input type="text" data-site="${k}" value="${esc(c[k]||'')}" placeholder="${ph}"></label>`;
+ return `<h4>Business details</h4>
+ <p class="note">Shown in the footer and contact page. A WhatsApp number adds a floating chat button.</p>
+ ${t('phone','Phone','e.g. 010 000 0000')}${t('email','Email','e.g. info@yourdomain.co.za')}${t('whatsapp','WhatsApp number (with country code)','e.g. 27821234567')}
+ <label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-site="backlight" ${c.backlight===false?'':'checked'} style="width:auto"> Backlight on main viewports</label>
+ ${t('apiBase','Backend API URL (when your backend is live)','https://your-api.workers.dev')}
+ <label>Backlight strength (%)<input type="number" min="0" max="300" data-site="backlightStrength" value="${c.backlightStrength??100}"></label>
+ <h4>Room builder</h4>
+ <p class="note">The room builder needs camera permission and an HTTPS site. The AR engine loads only on the room builder page.</p>
+ <label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-site="roomBuilderEnabled" ${c.roomBuilderEnabled===false?'':'checked'} style="width:auto"> Show "Build your room" buttons on Shop and Custom Studio</label>
+ <h4>3D viewports</h4>
+ <p class="note">Set camera controls for shop cards, product views, and the Custom Studio live preview. Zoom distances use scene units; smaller minimum values zoom closer.</p>
+ <label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-site="viewportPan" ${v.pan?'checked':''} style="width:auto"> Enable panning in shop, product, and Custom Studio preview viewports</label>
+ <label>Closest zoom distance<input type="number" min="0.5" max="99" step="0.5" data-site="viewportMinZoom" value="${v.minZoom}"></label>
+ <label>Farthest zoom distance<input type="number" min="1" max="100" step="0.5" data-site="viewportMaxZoom" value="${v.maxZoom}"></label>`;
+};
 const shopHtml=()=>{const c=Store.shopCfg();let o=[];try{o=JSON.parse(localStorage.getItem('dekara-orders'))||[]}catch{}
  return `<h4>Basket and checkout</h4><label>Delivery fee (ZAR)<input type="number" min="0" data-sh="delivery" value="${c.delivery}"></label><label style="display:flex;gap:.5rem;align-items:center;margin-top:.7rem"><input type="checkbox" data-sh="payNow" ${c.payNow?'checked':''} style="width:auto"> Offer "Pay now" (demo payments)</label>
  <details><summary>Demo orders (${o.length})</summary>${o.slice(0,20).map(x=>`<div class="ar"><b>${esc(x.ref)}</b><small>${esc(x.name)} · ${esc(String(x.date).slice(0,10))} · R ${Math.round(x.total).toLocaleString('en-ZA')}</small></div>`).join('')||'<p class="note">No orders yet.</p>'}<div class="acts"><button data-act="orders">Export orders</button><button data-act="clearorders">Clear orders</button></div></details>`};

@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Build your room | Dekara Designs</title><meta name="description" content="Arrange Dekara Designs furniture in your room using augmented reality."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/styles.css"><meta name="theme-color" content="#f7f3ed"></head><body>
+<main><div id="room-builder-app">
+<div class="wrap head room-head"><span class="eyebrow">Augmented reality</span><h1>Build your <em>room.</em></h1><p class="lead">Choose furniture, then tap a point on the floor through your camera to place it. You can move, rotate, duplicate, and remove pieces.</p></div>
+<div class="wrap room-builder-layout">
+ <div class="room-viewport" id="room-viewport"><canvas id="room-canvas" aria-label="Live camera view with augmented reality furniture"></canvas><div class="room-camera-controls"><p id="room-status" role="status" aria-live="polite">Choose furniture, then start the camera. Camera permission is requested only when you start.</p><button class="btn" id="room-start" type="button">Start camera</button><button class="btn ghost" id="room-stop" type="button" hidden>Stop camera</button></div></div>
+ <aside class="room-panel">
+  <div id="room-disabled" class="room-disabled" hidden><h2>Room builder unavailable</h2><p>This experience is currently disabled. Please check back later.</p></div>
+  <section><h2>Choose furniture</h2><label class="room-search">Search pieces<input id="room-search" type="search" placeholder="Search furniture"></label><div id="room-products" class="room-products"></div></section>
+  <section><h2>In your room <span id="room-count">0</span></h2><p id="room-empty" class="room-empty">No furniture placed yet.</p><div id="room-items" class="room-items"></div>
+   <div class="room-actions" id="room-actions"><button class="btn ghost" type="button" data-room-action="move" disabled>Move</button><button class="btn ghost" type="button" data-room-action="rotate" disabled>Rotate</button><button class="btn ghost" type="button" data-room-action="duplicate" disabled>Duplicate</button><button class="btn ghost" type="button" data-room-action="remove" disabled>Remove</button><button class="btn ghost" type="button" data-room-action="cancel" hidden>Cancel placement</button></div>
+  </section>
+  <p class="room-attribution">AR powered by 8th Wall · © 2026 Niantic Spatial, Inc. · <a href="https://github.com/8thwall/engine/blob/main/LICENSE" target="_blank" rel="noopener">Engine license</a></p>
+ </aside>
+</div>
+</div></main>
+<script src="js/app.js"></script></body></html>

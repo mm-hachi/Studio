@@ -16,7 +16,7 @@ function render(){
  $('subs').innerHTML=st.cat&&subs.length>1?chip('sub','','All '+st.cat,!st.sub)+subs.map(s=>chip('sub',s,s,st.sub===s,found.filter(p=>p.cat===st.cat&&p.sub===s).length)).join(''):'';
  let list=found.filter(p=>(!st.cat||p.cat===st.cat)&&(!st.sub||p.sub===st.sub));
  if(SORT[st.sort])list=[...list].sort(SORT[st.sort]);
- release(grid);grid.innerHTML=list.map(p=>cardHtml(p)).join('');grid.querySelectorAll('.card').forEach(mount);
+ release(grid);grid.innerHTML=list.map(p=>cardHtml(p)).join('');grid.querySelectorAll('.card').forEach(el=>mount(el,{fullscreen:false}));
  const c=$('count');c.textContent=`${list.length} ${list.length===1?'piece':'pieces'}${st.cat?' in '+(st.sub||st.cat):''}`+(st.q?` matching “${st.q}”`:'');
  $('none').hidden=list.length>0;
  const p=new URLSearchParams();if(st.cat)p.set('cat',st.cat);if(st.sub)p.set('sub',st.sub);if(st.q)p.set('q',st.q);if(st.sort!=='featured')p.set('sort',st.sort);if(st.fabric)p.set('fabric',st.fabric);

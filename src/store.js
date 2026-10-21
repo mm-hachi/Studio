@@ -40,7 +40,7 @@ export const shopCfg=()=>({...SHOP_DEF,...(cfg.shop||{})});
 export const setShop=(k,v)=>{(cfg.shop??={})[k]=v;save()};
 // Business details shown in the footer, contact page and WhatsApp button (editable in the admin panel)
 export const siteCfg=()=>cfg.site||{};
-export const setSite=(k,v)=>{(cfg.site??={})[k]=v;save()};
+export const setSite=(k,v)=>{(cfg.site??={})[k]=v;save();window.dispatchEvent(new Event('siteconfigchange'))};
 export const viewportCfg=()=>{
  const c=siteCfg(),minZoom=Number(c.viewportMinZoom),maxZoom=Number(c.viewportMaxZoom);
  let min=Number.isFinite(minZoom)&&minZoom>0?minZoom:4,max=Number.isFinite(maxZoom)&&maxZoom>0?maxZoom:12;

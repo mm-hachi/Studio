@@ -133,6 +133,15 @@ Add references to them under `"documents"` in `data/site.json`.
 
 ---
 
+## 🏠 Build Your Room AR
+
+- The **Build your room** links on Shop and Custom Studio are controlled by the **Room builder** checkbox in the admin panel.
+- The room builder requests camera access only after the visitor starts it, and requires HTTPS plus a compatible mobile browser/device.
+- It loads the 8th Wall Engine Binary on the room-builder page from jsDelivr. No API key or hosted 8th Wall account is required. The binary includes world tracking under its separate license; see the visible attribution and license link in the experience.
+- Furniture placement is session-only; stopping the camera clears the current arrangement.
+
+---
+
 ## 💻 Development & Building
 
 The frontend is built with vanilla JavaScript modules and bundled with **esbuild**.
@@ -155,6 +164,7 @@ npm run assets
 - `src/products.js`: Unified materials library, finish definitions, and product loader.
 - `src/viewer.js`: Three.js WebGL viewer with dynamic multi-finish material mapping.
 - `src/studio.js`: Custom Studio modular floor builder, cyclorama scene, and AR exporter.
+- `src/room-builder.js`: Multi-piece camera-based AR room placement and controls.
 - `src/admin.js`: Steward's Chamber admin panel interface and settings editor.
 - `src/publish.js`: GitHub API publisher for `data/site.json`.
 - `css/styles.css`: Styling for the store, Custom Studio, modals, and popovers.

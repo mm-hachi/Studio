@@ -5,7 +5,7 @@ import { loadGLTF } from './loader.js';
 import { applyFabric, DEFMAP } from './texture.js';
 import * as Store from './store.js';
 import { build, getMapping, PRODUCTS } from './products.js';
-export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
+export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=true}={}){
  const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
  r.setPixelRatio(Math.min(devicePixelRatio,2));r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.1;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;
  const sc=new THREE.Scene();sc.environment=new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(),.04).texture;
@@ -64,15 +64,19 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
  set(id);
  const size=()=>{const p=canvas.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
  const ro=new ResizeObserver(size);ro.observe(canvas.parentElement);
- const stage=canvas.parentElement,full=document.createElement('button');full.type='button';full.className='viewport-fullscreen';full.setAttribute('aria-label','Maximize 3D viewport');full.title='Maximize 3D viewport';full.textContent='⛶';stage.append(full);
- const toggleFull=async()=>{
-  if(stage.classList.contains('viewport-fullscreen-fallback')){stage.classList.remove('viewport-fullscreen-fallback');size();return}
-  try{if(document.fullscreenElement===stage)await document.exitFullscreen();else if(stage.requestFullscreen)await stage.requestFullscreen();else{stage.classList.add('viewport-fullscreen-fallback');size()}}
-  catch(e){console.error('Could not change 3D viewport fullscreen state.',e);stage.classList.add('viewport-fullscreen-fallback');size()}
- };
- full.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFull()});
- const fullChange=()=>{const active=document.fullscreenElement===stage||stage.classList.contains('viewport-fullscreen-fallback');full.setAttribute('aria-label',active?'Exit fullscreen 3D viewport':'Maximize 3D viewport');full.title=active?'Exit fullscreen':'Maximize 3D viewport';size()};
- document.addEventListener('fullscreenchange',fullChange);
+ const stage=canvas.parentElement;
+ let full,fullChange;
+ if(fullscreen){
+  full=document.createElement('button');full.type='button';full.className='viewport-fullscreen';full.setAttribute('aria-label','Maximize 3D viewport');full.title='Maximize 3D viewport';full.textContent='⛶';stage.append(full);
+  const toggleFull=async()=>{
+   if(stage.classList.contains('viewport-fullscreen-fallback')){stage.classList.remove('viewport-fullscreen-fallback');size();return}
+   try{if(document.fullscreenElement===stage)await document.exitFullscreen();else if(stage.requestFullscreen)await stage.requestFullscreen();else{stage.classList.add('viewport-fullscreen-fallback');size()}}
+   catch(e){console.error('Could not change 3D viewport fullscreen state.',e);stage.classList.add('viewport-fullscreen-fallback');size()}
+  };
+  full.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFull()});
+  fullChange=()=>{const active=document.fullscreenElement===stage||stage.classList.contains('viewport-fullscreen-fallback');full.setAttribute('aria-label',active?'Exit fullscreen 3D viewport':'Maximize 3D viewport');full.title=active?'Exit fullscreen':'Maximize 3D viewport';size()};
+  document.addEventListener('fullscreenchange',fullChange);
+ }
  let vis=true;const vio=new IntersectionObserver(e=>vis=e[0].isIntersecting);vio.observe(canvas);
  const m={x:0,y:0};const mv=e=>{m.x=e.clientX/innerWidth-.5;m.y=e.clientY/innerHeight-.5};addEventListener('pointermove',mv);
  let t=0,last=performance.now();
@@ -80,5 +84,5 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false}={}){
   grow=Math.min(1,grow+dt*1.5);{const e=.001+(1-Math.pow(1-grow,3))*.999;obj.scale.set(dim[0]*e,dim[1]*e,dim[2]*e)}
   if(ctl)ctl.update();if(!orbit){obj.rotation.y=.6+t*spin+(scroll?scrollY*.003:0)+m.x*.9;if(!ctl){cam.position.set(base.x,base.y-m.y*.8,base.z+(scroll?scrollY*.002:0));cam.lookAt(look)}}
   r.render(sc,cam)})(last);
- return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);document.removeEventListener('fullscreenchange',fullChange);if(view.pan)canvas.removeEventListener('click',preventCardNavigation);full.remove();ctl.dispose();r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),setId:set,setColour:tint,setFabric,setFrame,setFinish,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
+ return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);if(fullChange)document.removeEventListener('fullscreenchange',fullChange);if(view.pan)canvas.removeEventListener('click',preventCardNavigation);full?.remove();ctl.dispose();r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),setId:set,setColour:tint,setFabric,setFrame,setFinish,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
 }
