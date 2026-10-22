@@ -73,6 +73,9 @@
      60
     ],
     "dimsLocked": true
+   },
+   "x-emma-j-shipley-one-9czi": {
+    "dimsLocked": true
    }
   },
   "collections": [
@@ -331,6 +334,40 @@
      99
     ],
     "model": "models/x-office-two-zihe.glb"
+   },
+   {
+    "id": "x-marble-one-erfd",
+    "name": "Marble One",
+    "cat": "Tables",
+    "sub": "Dining Tables",
+    "tag": "",
+    "price": 20100,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     200,
+     100,
+     60
+    ],
+    "dimsLocked": true,
+    "model": "models/x-marble-one-erfd.glb"
+   },
+   {
+    "id": "x-emma-j-shipley-one-9czi",
+    "name": "Emma J Shipley One",
+    "cat": "Chairs",
+    "sub": "Armchairs",
+    "tag": "",
+    "price": 10900,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     79,
+     85,
+     100
+    ],
+    "dimsLocked": false,
+    "model": "models/x-emma-j-shipley-one-9czi.glb"
    }
   ],
   "pieceFabrics": {
@@ -488,6 +525,30 @@
     "hex": "#cccccc",
     "desc": "",
     "image": "swatches/fabrics/f-purple-suede-56n5.jpe"
+   },
+   {
+    "id": "f-beige-marble-gggw",
+    "name": "Beige Marble",
+    "type": "Stone",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-beige-marble-gggw.jpe"
+   },
+   {
+    "id": "f-emma-j-shipley-one-b9yj",
+    "name": "Emma J Shipley One",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-emma-j-shipley-one-b9yj.jpe"
+   },
+   {
+    "id": "f-emma-j-shipley-two-8hsh",
+    "name": "Emma J Shipley Two",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-emma-j-shipley-two-8hsh.webp"
    }
   ],
   "mapping": {
@@ -992,6 +1053,58 @@
      "oy": 0,
      "locked": true
     }
+   },
+   "x-marble-one-erfd": {
+    "finish:detail1:f-beige-marble-gggw": {
+     "sx": 2.9,
+     "sy": 2.9,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:frame:ebony": {
+     "sx": 0.05,
+     "sy": 0.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    }
+   },
+   "x-emma-j-shipley-one-9czi": {
+    "finish:fabric:oyster": {
+     "sx": 5.65,
+     "sy": 5.65,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-emma-j-shipley-one-b9yj": {
+     "sx": 3.95,
+     "sy": 3.95,
+     "rot": 0,
+     "ox": 0.02,
+     "oy": -0.24,
+     "locked": true
+    },
+    "finish:fabric:f-light-brown-suede-3jb6": {
+     "sx": 2.65,
+     "sy": 2.65,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-emma-j-shipley-two-8hsh": {
+     "sx": 2.8,
+     "sy": 2.8,
+     "rot": 0,
+     "ox": 0.13,
+     "oy": 0.06,
+     "locked": true
+    }
    }
   },
   "pieceDefaults": {
@@ -1061,6 +1174,18 @@
     "fabric": "sage",
     "pillows": "oyster",
     "detail1": "ebony"
+   },
+   "x-marble-one-erfd": {
+    "frame": "ebony",
+    "fabric": "oyster",
+    "pillows": "oyster",
+    "detail1": "f-beige-marble-gggw"
+   },
+   "x-emma-j-shipley-one-9czi": {
+    "frame": "walnut",
+    "fabric": "f-emma-j-shipley-one-b9yj",
+    "pillows": "oyster",
+    "detail1": "f-beige-marble-gggw"
    }
   },
   "pieceFinishes": {
@@ -1154,6 +1279,15 @@
    "f-purple-suede-56n5": [
     "fabric",
     "pillows"
+   ],
+   "f-beige-marble-gggw": [
+    "detail1"
+   ],
+   "f-emma-j-shipley-one-b9yj": [
+    "fabric"
+   ],
+   "f-emma-j-shipley-two-8hsh": [
+    "fabric"
    ]
   },
   "pieceFinishAvailability": {
@@ -1217,6 +1351,18 @@
     "frame": true,
     "fabric": true,
     "pillows": false
+   },
+   "x-marble-one-erfd": {
+    "frame": true,
+    "fabric": false,
+    "pillows": false,
+    "detail1": true
+   },
+   "x-emma-j-shipley-one-9czi": {
+    "frame": true,
+    "fabric": true,
+    "pillows": false,
+    "detail1": false
    }
   },
   "site": {
@@ -1419,9 +1565,34 @@
    "path": "swatches/fabrics/f-purple-suede-56n5.jpe",
    "type": "image/jpeg",
    "name": "purple-suede-one.jpe"
+  },
+  "fabric:f-beige-marble-gggw": {
+   "path": "swatches/fabrics/f-beige-marble-gggw.jpe",
+   "type": "image/jpeg",
+   "name": "beige-marble.jpe"
+  },
+  "fabric:f-emma-j-shipley-one-b9yj": {
+   "path": "swatches/fabrics/f-emma-j-shipley-one-b9yj.jpe",
+   "type": "image/jpeg",
+   "name": "emmajshipley-one.jpe"
+  },
+  "fabric:f-emma-j-shipley-two-8hsh": {
+   "path": "swatches/fabrics/f-emma-j-shipley-two-8hsh.webp",
+   "type": "image/webp",
+   "name": "emmjshipley-three.webp"
+  },
+  "model:x-emma-j-shipley-one-9czi": {
+   "path": "models/x-emma-j-shipley-one-9czi.glb",
+   "type": "",
+   "name": "kuku-emmajshipley-wingback-armchair.glb"
+  },
+  "model:x-marble-one-erfd": {
+   "path": "models/x-marble-one-erfd.glb",
+   "type": "",
+   "name": "marble-dining-one.glb"
   }
  },
- "version": 1792572213692,
+ "version": 1792663775733,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",
@@ -1435,6 +1606,8 @@
   "x-office-one-kxcy": "models/x-office-one-kxcy.glb",
   "x-office-two-zihe": "models/x-office-two-zihe.glb",
   "x-tuft-supreme-oeqb": "models/x-tuft-supreme-oeqb.glb",
-  "x-vonia-3-seater-0n8h": "models/x-vonia-3-seater-0n8h.glb"
+  "x-vonia-3-seater-0n8h": "models/x-vonia-3-seater-0n8h.glb",
+  "x-emma-j-shipley-one-9czi": "models/x-emma-j-shipley-one-9czi.glb",
+  "x-marble-one-erfd": "models/x-marble-one-erfd.glb"
  }
 }
