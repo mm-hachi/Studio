@@ -1,0 +1,19 @@
+{
+  "name": "dekara-3d-embed-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/client.js --bundle --minify --format=iife --global-name=Dekara3D --outfile=dist/dekara-3d.js",
+    "demo:models": "node demo/create-models.js",
+    "demo": "node demo/server.js",
+    "start": "node server.js",
+    "test": "node server.test.js && node demo/server.test.js"
+  },
+  "dependencies": {
+    "three": "0.160.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.5"
+  }
+}

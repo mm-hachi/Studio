@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" fill="none">
+  <defs>
+    <linearGradient id="back" x2=".8" y2="1"><stop stop-color="#dddace"/><stop offset="1" stop-color="#aaa994"/></linearGradient>
+    <linearGradient id="oak" x2="1" y2="0"><stop stop-color="#a77c50"/><stop offset="1" stop-color="#65472e"/></linearGradient>
+  </defs>
+  <path fill="#d8d5c9" d="M0 0h1100v820H0z"/>
+  <path fill="#b6ad9e" d="M0 605h1100v215H0z"/>
+  <path fill="#e7e1d5" d="M752 85h264v324H752z"/>
+  <path fill="#c9c9b3" d="M771 104h225v286H771z"/>
+  <path fill="#e7e1d5" d="M880 104h8v286h-8zm-109 139h225v8H771z"/>
+  <ellipse cx="556" cy="701" fill="#53483c" opacity=".19" rx="279" ry="52"/>
+  <path stroke="url(#oak)" stroke-linecap="round" stroke-width="25" d="m393 485-38 234m353-234 44 234M410 504l47 220m211-220-49 220"/>
+  <path fill="url(#oak)" d="M356 596c0-34 27-61 61-61h269c34 0 61 27 61 61v35H356z"/>
+  <path fill="url(#back)" d="M395 476V308c0-41 33-74 74-74h170c41 0 74 33 74 74v168c0 34-27 61-61 61H456c-34 0-61-27-61-61Z"/>
+  <path stroke="#8b6b48" stroke-linecap="round" stroke-width="21" d="M390 321v158c0 18 14 33 33 33h265c18 0 33-15 33-33V321"/>
+  <path fill="#bdb7a7" d="M428 304c0-22 18-40 40-40h168c22 0 39 18 39 40v160H428z"/>
+  <path fill="#c8c2b2" d="M420 572h273v42H420z"/>
+  <path stroke="#785a3c" stroke-linecap="round" stroke-width="12" d="M489 625v83m129-83v83"/>
+  <path fill="#a7a18c" d="M175 160c73-61 157-78 223-26-67 2-102 29-114 82-34-29-69-45-109-56Z"/>
+  <path fill="#74806d" d="M139 213c75-46 154-48 211 10-67-11-105 8-126 57-29-35-58-56-85-67Z"/>
+  <path stroke="#766447" stroke-width="12" d="M190 377c26-98 50-167 95-220"/>
+  <path fill="#f1eadf" d="M858 456h91v137h-91z"/>
+  <path fill="#a5815c" d="m874 455 27-43 31 43"/>
+</svg>

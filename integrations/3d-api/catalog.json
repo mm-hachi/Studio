@@ -1,0 +1,230 @@
+{
+  "models": [
+    {
+      "id": "sample-sofa",
+      "name": "Haven Three-seat Sofa",
+      "category": "Sofas",
+      "price": 18400,
+      "description": "A deep, relaxed sofa with clean lines and comfortable, generous cushions.",
+      "customizations": [
+        {
+          "id": "upholstery",
+          "label": "Choose upholstery",
+          "target": "tint",
+          "options": [
+            {
+              "id": "sand",
+              "label": "Natural sand",
+              "color": "#c8b9a3"
+            },
+            {
+              "id": "olive",
+              "label": "Moss olive",
+              "color": "#858a70"
+            },
+            {
+              "id": "terracotta",
+              "label": "Soft terracotta",
+              "color": "#ae7059"
+            },
+            {
+              "id": "charcoal",
+              "label": "Warm charcoal",
+              "color": "#575650"
+            }
+          ]
+        },
+        {
+          "id": "frame",
+          "label": "Choose frame finish",
+          "target": "frame",
+          "options": [
+            {
+              "id": "walnut",
+              "label": "Natural walnut",
+              "color": "#78583c"
+            },
+            {
+              "id": "oak",
+              "label": "Light oak",
+              "color": "#b28c62"
+            },
+            {
+              "id": "black",
+              "label": "Dark stained",
+              "color": "#423a31"
+            }
+          ]
+        }
+      ],
+      "modelUrl": "http://localhost:4173/assets/sample-sofa.glb"
+    },
+    {
+      "id": "sample-chair",
+      "name": "Arc Lounge Chair",
+      "category": "Chairs",
+      "price": 7200,
+      "description": "A sculptural occasional chair with a softly upholstered seat and warm timber frame.",
+      "customizations": [
+        {
+          "id": "upholstery",
+          "label": "Choose upholstery",
+          "target": "tint",
+          "options": [
+            {
+              "id": "linen",
+              "label": "Oatmeal linen",
+              "color": "#c8b9a3"
+            },
+            {
+              "id": "olive",
+              "label": "Moss olive",
+              "color": "#858a70"
+            },
+            {
+              "id": "rust",
+              "label": "Burnt sienna",
+              "color": "#ae7059"
+            },
+            {
+              "id": "ink",
+              "label": "Midnight ink",
+              "color": "#575650"
+            }
+          ]
+        },
+        {
+          "id": "frame",
+          "label": "Choose frame finish",
+          "target": "frame",
+          "options": [
+            {
+              "id": "walnut",
+              "label": "Smoked walnut",
+              "color": "#78583c"
+            },
+            {
+              "id": "oak",
+              "label": "Golden oak",
+              "color": "#b28c62"
+            },
+            {
+              "id": "ebonized",
+              "label": "Ebonized ash",
+              "color": "#423a31"
+            }
+          ]
+        }
+      ],
+      "modelUrl": "http://localhost:4173/assets/sample-chair.glb"
+    },
+    {
+      "id": "sample-table",
+      "name": "Form Coffee Table",
+      "category": "Tables",
+      "price": 4900,
+      "description": "A simple, considered coffee table with a solid-looking top and tapered legs.",
+      "customizations": [
+        {
+          "id": "surface",
+          "label": "Choose surface finish",
+          "target": "tint",
+          "options": [
+            {
+              "id": "oak",
+              "label": "Natural oak",
+              "color": "#b28c62"
+            },
+            {
+              "id": "walnut",
+              "label": "Warm walnut",
+              "color": "#78583c"
+            },
+            {
+              "id": "stone",
+              "label": "Soft stone",
+              "color": "#bcb8ad"
+            }
+          ]
+        },
+        {
+          "id": "legs",
+          "label": "Choose leg finish",
+          "target": "frame",
+          "options": [
+            {
+              "id": "walnut",
+              "label": "Natural walnut",
+              "color": "#78583c"
+            },
+            {
+              "id": "oak",
+              "label": "Light oak",
+              "color": "#b28c62"
+            },
+            {
+              "id": "black",
+              "label": "Dark stained",
+              "color": "#423a31"
+            }
+          ]
+        }
+      ],
+      "modelUrl": "http://localhost:4173/assets/sample-table.glb"
+    },
+    {
+      "id": "my-chair",
+      "name": "My Chair",
+      "category": "Chairs",
+      "price": 8900,
+      "description": "A short description of the chair.",
+      "modelUrl": "http://localhost:4173/assets/x-emma-j-shipley-one-9czi.glb",
+      "customizations": [
+        {
+          "id": "tint",
+          "label": "Choose upholstery",
+          "target": "Upholstery",
+          "options": [
+            {
+              "id": "oat",
+              "label": "Oat",
+              "color": "#c8b9a3"
+            },
+            {
+              "id": "olive",
+              "label": "Olive",
+              "color": "#858a70"
+            },
+            {
+              "id": "rust",
+              "label": "Rust",
+              "color": "#ae7059"
+            },
+            {
+              "id": "ink",
+              "label": "Ink",
+              "color": "http://localhost:4173/assets/emmajshipley-one.jpe"
+            }
+          ]
+        },
+        {
+          "id": "frame",
+          "label": "Choose wood finish",
+          "target": "Wood",
+          "options": [
+            {
+              "id": "oak",
+              "label": "Oak",
+              "color": "#b28c62"
+            },
+            {
+              "id": "walnut",
+              "label": "Walnut",
+              "color": "#78583c"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

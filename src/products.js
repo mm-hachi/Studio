@@ -50,12 +50,13 @@ const withFabricDefault=(list,pid)=>{
  return fallback&&!list.some(m=>m[2]===fallback[2])?[fallback,...list]:list;
 };
 export const assignedFinishesFor=(pid,ftid)=>{
+ const selected=C.pieceFinishes?.[pid]?.[ftid]??D.pieceFinishes?.[pid]?.[ftid];
  if(ftid==='fabric'){
  const assigned=FABRICS.filter(f=>MATERIAL_LIST.find(item=>item.id===f[2])?.finishTypes?.includes('fabric'));
- return withFabricDefault(assigned,pid);
+ return selected!==undefined?assigned.filter(f=>selected.includes(f[2])):withFabricDefault(assigned,pid);
  }
  const assigned=MATERIALS.filter(m=>MATERIAL_LIST.find(item=>item.id===m[2])?.finishTypes?.includes(ftid));
- return withFinishDefault(assigned,pid,ftid);
+ return selected!==undefined?assigned.filter(m=>selected.includes(m[2])):withFinishDefault(assigned,pid,ftid);
 };
 const fabricsFor=id=>pieceFinishTypeAvailable(id,'fabric')?assignedFinishesFor(id,'fabric'):[];
 
@@ -79,7 +80,7 @@ const extra=[...(D.products||[]).map(p=>({...p})),...(C.added||[]).map(p=>({...p
 extra.forEach(p=>{if(p.model)D.models[p.id]=p.model});
 export const PRODUCTS=[...BASE,...extra].filter(p=>!gone.has(p.id)).map(p=>{
  const f=fabricsFor(p.id);
- const ft=FINISH_TYPES.filter(t=>pieceFinishTypeAvailable(p.id,t.id)).map(t=>({...t,finishes:finishesFor(p.id,t.id)}));
+ const ft=FINISH_TYPES.filter(t=>pieceFinishTypeAvailable(p.id,t.id)).map(t=>({...t,finishes:finishesFor(p.id,t.id)})).filter(t=>t.finishes.length);
  return {...p,...(C.products[p.id]||{}),fabrics:f,finishTypes:ft,defaults:pieceDefaults[p.id]||{}};
 });
 export const FEAT=(()=>{const L=FEATURED.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);return L.length?L:PRODUCTS.slice(0,4)})();

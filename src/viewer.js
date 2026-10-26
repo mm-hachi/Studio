@@ -18,6 +18,7 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
  const ring=new THREE.Mesh(new THREE.RingGeometry(2.3,2.33,128),new THREE.MeshBasicMaterial({color:0x9c7a4d,transparent:true,opacity:.35,side:2}));ring.rotation.x=-Math.PI/2;ring.position.y=.005;sc.add(ring);
  const ctl=new OrbitControls(cam,canvas);ctl.target.copy(look);ctl.enableDamping=true;ctl.enablePan=view.pan;ctl.enableRotate=orbit;ctl.minDistance=view.minZoom;ctl.maxDistance=view.maxZoom;ctl.maxPolarAngle=Math.PI*.49;
  let obj,grow=0,colour,glow=1,dim=[1,1,1],dead=false,fab=null;
+ const frameListeners=new Set();
  const tint=h=>{colour=h;fab=null;obj.userData.tints.forEach(m=>{m.map=null;m.color.set(h);m.needsUpdate=true})};
  let orig=[];const snap=()=>{orig=obj.userData.tints.map(m=>({m,c:m.color.clone(),map:m.map}))};
  const restore=()=>{orig.forEach(({m,c,map})=>{m.userData.fabTok=-1;if(m.map&&m.map!==map)m.map.dispose();m.map=map;m.color.copy(c);m.needsUpdate=true})};
@@ -60,6 +61,18 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
   if(firstFabric)setFabric(firstFabric,getMapping(n,firstFabric[2],'fabric'));
  }
  set(id);
+ const projectDimensions=()=>{
+  if(!obj)return null;
+  obj.updateMatrixWorld(true);cam.updateMatrixWorld();
+  const bounds=new THREE.Box3().setFromObject(obj);if(bounds.isEmpty())return null;
+  const z=cam.position.z>=obj.position.z?bounds.max.z:bounds.min.z,x=cam.position.x>=obj.position.x?bounds.max.x:bounds.min.x;
+  const project=point=>{const p=point.project(cam);return {x:(p.x+1)*500,y:(1-p.y)*350}};
+  return {
+   width:[project(new THREE.Vector3(bounds.min.x,bounds.min.y,z)),project(new THREE.Vector3(bounds.max.x,bounds.min.y,z))],
+   depth:[project(new THREE.Vector3(x,bounds.min.y,bounds.min.z)),project(new THREE.Vector3(x,bounds.min.y,bounds.max.z))],
+   height:[project(new THREE.Vector3(x,bounds.min.y,z)),project(new THREE.Vector3(x,bounds.max.y,z))]
+  };
+ };
  const size=()=>{const p=canvas.parentElement,w=p.clientWidth||1,h=p.clientHeight||1;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
  const ro=new ResizeObserver(size);ro.observe(canvas.parentElement);
  const stage=canvas.parentElement;
@@ -81,6 +94,7 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
  (function loop(n){if(dead)return;requestAnimationFrame(loop);const dt=Math.min((n-last)/1000,.05);last=n;if(!vis)return;t+=dt;
   grow=Math.min(1,grow+dt*1.5);{const e=.001+(1-Math.pow(1-grow,3))*.999;obj.scale.set(dim[0]*e,dim[1]*e,dim[2]*e)}
   if(ctl)ctl.update();if(!orbit){obj.rotation.y=.6+t*spin+(scroll?scrollY*.003:0)+m.x*.9;if(!ctl){cam.position.set(base.x,base.y-m.y*.8,base.z+(scroll?scrollY*.002:0));cam.lookAt(look)}}
+  frameListeners.forEach(listener=>listener());
   r.render(sc,cam)})(last);
- return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);if(fullChange)document.removeEventListener('fullscreenchange',fullChange);full?.remove();ctl.dispose();r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),setId:set,setColour:tint,setFabric,setFrame,setFinish,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
+ return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);if(fullChange)document.removeEventListener('fullscreenchange',fullChange);full?.remove();ctl.dispose();r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),projectDimensions,onFrame(listener){frameListeners.add(listener);return ()=>frameListeners.delete(listener)},setId:set,setColour:tint,setFabric,setFrame,setFinish,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
 }

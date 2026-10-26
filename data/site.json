@@ -75,7 +75,8 @@
     "dimsLocked": true
    },
    "x-emma-j-shipley-one-9czi": {
-    "dimsLocked": true
+    "dimsLocked": true,
+    "name": "Wingback Armchair"
    }
   },
   "collections": [
@@ -533,22 +534,6 @@
     "hex": "#cccccc",
     "desc": "",
     "image": "swatches/fabrics/f-beige-marble-gggw.jpe"
-   },
-   {
-    "id": "f-emma-j-shipley-one-b9yj",
-    "name": "Emma J Shipley One",
-    "type": "Fabric",
-    "hex": "#cccccc",
-    "desc": "",
-    "image": "swatches/fabrics/f-emma-j-shipley-one-b9yj.jpe"
-   },
-   {
-    "id": "f-emma-j-shipley-two-8hsh",
-    "name": "Emma J Shipley Two",
-    "type": "Fabric",
-    "hex": "#cccccc",
-    "desc": "",
-    "image": "swatches/fabrics/f-emma-j-shipley-two-8hsh.webp"
    }
   ],
   "mapping": {
@@ -844,6 +829,14 @@
      "ox": 0,
      "oy": 0,
      "locked": true
+    },
+    "finish:fabric:f-light-brown-suede-3jb6": {
+     "sx": 2.8,
+     "sy": 2.8,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
     }
    },
    "x-scarlet-custom-couch-svxv": {
@@ -890,8 +883,32 @@
      "locked": true
     },
     "finish:fabric:oyster": {
-     "sx": 3.15,
-     "sy": 3.15,
+     "sx": 2.8,
+     "sy": 2.8,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:sage": {
+     "sx": 2.2,
+     "sy": 2.2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-orange-suede-4opl": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:pillows:f-orange-suede-4opl": {
+     "sx": 2.9,
+     "sy": 2.9,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -946,16 +963,16 @@
    },
    "x-macre-nopy": {
     "finish:fabric:sage": {
-     "sx": 2.8,
-     "sy": 2.8,
+     "sx": 4.1,
+     "sy": 4.1,
      "rot": 0,
      "ox": 0,
      "oy": 0,
      "locked": true
     },
     "finish:fabric:terracotta": {
-     "sx": 20.85,
-     "sy": 20.85,
+     "sx": 20.25,
+     "sy": 20.25,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -964,6 +981,110 @@
     "finish:pillows:terracotta": {
      "sx": 7.55,
      "sy": 7.55,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:oyster": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:charcoal": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:navy": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:mustard": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:blush": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:forest": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-lemo-grey-38z3": {
+     "sx": 6.7,
+     "sy": 6.7,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-velvet-chocolate-n2op": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-boucle-mustard-2nrd": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-light-brown-suede-3jb6": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-navy-suede-41x9": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-orange-suede-4opl": {
+     "sx": 4.1,
+     "sy": 4.1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-purple-suede-56n5": {
+     "sx": 4.1,
+     "sy": 4.1,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -1000,8 +1121,8 @@
    },
    "x-office-one-kxcy": {
     "finish:fabric:oyster": {
-     "sx": 8,
-     "sy": 8,
+     "sx": 3.85,
+     "sy": 3.85,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -1010,6 +1131,118 @@
     "finish:frame:ebony": {
      "sx": 0.05,
      "sy": 0.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:sage": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:charcoal": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:terracotta": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:navy": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:mustard": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:blush": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:forest": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-lemo-grey-38z3": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-velvet-chocolate-n2op": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-boucle-mustard-2nrd": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-light-brown-suede-3jb6": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-navy-suede-41x9": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-orange-suede-4opl": {
+     "sx": 3.85,
+     "sy": 3.85,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-purple-suede-56n5": {
+     "sx": 3.85,
+     "sy": 3.85,
      "rot": 0,
      "ox": 0,
      "oy": 0,
@@ -1116,7 +1349,7 @@
     "fabric": "f-velvet-chocolate-n2op"
    },
    "x-molo-occasional-chair-bkmk": {
-    "fabric": "forest",
+    "fabric": "f-light-brown-suede-3jb6",
     "frame": "f-furnwood-qjlm"
    },
    "x-asante-couch-c11i": {
@@ -1198,6 +1431,18 @@
     "frame": [
      "ebony"
     ]
+   },
+   "x-emma-j-shipley-one-9czi": {
+    "fabric": [
+     "oyster",
+     "sage",
+     "charcoal",
+     "navy",
+     "forest",
+     "f-lemo-grey-38z3",
+     "f-light-brown-suede-3jb6",
+     "f-navy-suede-41x9"
+    ]
    }
   },
   "finishTypes": [
@@ -1219,7 +1464,7 @@
    },
    {
     "id": "detail1",
-    "name": "Detail1",
+    "name": "Accessory",
     "target": "detail1"
    }
   ],
@@ -1571,16 +1816,6 @@
    "type": "image/jpeg",
    "name": "beige-marble.jpe"
   },
-  "fabric:f-emma-j-shipley-one-b9yj": {
-   "path": "swatches/fabrics/f-emma-j-shipley-one-b9yj.jpe",
-   "type": "image/jpeg",
-   "name": "emmajshipley-one.jpe"
-  },
-  "fabric:f-emma-j-shipley-two-8hsh": {
-   "path": "swatches/fabrics/f-emma-j-shipley-two-8hsh.webp",
-   "type": "image/webp",
-   "name": "emmjshipley-three.webp"
-  },
   "model:x-emma-j-shipley-one-9czi": {
    "path": "models/x-emma-j-shipley-one-9czi.glb",
    "type": "",
@@ -1590,9 +1825,99 @@
    "path": "models/x-marble-one-erfd.glb",
    "type": "",
    "name": "marble-dining-one.glb"
+  },
+  "gallery:x-asante-couch-c11i:1": {
+   "path": "media/products/x-asante-couch-c11i/gallery-1.png",
+   "type": "image/png",
+   "name": "asante-front.png"
+  },
+  "gallery:x-asante-couch-c11i:2": {
+   "path": "media/products/x-asante-couch-c11i/gallery-2.png",
+   "type": "image/png",
+   "name": "asante-rear.png"
+  },
+  "gallery:x-asante-couch-c11i:3": {
+   "path": "media/products/x-asante-couch-c11i/gallery-3.png",
+   "type": "image/png",
+   "name": "asante-iso.png"
+  },
+  "gallery:x-ina-chair-1ycj:1": {
+   "path": "media/products/x-ina-chair-1ycj/gallery-1.png",
+   "type": "image/png",
+   "name": "ina-front.png"
+  },
+  "gallery:x-ina-chair-1ycj:2": {
+   "path": "media/products/x-ina-chair-1ycj/gallery-2.png",
+   "type": "image/png",
+   "name": "ina-side.png"
+  },
+  "gallery:x-ina-chair-1ycj:3": {
+   "path": "media/products/x-ina-chair-1ycj/gallery-3.png",
+   "type": "image/png",
+   "name": "ina-iso.png"
+  },
+  "gallery:x-marble-one-erfd:1": {
+   "path": "media/products/x-marble-one-erfd/gallery-1.png",
+   "type": "image/png",
+   "name": "marble-front.png"
+  },
+  "gallery:x-marble-one-erfd:2": {
+   "path": "media/products/x-marble-one-erfd/gallery-2.png",
+   "type": "image/png",
+   "name": "marble-side.png"
+  },
+  "gallery:x-marble-one-erfd:3": {
+   "path": "media/products/x-marble-one-erfd/gallery-3.png",
+   "type": "image/png",
+   "name": "marble-iso.png"
+  },
+  "gallery:x-molo-occasional-chair-bkmk:1": {
+   "path": "media/products/x-molo-occasional-chair-bkmk/gallery-1.png",
+   "type": "image/png",
+   "name": "molo-occassional-chair-front.png"
+  },
+  "gallery:x-molo-occasional-chair-bkmk:2": {
+   "path": "media/products/x-molo-occasional-chair-bkmk/gallery-2.png",
+   "type": "image/png",
+   "name": "molo-occassional-chair-side.png"
+  },
+  "gallery:x-molo-occasional-chair-bkmk:3": {
+   "path": "media/products/x-molo-occasional-chair-bkmk/gallery-3.png",
+   "type": "image/png",
+   "name": "molo-occassional-chair-iso.png"
+  },
+  "gallery:x-mulo-occassional-chair-tuln:1": {
+   "path": "media/products/x-mulo-occassional-chair-tuln/gallery-1.png",
+   "type": "image/png",
+   "name": "mulo-front.png"
+  },
+  "gallery:x-mulo-occassional-chair-tuln:2": {
+   "path": "media/products/x-mulo-occassional-chair-tuln/gallery-2.png",
+   "type": "image/png",
+   "name": "mulo-side.png"
+  },
+  "gallery:x-mulo-occassional-chair-tuln:3": {
+   "path": "media/products/x-mulo-occassional-chair-tuln/gallery-3.png",
+   "type": "image/png",
+   "name": "mulo-iso.png"
+  },
+  "gallery:x-office-one-kxcy:1": {
+   "path": "media/products/x-office-one-kxcy/gallery-1.png",
+   "type": "image/png",
+   "name": "office-one-front.png"
+  },
+  "gallery:x-office-one-kxcy:2": {
+   "path": "media/products/x-office-one-kxcy/gallery-2.png",
+   "type": "image/png",
+   "name": "office-one-side.png"
+  },
+  "gallery:x-office-one-kxcy:3": {
+   "path": "media/products/x-office-one-kxcy/gallery-3.png",
+   "type": "image/png",
+   "name": "office-one-iso.png"
   }
  },
- "version": 1792663775733,
+ "version": 1793042639683,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ee">
+  <title>Shop furniture — Stillroom</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="announcement">A quieter kind of home. Thoughtfully made, made to last.</div>
+  <header class="site-header">
+    <a class="wordmark" href="/">stillroom<span>.</span></a>
+    <nav aria-label="Main navigation"><a href="/shop.html?category=Sofas">Living</a><a href="/shop.html?category=Chairs">Chairs</a><a href="/shop.html?category=Tables">Tables</a><a href="/shop.html">All furniture</a></nav>
+    <a class="header-note" href="/">Back to home <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <section class="page-intro">
+      <p class="eyebrow">Good things for every room</p>
+      <h1 id="shop-title">Furniture to live with.</h1>
+      <p id="shop-description">A considered collection of enduring shapes, honest materials and thoughtful details.</p>
+    </section>
+    <section class="shop-layout section-wrap">
+      <aside class="shop-sidebar">
+        <p class="eyebrow">Browse by</p>
+        <a class="filter-link" href="/shop.html">All furniture <span data-count="all"></span></a>
+        <a class="filter-link" href="/shop.html?category=Sofas">Sofas <span data-count="Sofas"></span></a>
+        <a class="filter-link" href="/shop.html?category=Chairs">Chairs <span data-count="Chairs"></span></a>
+        <a class="filter-link" href="/shop.html?category=Tables">Tables <span data-count="Tables"></span></a>
+        <div class="shop-note"><span>✳</span><p>Designed for living. Made to be lived in.</p></div>
+      </aside>
+      <div class="shop-results">
+        <div class="results-bar"><span id="result-count">Connecting to the 3D API…</span><label>Sort <select id="sort-products" aria-label="Sort products"><option value="featured">Featured</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="name">Name</option></select></label></div>
+        <div class="product-grid" id="shop-products" aria-live="polite"><p class="loading-note">The collection is on its way…</p></div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><a class="wordmark" href="/">stillroom<span>.</span></a><p>An independent furniture-store demo · Built to show a 3D integration in context.</p><a href="/">Back to home ↗</a></footer>
+  <script src="/dekara-3d.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

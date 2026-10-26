@@ -79,6 +79,11 @@ const defaultOptions=(ftid,current)=>{
  const fallback=MATERIALS.find(m=>m[2]===current);
  return fallback&&!list.some(m=>m[2]===current)?[...list,fallback]:list;
 };
+const pieceFinishOptions=(pid,ftid,defaults)=>{
+ const options=defaultOptions(ftid,defaults?.[ftid]);
+ const selected=Store.cfg.pieceFinishes?.[pid]?.[ftid]??Store.DATA.pieceFinishes?.[pid]?.[ftid]??options.map(m=>m[2]);
+ return {options,selected,defaults:options.filter(m=>selected.includes(m[2])).length?options.filter(m=>selected.includes(m[2])):options};
+};
 const safePart=value=>{const s=String(value).replace(/[^a-z0-9_-]/gi,'-').replace(/^-+|-+$/g,'');if(!s)throw new Error('An uploaded file has an invalid ID for its repository path.');return s};
 const fileExt=(name,type)=>{const match=/\.([a-z0-9]{2,8})$/i.exec(name||'');if(match)return match[1].toLowerCase();
  return ({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','video/mp4':'mp4','video/webm':'webm','model/gltf-binary':'glb','model/gltf+json':'gltf'}[type]||'bin')};
@@ -172,7 +177,7 @@ const fabHtml=()=>{
  const fts=Store.finishTypes();
  return `<h4>Materials library</h4><p class="note">Add materials to the finish types where customers can use them. Assignments are edited on each material and apply across pieces.</p>
  <details><summary>Finish types (${fts.length})</summary><p class="note">Each finish type matches a named material in GLB models (e.g. "frame", "legs", "base").</p>
- ${fts.map(ft=>`<div class="ar"><b>${esc(ft.name)}</b><small>Target in GLB: <code>${esc(ft.target||ft.name)}</code></small>${ft.id!=='fabric'&&fts.length>1?`<button data-delfintype="${esc(ft.id)}">Delete this finish type</button>`:''}</div>`).join('')}
+ ${fts.map((ft,i)=>`<div class="ar"><label>Name<input data-ft="${esc(ft.id)}|name" value="${esc(ft.name)}"></label><label>GLB material name (target)<input data-ft="${esc(ft.id)}|target" value="${esc(ft.target||ft.name)}"></label><button data-ft-order="up"${i===0?' disabled':''}>Move earlier</button><button data-ft-order="down"${i===fts.length-1?' disabled':''}>Move later</button>${ft.id!=='fabric'&&fts.length>1?`<button data-delfintype="${esc(ft.id)}">Delete this finish type</button>`:''}</div>`).join('')}
  <label>New finish type name<input id="nft-name" placeholder="e.g. Legs or Base"></label><label>GLB material name (target)<input id="nft-target" placeholder="e.g. legs (matches GLB material name)"></label>
  <div class="acts"><button data-act="addfintype">Add finish type</button></div></details>
  <div id="adm-material-list">${MATERIAL_LIST.map((f,i)=>`<details data-material-id="${esc(f.id)}"><summary>${esc(f.name)} (${esc(f.type||'Fabric')})</summary><div class="acts material-order"><button data-mat-order="up"${i===0?' disabled':''}>Move earlier</button><button data-mat-order="down"${i===MATERIAL_LIST.length-1?' disabled':''}>Move later</button></div><label>Name<input data-fe="${f.id}|name" value="${esc(f.name)}"></label><label>Type<select data-fe="${f.id}|type">${FT.map(t=>`<option${t===f.type?' selected':''}>${t}</option>`).join('')}</select></label><label>Colour<input type="color" data-fe="${f.id}|hex" value="${esc(f.hex)}"></label><label>Description<textarea rows="3" data-fe="${f.id}|desc">${esc(f.desc)}</textarea></label>${finishAssignments(`data-mft="${f.id}"`,f.finishTypes||[])}${row('Swatch / texture image','fabric:'+f.id,'image/*')}<div class="acts"><button data-delfab="${f.id}">Delete this material</button></div></details>`).join('')}</div>
@@ -211,7 +216,7 @@ function openPanel(){
  ${document.getElementById('p-canvas')?'<h4>Mapping</h4><div id="map-body"></div>':''}
  ${pubHtml()}${siteHtml()}${shopHtml()}${studioHtml()}${fabHtml()}${addHtml()}${collHtml()}<h4>Pieces</h4><div class="acts"><button data-act="restoredef">Restore deleted default pieces</button></div>${PRODUCTS.map(x=>`<details><summary>${esc(x.name)}</summary>${fld(x.id,'name','Name',x.name)}<label>Category<select data-pid="${x.id}" data-k="cat">${CATS.map(c=>`<option${c===x.cat?' selected':''}>${c}</option>`).join('')}</select></label>${fld(x.id,'sub','Subcategory',x.sub)}${fld(x.id,'tag','Tagline',x.tag)}${fld(x.id,'price','Price (ZAR)',x.price,'number')}${fld(x.id,'desc','Description',x.desc,'area')}
  <div class="ar"><b>Model dimensions (cm)</b>${[['Width',0],['Depth',1],['Height',2]].map(([label,index])=>`<label>${label}<input type="number" min="1" step="1" data-pid="${x.id}" data-dim="${index}" value="${x.dims[index]}" ${x.dimsLocked?'disabled':''}></label>`).join('')}<label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" data-dims-lock="${x.id}" ${x.dimsLocked?'checked':''} style="width:auto"> Lock dimensions</label></div>
- ${Store.finishTypes().map(ft=>`<div class="ar"><b>${esc(ft.name)} customization</b>${chk2(`data-pieceavailability="${x.id}|${ft.id}"`,'true',`Offer ${ft.name.toLowerCase()} as a customizable option`,pieceTypeAvailable(x.id,ft.id))}${defaultMaterial(x.id,ft.id,defaultOptions(ft.id,x.defaults?.[ft.id]),x.defaults)}${ft.id==='fabric'?'<a href="product.html?id='+encodeURIComponent(x.id)+'" style="border-bottom:1px solid var(--line);justify-self:start">Open piece page to edit fabric texture mapping</a>':''}</div>`).join('')}
+ <button type="button" data-edit-materials="${esc(x.id)}" aria-expanded="false">Edit materials</button><div class="piece-material-editor" data-piece-material-editor="${esc(x.id)}" hidden>${Store.finishTypes().map(ft=>{const {options,selected,defaults}=pieceFinishOptions(x.id,ft.id,x.defaults);return `<div class="ar"><b>${esc(ft.name)} customization</b>${chk2(`data-pieceavailability="${x.id}|${ft.id}"`,'true',`Offer ${ft.name.toLowerCase()} as a customizable option`,pieceTypeAvailable(x.id,ft.id))}<div><b>Available ${ft.id==='fabric'?'fabrics':`${esc(ft.name.toLowerCase())} materials`}</b>${options.map(m=>chk2(`data-pfin="${esc(x.id)}|${esc(ft.id)}"`,m[2],m[0],selected.includes(m[2]))).join('')||'<small>No materials assigned globally. Assign materials in the Materials library first.</small>'}</div>${defaultMaterial(x.id,ft.id,defaults,x.defaults)}${ft.id==='fabric'?'<a href="product.html?id='+encodeURIComponent(x.id)+'" style="border-bottom:1px solid var(--line);justify-self:start">Open piece page to edit fabric texture mapping</a>':''}</div>`}).join('')}</div>
  ${row('3D model (.glb / .gltf)','model:'+x.id,'.glb,.gltf,model/gltf-binary')}${[1,2,3].map(n=>row('Gallery photo or video '+n,`gallery:${x.id}:${n}`,'image/*,video/*')).join('')}<div class="acts"><button data-delprod="${x.id}">Delete this piece</button></div></details>`).join('')}
  </div><div class="acts" id="adm-final"><button data-act="apply">Apply changes</button><button data-act="export">Export text</button><button data-act="import">Import text</button><button data-act="reset">Reset everything</button><button data-act="lock">Lock</button></div>`;
  document.body.append(p);requestAnimationFrame(()=>p.classList.add('open'));
@@ -240,7 +245,15 @@ function openPanel(){
  if(window.__prod)fillMap();addEventListener('prod-ready',fillMap);
  p.addEventListener('change',async e=>{const t=e.target;
    if(t.dataset.fe){const [id,k]=t.dataset.fe.split('|');Store.editFabric(id,k,t.value);if(k==='type')reload();return}
+  if(t.dataset.ft){const [id,k]=t.dataset.ft.split('|'),value=t.value.trim();if(k==='name'&&!value){alert('Finish type names cannot be empty.');t.value=Store.finishTypes().find(ft=>ft.id===id)?.name||'';return}
+   const current=Store.finishTypes().find(ft=>ft.id===id);if(!current)return;
+   Store.editFinishType(id,{[k]:k==='target'?value||current.name:value});reload();return}
   if(t.dataset.mft){Store.setMaterialFinishTypes(t.dataset.mft,[...p.querySelectorAll(`[data-mft="${t.dataset.mft}"]`)].filter(i=>i.checked).map(i=>i.value));return}
+  if(t.dataset.pfin){const [pid,ftid]=t.dataset.pfin.split('|'),selected=[...p.querySelectorAll('[data-pfin]')].filter(i=>i.dataset.pfin===t.dataset.pfin&&i.checked).map(i=>i.value);
+   Store.setPieceFinishes(pid,ftid,selected);
+   const select=[...p.querySelectorAll('[data-pdefault]')].find(i=>i.dataset.pdefault===`${pid}|${ftid}`);
+   if(select&&selected.length&&!selected.includes(select.value)){select.value=selected[0];Store.setPieceDefault(pid,ftid,select.value)}
+   return}
   if(t.id==='nf-type'){
    const defaults=['Fabric','Leather','Velvet','Linen'].includes(t.value)?['fabric']:['Wood','Metal'].includes(t.value)?['frame']:[];
    p.querySelectorAll('[data-newmft]').forEach(i=>i.checked=defaults.includes(i.value));return
@@ -275,6 +288,9 @@ function openPanel(){
   if(t.dataset.pid){Store.setProduct(t.dataset.pid,t.dataset.k,t.value);return}
   if(t.dataset.slot&&t.files[0]){t.disabled=true;await Store.put(t.dataset.slot,t.files[0]);reload()}});
  p.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.editMaterials){const editor=[...p.querySelectorAll('[data-piece-material-editor]')].find(el=>el.dataset.pieceMaterialEditor===b.dataset.editMaterials);if(editor){editor.hidden=!editor.hidden;b.setAttribute('aria-expanded',String(!editor.hidden))}return}
+  if(b.dataset.ftOrder){const types=Store.finishTypes(),row=b.closest('.ar'),i=types.findIndex(ft=>ft.id===row.querySelector('[data-ft]')?.dataset.ft.split('|')[0]),j=i+(b.dataset.ftOrder==='up'?-1:1);
+   if(i>=0&&j>=0&&j<types.length){const reordered=[...types];[reordered[i],reordered[j]]=[reordered[j],reordered[i]];Store.setFinishTypeOrder(reordered.map(ft=>ft.id));reload()}return}
   if(b.dataset.matOrder){const list=p.querySelector('#adm-material-list'),rows=[...list.querySelectorAll(':scope>details')],row=b.closest('details'),i=rows.indexOf(row),j=i+(b.dataset.matOrder==='up'?-1:1);
    if(i>=0&&j>=0&&j<rows.length){if(j<i)rows[j].before(row);else rows[j].after(row);const reordered=[...list.querySelectorAll(':scope>details')];Store.setMaterialOrder(reordered.map(item=>item.dataset.materialId));
     reordered.forEach((item,index)=>item.querySelectorAll('[data-mat-order]').forEach(button=>{button.disabled=button.dataset.matOrder==='up'?index===0:index===reordered.length-1}))}return}

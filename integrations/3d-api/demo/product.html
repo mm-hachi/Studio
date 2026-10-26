@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ee">
+  <title>Furniture — Stillroom</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="announcement">A quieter kind of home. Thoughtfully made, made to last.</div>
+  <header class="site-header">
+    <a class="wordmark" href="/">stillroom<span>.</span></a>
+    <nav aria-label="Main navigation"><a href="/shop.html?category=Sofas">Living</a><a href="/shop.html?category=Chairs">Chairs</a><a href="/shop.html?category=Tables">Tables</a><a href="/shop.html">All furniture</a></nav>
+    <a class="header-note" href="/shop.html">Continue browsing <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <div class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/shop.html">Furniture</a><span>/</span><span id="product-breadcrumb">Product</span></div>
+    <section class="product-detail section-wrap">
+      <div class="product-gallery">
+        <div class="product-image-main"><img id="product-image" alt="" src="/assets/catalog/haven-sofa-room.svg"><span class="image-note">THOUGHTFULLY MADE · DESIGNED FOR LIVING</span></div>
+        <div class="product-image-thumbnails" id="product-thumbnails" aria-label="Product photos">
+          <button class="thumbnail is-selected" type="button" aria-label="View product photograph 1"><img data-image alt=""></button>
+          <button class="thumbnail" type="button" aria-label="View product photograph 2"><img data-image alt=""></button>
+          <button class="thumbnail" type="button" aria-label="View product photograph 3"><img data-image alt=""></button>
+        </div>
+        <p class="gallery-caption">A considered piece, photographed in a real room.</p>
+      </div>
+      <div class="product-info">
+        <p class="eyebrow" id="product-category">THE COLLECTION</p>
+        <h1 id="product-name">A considered piece.</h1>
+        <p class="product-price" id="product-price"></p>
+        <p class="product-description" id="product-description">A little something to make a room your own.</p>
+        <p class="product-intro-copy" id="product-long-description"></p>
+        <div class="delivery-note"><span>✳</span><p>Made thoughtfully, delivered with care.<br><a href="#details">A note about the details ↓</a></p></div>
+        <button class="button button-dark add-button" id="add-to-bag">Add to bag <span aria-hidden="true">→</span></button>
+        <p class="bag-feedback" id="bag-feedback" aria-live="polite"></p>
+        <button class="button button-3d-open" id="open-3d" type="button"><span class="three-mark" aria-hidden="true">◉</span> Shop in 3D <span aria-hidden="true">↗</span></button>
+        <p class="product-3d-note">Explore the piece in 3D and try available finishes.</p>
+        <details class="detail-accordion" id="details"><summary>Details & dimensions</summary><p id="product-details">Designed for real rooms and everyday rituals. Dimensions and construction details can be replaced with your product specifications.</p></details>
+        <details class="detail-accordion"><summary>Materials & care</summary><p id="product-care">Sample materials in this preview are designed to show how product finishes can be explored in the 3D viewer.</p></details>
+        <a class="back-link" href="/shop.html">← Back to the collection</a>
+      </div>
+    </section>
+    <section class="product-story section-wrap"><div class="story-copy"><p class="eyebrow">Made for living</p><h2>Good design makes room for life.</h2><p>Considered proportions, honest materials and a shape that feels at home in the everyday. A closer look starts whenever you are ready.</p></div><div class="story-image"><span>THE EVERYDAY, MADE A LITTLE MORE YOURS.</span></div></section>
+    <section class="related section-wrap"><div class="section-heading"><div><p class="eyebrow">Take another look</p><h2>More to make a home.</h2></div><a class="text-link" href="/shop.html">See the whole collection ↗</a></div><div class="product-grid" id="related-products"></div></section>
+  </main>
+  <dialog class="three-d-dialog" id="three-d-dialog" aria-labelledby="modal-title">
+    <div class="modal-shell">
+      <header class="modal-header">
+        <div><p class="eyebrow">A new way to explore</p><h2 id="modal-title">Shop in 3D</h2></div>
+        <button class="modal-close" type="button" id="close-3d" aria-label="Close 3D product view">×</button>
+      </header>
+      <div class="modal-content">
+        <section class="modal-viewport-column">
+          <div class="modal-viewport" id="modal-viewport">
+            <div class="viewer-loading" id="modal-loading"><span></span><p>Preparing your 3D view…</p></div>
+            <div class="modal-view-error" id="modal-view-error" hidden></div>
+            <button class="ar-button" id="view-in-ar" type="button" disabled><span aria-hidden="true">◎</span> View in AR</button>
+          </div>
+          <p class="viewer-hint">Drag to turn · Scroll to zoom · See it from every side</p>
+          <p class="ar-status" id="ar-status" aria-live="polite">View in AR works on supported AR-capable phones and tablets.</p>
+        </section>
+        <aside class="modal-product-options">
+          <p class="eyebrow" id="modal-category">THE COLLECTION</p>
+          <h3 id="modal-product-name">A considered piece.</h3>
+          <p class="modal-price" id="modal-product-price"></p>
+          <p class="modal-description" id="modal-product-description"></p>
+          <div class="customization-options" id="customization-options"></div>
+          <p class="customization-status" id="customization-status" aria-live="polite"></p>
+          <button class="button button-dark modal-add-button" type="button" id="modal-add-to-bag">Add to bag <span aria-hidden="true">→</span></button>
+          <p class="modal-bag-feedback" id="modal-bag-feedback" aria-live="polite"></p>
+          <p class="modal-footnote">Your original product page and photos stay just as they are. Close this window to return.</p>
+        </aside>
+      </div>
+    </div>
+  </dialog>
+  <footer class="site-footer"><a class="wordmark" href="/">stillroom<span>.</span></a><p>An independent furniture-store demo · Built to show a 3D integration in context.</p><a href="/shop.html">Browse furniture ↗</a></footer>
+  <script src="/dekara-3d.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

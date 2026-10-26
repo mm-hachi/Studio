@@ -10,19 +10,44 @@ document.title=`${p.name} | Dekara Designs`;
 $('p-tag').textContent=p.cat+' · '+p.tag;$('p-name').textContent=p.name;$('p-desc').textContent=p.desc;
 $('p-spec').innerHTML=`<div><span>Construction</span>${esc(p.mat)}</div><div><span>Delivery</span>4–6 weeks</div>`;
 const [width,depth,height]=p.dims;
-$('p-dim-width').textContent=`WIDTH · ${width} cm`;
-$('p-dim-depth').textContent=`DEPTH · ${depth} cm`;
-$('p-dim-height').textContent=`HEIGHT · ${height} cm`;
 const dimensionsToggle=$('p-dimensions-toggle'),dimensionsOverlay=$('p-dimensions');
 dimensionsOverlay.setAttribute('aria-label',`Model dimensions: width ${width} cm, depth ${depth} cm, height ${height} cm`);
+const dimensionSpecs=[
+ {key:'width',text:`WIDTH · ${width} cm`,line:$('p-dim-width-line'),guide:$('p-dim-width-guide'),label:$('p-dim-width')},
+ {key:'depth',text:`DEPTH · ${depth} cm`,line:$('p-dim-depth-line'),guide:$('p-dim-depth-guide'),label:$('p-dim-depth')},
+ {key:'height',text:`HEIGHT · ${height} cm`,line:$('p-dim-height-line'),guide:$('p-dim-height-guide'),label:$('p-dim-height')}
+];
+dimensionSpecs.forEach(d=>d.label.textContent=d.text);
+const ticks=$('p-dim-ticks');
+const updateDimensions=()=>{
+ if(dimensionsOverlay.hidden)return;
+ const projection=v.projectDimensions();if(!projection)return;
+ const tickParts=[];
+ dimensionSpecs.forEach(({key,line,guide,label})=>{
+  const [a,b]=projection[key],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy)||1;
+  let nx=-dy/length,ny=dx/length;
+  if(nx*((a.x+b.x)/2-500)+ny*((a.y+b.y)/2-350)<0){nx=-nx;ny=-ny}
+  const offset=16,p1={x:a.x+nx*offset,y:a.y+ny*offset},p2={x:b.x+nx*offset,y:b.y+ny*offset};
+  line.setAttribute('d',`M${p1.x} ${p1.y}L${p2.x} ${p2.y}`);
+  guide.setAttribute('d',`M${a.x} ${a.y}L${p1.x} ${p1.y}M${b.x} ${b.y}L${p2.x} ${p2.y}`);
+  const tx=dx/length*6,ty=dy/length*6;
+  tickParts.push(`M${p1.x-tx} ${p1.y-ty}L${p1.x+tx} ${p1.y+ty}`,`M${p2.x-tx} ${p2.y-ty}L${p2.x+tx} ${p2.y+ty}`);
+  let angle=Math.atan2(dy,dx)*180/Math.PI;if(angle>90||angle<-90)angle+=180;
+  const cx=(p1.x+p2.x)/2+nx*18,cy=(p1.y+p2.y)/2+ny*18;
+  label.setAttribute('x',cx);label.setAttribute('y',cy);label.setAttribute('transform',`rotate(${angle} ${cx} ${cy})`);
+ });
+ ticks.setAttribute('d',tickParts.join(''));
+};
 dimensionsToggle.onclick=()=>{
  const visible=dimensionsToggle.getAttribute('aria-expanded')!=='true';
  dimensionsToggle.setAttribute('aria-expanded',String(visible));
  dimensionsToggle.textContent=visible?'Hide dimensions':'Show dimensions';
  dimensionsOverlay.hidden=!visible;
  dimensionsOverlay.setAttribute('aria-hidden',String(!visible));
+ if(visible)updateDimensions();
 };
 const v=viewer($('p-canvas'),p.id,{orbit:true});
+v.onFrame(updateDimensions);
 const opts=(p.fabrics&&p.fabrics.length)?p.fabrics:[['Oyster','#d4cabb','oyster',null,'']];
 let fabric=opts.find(m=>m[2]===p.defaults?.fabric)||opts[0],cur,override=null;
 const ftypes=p.finishTypes||[{id:'frame',name:'Frame',target:'frame',finishes:FINISHES},{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric',finishes:opts}];
