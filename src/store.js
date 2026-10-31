@@ -5,6 +5,10 @@ export const cfg={products:{}};   // effective config: data/site.json "config" o
 export const RAW={};              // pristine copy of data/site.json as loaded
 const files={};
 export const DATA={models:{},documents:null};
+const DEFAULT_MATERIAL_TYPES=[
+ {name:'Fabric',kind:'fabric'},{name:'Leather',kind:'fabric'},{name:'Velvet',kind:'fabric'},{name:'Linen',kind:'fabric'},
+ {name:'Wood',kind:'finish'},{name:'Stone',kind:'finish'},{name:'Metal',kind:'finish'},{name:'Other',kind:'finish'}
+];
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('dekara-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 const tx=(mode,fn)=>idb().then(db=>new Promise((res,rej)=>{const t=db.transaction('f',mode),q=fn(t.objectStore('f'));t.oncomplete=()=>res(q.result);t.onerror=()=>rej(t.error)}));
 export const ready=(async()=>{
@@ -59,6 +63,9 @@ export const setPieceFabrics=(pid,list)=>{(cfg.pieceFabrics??={})[pid]=list;save
 export const setPieceFinishAvailability=(pid,ftid,available)=>{(((cfg.pieceFinishAvailability??={})[pid]??={})[ftid]=available);save()};
 export const setPieceFinishes=(pid,ftid,list)=>{(((cfg.pieceFinishes??={})[pid]??={})[ftid]=[...list]);save()};
 export const setPieceDefault=(pid,ftid,materialId)=>{(((cfg.pieceDefaults??={})[pid]??={})[ftid]=materialId);save()};
+export const materialTypes=()=>[...(cfg.materialTypes??DATA.materialTypes??DEFAULT_MATERIAL_TYPES)].map(type=>typeof type==='string'?{name:type,kind:'finish'}:{...type});
+export const addMaterialType=type=>{const types=materialTypes();if(types.some(item=>item.name.toLowerCase()===type.name.toLowerCase()))return false;types.push(type);cfg.materialTypes=types;save();return true};
+export const deleteMaterialType=name=>{cfg.materialTypes=materialTypes().filter(type=>type.name!==name);save()};
 export const finishTypes=()=>{
  const types=cfg.finishTypes??DATA.finishTypes??[{id:'frame',name:'Frame',target:'frame'}];
  const list=types.some(ft=>ft.id==='fabric')?[...types]:[...types,{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric'}];
@@ -76,7 +83,9 @@ export const setMaterialOrder=list=>{cfg.materialOrder=[...list];save()};
 export const addFabric=f=>{(cfg.addedFabrics??=[]).push(f);save()};
 export const editFabric=(id,k,v)=>{((cfg.fabricEdits??={})[id]??={})[k]=v;save()};
 export const setMaterialFinishTypes=(id,list)=>{(cfg.materialFinishTypes??={})[id]=[...list];save()};
+export const materialPbrDefaults=id=>cfg.materialPbrDefaults?.[id]!==false;
+export const setMaterialPbrDefaults=(id,enabled)=>{(cfg.materialPbrDefaults??={})[id]=enabled;save()};
 export const deleteFabric=id=>{const a=cfg.addedFabrics||[];if(a.some(f=>f.id===id))cfg.addedFabrics=a.filter(f=>f.id!==id);else(cfg.deletedFabrics??=[]).push(id);save()};
-export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.materialFinishTypes;delete cfg.finishTypes;delete cfg.finishTypeOrder;delete cfg.pieceFinishes;delete cfg.pieceFinishAvailability;delete cfg.pieceDefaults;delete cfg.pieceOptions;delete cfg.studioFabrics;delete cfg.studioFinishes;delete cfg.materialOrder;save()};
+export const restoreDefaultMaterials=()=>{delete cfg.addedFabrics;delete cfg.deletedFabrics;delete cfg.fabricEdits;delete cfg.materialFinishTypes;delete cfg.materialPbrDefaults;delete cfg.materialTypes;delete cfg.finishTypes;delete cfg.finishTypeOrder;delete cfg.pieceFinishes;delete cfg.pieceFinishAvailability;delete cfg.pieceDefaults;delete cfg.pieceOptions;delete cfg.studioFabrics;delete cfg.studioFinishes;delete cfg.materialOrder;save()};
 export const deleteProduct=id=>{if((cfg.added||[]).some(p=>p.id===id))cfg.added=cfg.added.filter(p=>p.id!==id);else(cfg.deleted??=[]).push(id);save()};
 export const discardLocal=async()=>{await clearFiles();try{localStorage.removeItem(KEY)}catch{}};

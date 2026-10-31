@@ -1,8 +1,9 @@
-import { PRODUCTS, FINISH_TYPES, assignedFinishesFor, FINISHES, getMapping, mappingId, ORIGINAL } from './products.js';
+import { PRODUCTS, FINISH_TYPES, assignedFinishesFor, FINISHES, FABRIC_TYPES, getMapping, mappingId, ORIGINAL } from './products.js';
 import { viewer } from './viewer.js';
 import * as Basket from './basket.js';
 import { fit, openAR } from './ar.js';
 import { initReviews } from './reviews.js';
+import { setRangeValue } from './range.js';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const p=PRODUCTS.find(x=>x.id===new URLSearchParams(location.search).get('id'))||PRODUCTS[0];
 if(!p)location.replace('shop.html');else{
@@ -11,6 +12,7 @@ $('p-tag').textContent=p.cat+' · '+p.tag;$('p-name').textContent=p.name;$('p-de
 $('p-spec').innerHTML=`<div><span>Construction</span>${esc(p.mat)}</div><div><span>Delivery</span>4–6 weeks</div>`;
 const [width,depth,height]=p.dims;
 const dimensionsToggle=$('p-dimensions-toggle'),dimensionsOverlay=$('p-dimensions');
+const dimensionsSvg=dimensionsOverlay.querySelector('svg');
 dimensionsOverlay.setAttribute('aria-label',`Model dimensions: width ${width} cm, depth ${depth} cm, height ${height} cm`);
 const dimensionSpecs=[
  {key:'width',text:`WIDTH · ${width} cm`,line:$('p-dim-width-line'),guide:$('p-dim-width-guide'),label:$('p-dim-width')},
@@ -21,7 +23,8 @@ dimensionSpecs.forEach(d=>d.label.textContent=d.text);
 const ticks=$('p-dim-ticks');
 const updateDimensions=()=>{
  if(dimensionsOverlay.hidden)return;
- const projection=v.projectDimensions();if(!projection)return;
+ const projection=v.projectDimensions();if(!projection){dimensionsSvg.style.visibility='hidden';return}
+ dimensionsSvg.style.visibility='';
  const tickParts=[];
  dimensionSpecs.forEach(({key,line,guide,label})=>{
   const [a,b]=projection[key],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy)||1;
@@ -46,8 +49,31 @@ dimensionsToggle.onclick=()=>{
  dimensionsOverlay.setAttribute('aria-hidden',String(!visible));
  if(visible)updateDimensions();
 };
-const v=viewer($('p-canvas'),p.id,{orbit:true});
+const v=viewer($('p-canvas'),p.id,{orbit:true,capture:true});
 v.onFrame(updateDimensions);
+const lightingControls={
+ brightness:$('p-light-brightness'),warmth:$('p-light-warmth'),environment:$('p-light-environment')
+};
+const syncLightingInput=(key,value)=>{
+ const range=lightingControls[key],exact=$(`p-light-${key}-exact`);
+ if(!Number.isFinite(value))return;
+ setRangeValue(range,value);exact.value=String(value);updateLighting();
+};
+const updateLighting=()=>{
+ const values=Object.fromEntries(Object.entries(lightingControls).map(([key,input])=>[key,Number(input.value)]));
+ $('p-light-brightness-value').textContent=`${values.brightness}%`;
+ $('p-light-warmth-value').textContent=values.warmth===0?'Neutral':`${values.warmth>0?'Warm':'Cool'} ${Math.abs(values.warmth)}%`;
+ $('p-light-environment-value').textContent=`${values.environment}%`;
+ v.setLighting({brightness:values.brightness/100,warmth:values.warmth/100,environment:values.environment/100});
+};
+Object.entries(lightingControls).forEach(([key,range])=>{
+ range.addEventListener('input',()=>{ $(`p-light-${key}-exact`).value=range.value;updateLighting() });
+ const exact=$(`p-light-${key}-exact`);
+ exact.addEventListener('input',()=>syncLightingInput(key,exact.valueAsNumber));
+ exact.addEventListener('change',()=>{if(!Number.isFinite(exact.valueAsNumber))exact.value=range.value});
+});
+updateLighting();
+$('p-light-reset').onclick=()=>{Object.entries({brightness:100,warmth:0,environment:100}).forEach(([key,value])=>syncLightingInput(key,value))};
 const opts=(p.fabrics&&p.fabrics.length)?p.fabrics:[['Oyster','#d4cabb','oyster',null,'']];
 let fabric=opts.find(m=>m[2]===p.defaults?.fabric)||opts[0],cur,override=null;
 const ftypes=p.finishTypes||[{id:'frame',name:'Frame',target:'frame',finishes:FINISHES},{id:'fabric',name:'Fabric',target:'fabric',materialType:'Fabric',finishes:opts}];
@@ -64,12 +90,28 @@ ftypes.forEach(ft=>{
  label.append(`${ft.name} finish · `,value);
  value.textContent=curFinishes[ft.id]?.[0]||'';
  const sw=document.createElement('div');sw.className='sw';
- sw.innerHTML=(ft.finishes||[]).map(([n,h,id,img],i)=>`<button class="${i?'':'on'}" style="background:${img?`url(${esc(img)}) center/cover`:esc(h)}" title="${esc(n)}" aria-label="${esc(n)}" data-i="${i}"></button>`).join('');
- const selectFinish=m=>{if(!m)return;if(ft.id==='fabric')selectFabric(m[2]);curFinishes[ft.id]=m;sw.querySelectorAll('button').forEach(x=>x.classList.toggle('on',ft.finishes[x.dataset.i]===m));value.textContent=m[0];v.setFinish(ft.target||ft.name,m,getMapping(p.id,m[2],ft.id));update()};
- sw.onclick=e=>{const b=e.target.closest('button');if(b)selectFinish(ft.finishes[b.dataset.i])};
- finBox.append(label,sw);
- if(curFinishes[ft.id])selectFinish(curFinishes[ft.id]);
- ft.select=selectFinish;
+ if(ft.id==='fabric'){
+  const typeLabel=document.createElement('label'),typeSelect=document.createElement('select');
+  typeLabel.append('Fabric type',typeSelect);
+  const availableTypes=FABRIC_TYPES.filter(type=>opts.some(material=>material[5]===type));
+  typeSelect.innerHTML=availableTypes.map(type=>`<option value="${esc(type)}">${esc(type)}</option>`).join('');
+  const renderSwatches=()=>{const materials=opts.filter(material=>material[5]===typeSelect.value);sw.innerHTML=materials.map(([n,h,id,img])=>`<button class="${id===fabric[2]?'on':''}" style="background:${img?`url(${esc(img)}) center/cover`:esc(h)}" title="${esc(n)}" aria-label="${esc(n)}" data-id="${esc(id)}"></button>`).join('')};
+  const selectFinish=m=>{if(!m)return;typeSelect.value=m[5];renderSwatches();selectFabric(m[2]);curFinishes[ft.id]=m;value.textContent=m[0];v.setFinish(ft.target||ft.name,m,getMapping(p.id,m[2],ft.id));update()};
+  sw.onclick=e=>{const b=e.target.closest('button');if(b)selectFinish(opts.find(material=>material[2]===b.dataset.id))};
+  typeSelect.onchange=()=>{const first=opts.find(material=>material[5]===typeSelect.value);if(first)selectFinish(first)};
+  finBox.append(typeLabel,label,sw);
+  typeSelect.value=fabric[5]||availableTypes[0]||'';
+  renderSwatches();
+  if(curFinishes[ft.id])selectFinish(curFinishes[ft.id]);
+  ft.select=selectFinish;
+ }else{
+  sw.innerHTML=(ft.finishes||[]).map(([n,h,id,img],i)=>`<button class="${i?'':'on'}" style="background:${img?`url(${esc(img)}) center/cover`:esc(h)}" title="${esc(n)}" aria-label="${esc(n)}" data-i="${i}"></button>`).join('');
+  const selectFinish=m=>{if(!m)return;curFinishes[ft.id]=m;sw.querySelectorAll('button').forEach(x=>x.classList.toggle('on',ft.finishes[x.dataset.i]===m));value.textContent=m[0];v.setFinish(ft.target||ft.name,m,getMapping(p.id,m[2],ft.id));update()};
+  sw.onclick=e=>{const b=e.target.closest('button');if(b)selectFinish(ft.finishes[b.dataset.i])};
+  finBox.append(label,sw);
+  if(curFinishes[ft.id])selectFinish(curFinishes[ft.id]);
+  ft.select=selectFinish;
+ }
 });
 
 function update(){const d=p.dims,price=p.price;$('p-price').textContent='R '+price.toLocaleString('en-ZA');
@@ -80,6 +122,20 @@ $('p-add').onclick=()=>Basket.add({key:`p:${p.id}:${fabric[0]}:${cur.ftxt}:${cur
 import('./cardviews.js').then(({cardHtml,mount})=>{const rel=[...PRODUCTS.filter(x=>x.cat===p.cat&&x.id!==p.id),...PRODUCTS.filter(x=>x.cat!==p.cat)].slice(0,4);
  $('related').innerHTML=rel.map(x=>cardHtml(x)).join('');$('related').querySelectorAll('.card').forEach(mount)});
 $('p-gallery').innerHTML=[1,2,3].map(n=>`<div data-slot="gallery:${p.id}:${n}" data-label="Photo ${n}"></div>`).join('');applySlots();
+const gallery=$('p-gallery'),lightbox=document.createElement('dialog');
+lightbox.className='gallery-lightbox';lightbox.innerHTML='<button type="button" class="gallery-lightbox-close" aria-label="Close image">×</button><img alt="">';
+document.body.append(lightbox);
+const lightboxImage=lightbox.querySelector('img');
+gallery.querySelectorAll('[data-slot]').forEach(slot=>{
+ const image=slot.querySelector('img.slot-media');if(!image)return;
+ image.alt=slot.dataset.label;
+ slot.tabIndex=0;slot.setAttribute('role','button');slot.setAttribute('aria-label',`Maximize ${image.alt}`);
+ const open=()=>{lightboxImage.src=image.currentSrc||image.src;lightboxImage.alt=image.alt;lightbox.showModal()};
+ slot.addEventListener('click',open);
+ slot.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+});
+lightbox.querySelector('.gallery-lightbox-close').onclick=()=>lightbox.close();
+lightbox.addEventListener('click',e=>{if(e.target===lightbox)lightbox.close()});
 $('p-wish').dataset.wish=p.id;$('p-cmp').dataset.cmp=p.id;
 $('p-ar').onclick=()=>{const o=fit(v.getModel().object,cur.d);openAR(o,p.name,'dekara-'+p.id)};
 initReviews(p.id);

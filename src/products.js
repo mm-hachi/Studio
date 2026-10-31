@@ -9,7 +9,9 @@ const gone=new Set([...(D.deleted||[]),...(C.deleted||[])]),goneF=new Set([...(D
 // Built-in materials: original fabrics + wood finish materials
 const BUILTIN_FINISH_MATS=BASE_FINISHES.map(([n,h])=>({id:slug(n),name:n,hex:h,type:'Wood',desc:`${n} wood finish.`}));
 const BUILTIN_FABRICS=FBASE.map(([n,h])=>({id:slug(n),name:n,hex:h,type:'Fabric',desc:FABRIC_DESC[n]||''}));
-const isFabricType=type=>['fabric','leather','velvet','linen'].includes(String(type||'').toLowerCase());
+export const MATERIAL_TYPES=Store.materialTypes();
+const fabricTypeNames=new Set(MATERIAL_TYPES.filter(type=>type.kind==='fabric').map(type=>type.name.toLowerCase()));
+const isFabricType=type=>fabricTypeNames.has(String(type||'').toLowerCase());
 const defaultFinishTypes=material=>isFabricType(material.type)?['fabric']:['Wood','Metal'].includes(material.type)?['frame']:[];
 
 // Materials library: built-in fabrics & frame materials + data/site.json + admin additions, minus deletions, with edits applied.
@@ -24,7 +26,14 @@ export const MATERIAL_LIST=ml.map((f,i)=>({material:{...f,image:Store.url('fabri
  .map(({material})=>material);
 if(!MATERIAL_LIST.some(f=>isFabricType(f.type))){let id=BUILTIN_FABRICS[0].id;while(MATERIAL_LIST.some(f=>f.id===id))id+='-fallback';MATERIAL_LIST.push({...BUILTIN_FABRICS[0],id,image:null})}
 export const FABRIC_LIST=MATERIAL_LIST.filter(f=>isFabricType(f.type));
-export const MATERIALS=MATERIAL_LIST.map(f=>[f.name,f.hex,f.id,f.image,f.desc,f.type]);
+export const FABRIC_TYPES=MATERIAL_TYPES.filter(type=>type.kind==='fabric').map(type=>type.name);
+export const MATERIALS=MATERIAL_LIST.map(f=>[f.name,f.hex,f.id,f.image,f.desc,f.type,{
+ normal:Store.url(`pbr:${f.id}:normal`)||f.normalMap||f.normal||null,
+ roughness:Store.url(`pbr:${f.id}:roughness`)||f.roughnessMap||f.roughness||null,
+ metalness:Store.url(`pbr:${f.id}:metalness`)||f.metalnessMap||f.metalness||null,
+ ao:Store.url(`pbr:${f.id}:ao`)||f.aoMap||f.ao||null,
+ bump:Store.url(`pbr:${f.id}:bump`)||f.bumpMap||f.bump||null
+},Store.materialPbrDefaults(f.id)]);
 export const FABRICS=MATERIALS.filter(f=>isFabricType(f[5]));
 
 // Finish types: e.g. [{ id: 'frame', name: 'Frame', target: 'frame' }, ...]

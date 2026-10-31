@@ -13,7 +13,7 @@
    "x-scarlet-custom-couch-svxv": {
     "dims": [
      220,
-     93,
+     150,
      85
     ],
     "dimsLocked": true
@@ -77,6 +77,14 @@
    "x-emma-j-shipley-one-9czi": {
     "dimsLocked": true,
     "name": "Wingback Armchair"
+   },
+   "x-aira-bench-vsdk": {
+    "dims": [
+     160,
+     45,
+     48
+    ],
+    "dimsLocked": true
    }
   },
   "collections": [
@@ -369,6 +377,23 @@
     ],
     "dimsLocked": false,
     "model": "models/x-emma-j-shipley-one-9czi.glb"
+   },
+   {
+    "id": "x-aira-bench-vsdk",
+    "name": "AIRA Bench",
+    "cat": "Chairs",
+    "sub": "Benches",
+    "tag": "",
+    "price": 10400,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     100,
+     42,
+     36
+    ],
+    "dimsLocked": false,
+    "model": "models/x-aira-bench-vsdk.glb"
    }
   ],
   "pieceFabrics": {
@@ -534,6 +559,318 @@
     "hex": "#cccccc",
     "desc": "",
     "image": "swatches/fabrics/f-beige-marble-gggw.jpe"
+   },
+   {
+    "id": "f-off-white-ivory-jixp",
+    "name": "Off-white / Ivory",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-off-white-ivory-jixp.jpg"
+   },
+   {
+    "id": "f-white-oakwood-veneer-rnfa",
+    "name": "White Oakwood Veneer",
+    "type": "Wood",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-white-oakwood-veneer-rnfa.jpe"
+   },
+   {
+    "id": "f-olive-8j3w",
+    "name": "Olive",
+    "type": "Leather",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-olive-8j3w.jpg"
+   },
+   {
+    "id": "f-olive-velvet-0xsp",
+    "name": "Olive Velvet",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-olive-velvet-0xsp.jpg"
+   },
+   {
+    "id": "f-ivory-velvet-icob",
+    "name": "Ivory Velvet",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-ivory-velvet-icob.webp"
+   },
+   {
+    "id": "f-brown-velvet-ky0o",
+    "name": "Brown Velvet",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-brown-velvet-ky0o.jpg"
+   },
+   {
+    "id": "f-off-white-ivory-v-6vpb",
+    "name": "Off-white / Ivory V",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-off-white-ivory-v-6vpb.webp"
+   },
+   {
+    "id": "f-sand-v-8rjl",
+    "name": "Sand V",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-sand-v-8rjl.jpg"
+   },
+   {
+    "id": "f-beige-v-9kca",
+    "name": "Beige V",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-beige-v-9kca.jpg"
+   },
+   {
+    "id": "f-greige-v-b1tr",
+    "name": "Greige V",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-greige-v-b1tr.jpg"
+   },
+   {
+    "id": "f-taupe-v-brv4",
+    "name": "Taupe V",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-taupe-v-brv4.jpg"
+   },
+   {
+    "id": "f-light-grey-v-cm7d",
+    "name": "Light Grey V",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-light-grey-v-cm7d.jpg"
+   },
+   {
+    "id": "f-charcoal-v-e1nw",
+    "name": "Charcoal V",
+    "type": "Velvet",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-charcoal-v-e1nw.jpg"
+   },
+   {
+    "id": "f-brown-4s5b",
+    "name": "Brown",
+    "type": "Boucle",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-brown-4s5b.webp"
+   },
+   {
+    "id": "f-off-white-ivory-hsur",
+    "name": "Off-white / Ivory",
+    "type": "Boucle",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-off-white-ivory-hsur.jpg"
+   },
+   {
+    "id": "f-sand-v49e",
+    "name": "Sand",
+    "type": "Boucle",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-sand-v49e.jpg"
+   },
+   {
+    "id": "f-greige-wqg5",
+    "name": "Greige",
+    "type": "Boucle",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-greige-wqg5.jpg"
+   },
+   {
+    "id": "f-taupe-xk7v",
+    "name": "Taupe",
+    "type": "Boucle",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-taupe-xk7v.jpg"
+   },
+   {
+    "id": "f-light-grey-zn4r",
+    "name": "Light Grey",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-light-grey-zn4r.jpg"
+   },
+   {
+    "id": "f-olive-0g6l",
+    "name": "Olive",
+    "type": "Boucle",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-olive-0g6l.bmp"
+   },
+   {
+    "id": "f-charcoal-1tve",
+    "name": "Charcoal",
+    "type": "Boucle",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-charcoal-1tve.webp"
+   },
+   {
+    "id": "f-off-white-ivory-v14d",
+    "name": "Off-white / Ivory",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-off-white-ivory-v14d.jpg"
+   },
+   {
+    "id": "f-sand-wdym",
+    "name": "Sand",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-sand-wdym.jpg"
+   },
+   {
+    "id": "f-beige-yqws",
+    "name": "Beige",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-beige-yqws.jpg"
+   },
+   {
+    "id": "f-greige-zclh",
+    "name": "Greige",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-greige-zclh.jpg"
+   },
+   {
+    "id": "f-taupe-02rf",
+    "name": "Taupe",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-taupe-02rf.jpg"
+   },
+   {
+    "id": "f-light-grey-0o1h",
+    "name": "Light Grey",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-light-grey-0o1h.jpg"
+   },
+   {
+    "id": "f-olive-1w3y",
+    "name": "Olive",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-olive-1w3y.jpg"
+   },
+   {
+    "id": "f-brown-2ndg",
+    "name": "Brown",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-brown-2ndg.jpg"
+   },
+   {
+    "id": "f-charcoal-3co0",
+    "name": "Charcoal",
+    "type": "Linen",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-charcoal-3co0.jpg"
+   },
+   {
+    "id": "f-off-white-ivory-dkoi",
+    "name": "Off-white / Ivory",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-off-white-ivory-dkoi.jpg"
+   },
+   {
+    "id": "f-sand-e4if",
+    "name": "Sand",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-sand-e4if.jpg"
+   },
+   {
+    "id": "f-beige-eov3",
+    "name": "Beige",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-beige-eov3.jpg"
+   },
+   {
+    "id": "f-greige-ftja",
+    "name": "Greige",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-greige-ftja.jpg"
+   },
+   {
+    "id": "f-taupe-gc23",
+    "name": "Taupe",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-taupe-gc23.jpg"
+   },
+   {
+    "id": "f-light-grey-gxbc",
+    "name": "Light Grey",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-light-grey-gxbc.jpg"
+   },
+   {
+    "id": "f-olive-hghi",
+    "name": "Olive",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-olive-hghi.webp"
+   },
+   {
+    "id": "f-brown-i36r",
+    "name": "Brown",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-brown-i36r.jpg"
+   },
+   {
+    "id": "f-charcoal-ipjq",
+    "name": "Charcoal",
+    "type": "Woven",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-charcoal-ipjq.jpg"
    }
   ],
   "mapping": {
@@ -831,11 +1168,12 @@
      "locked": true
     },
     "finish:fabric:f-light-brown-suede-3jb6": {
-     "sx": 2.8,
-     "sy": 2.8,
+     "sx": 15,
+     "sy": 15,
      "rot": 0,
      "ox": 0,
      "oy": 0,
+     "normalStrength": 8,
      "locked": true
     }
    },
@@ -862,6 +1200,24 @@
      "rot": 0,
      "ox": 0,
      "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-olive-velvet-0xsp": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 2,
+     "locked": true
+    },
+    "finish:fabric:f-orange-suede-4opl": {
+     "sx": 5,
+     "sy": 5,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
      "locked": true
     }
    },
@@ -1338,6 +1694,366 @@
      "oy": 0.06,
      "locked": true
     }
+   },
+   "x-aira-bench-vsdk": {
+    "finish:fabric:f-off-white-ivory-jixp": {
+     "sx": 5,
+     "sy": 5,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 3,
+     "locked": true
+    },
+    "finish:frame:f-white-oakwood-veneer-rnfa": {
+     "sx": 6,
+     "sy": 6,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 2,
+     "locked": true
+    },
+    "finish:fabric:oyster": {
+     "sx": 2.55,
+     "sy": 2.55,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:sage": {
+     "sx": 2.55,
+     "sy": 2.55,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "locked": true
+    },
+    "finish:fabric:f-olive-8j3w": {
+     "sx": 7,
+     "sy": 7,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": -2,
+     "locked": true
+    },
+    "finish:fabric:f-lemo-grey-38z3": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-light-brown-suede-3jb6": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": -3,
+     "locked": true
+    },
+    "finish:pillows:f-navy-suede-41x9": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-navy-suede-41x9": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": -2,
+     "locked": true
+    },
+    "finish:fabric:f-boucle-mustard-2nrd": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 2,
+     "locked": true
+    },
+    "finish:fabric:f-brown-4s5b": {
+     "sx": 6,
+     "sy": 6,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": -4,
+     "locked": true
+    },
+    "finish:fabric:f-off-white-ivory-hsur": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": -4,
+     "locked": true
+    },
+    "finish:fabric:f-charcoal-1tve": {
+     "sx": 6,
+     "sy": 6,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-olive-0g6l": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-light-grey-zn4r": {
+     "sx": 4,
+     "sy": 4,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-greige-wqg5": {
+     "sx": 6,
+     "sy": 6,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-off-white-ivory-v14d": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-sand-wdym": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-beige-yqws": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-greige-zclh": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-taupe-02rf": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-light-grey-0o1h": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-olive-1w3y": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-brown-2ndg": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-charcoal-3co0": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-off-white-ivory-dkoi": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-sand-e4if": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 0,
+     "locked": true
+    },
+    "finish:fabric:f-beige-eov3": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-greige-ftja": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-taupe-gc23": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-light-grey-gxbc": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-olive-hghi": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-brown-i36r": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-charcoal-ipjq": {
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:frame:walnut": {
+     "sx": 4,
+     "sy": 4,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:frame:natural-oak": {
+     "sx": 4,
+     "sy": 4,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:frame:ebony": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:frame:ash": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:frame:f-furnwood-qjlm": {
+     "sx": 3,
+     "sy": 3,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:fabric:f-sand-v49e": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": -2,
+     "locked": true
+    }
    }
   },
   "pieceDefaults": {
@@ -1346,7 +2062,8 @@
     "frame": "f-furnwood-qjlm"
    },
    "x-scarlet-custom-couch-svxv": {
-    "fabric": "f-velvet-chocolate-n2op"
+    "fabric": "f-velvet-chocolate-n2op",
+    "pillows": "f-purple-suede-56n5"
    },
    "x-molo-occasional-chair-bkmk": {
     "fabric": "f-light-brown-suede-3jb6",
@@ -1419,6 +2136,12 @@
     "fabric": "f-emma-j-shipley-one-b9yj",
     "pillows": "oyster",
     "detail1": "f-beige-marble-gggw"
+   },
+   "x-aira-bench-vsdk": {
+    "frame": "f-white-oakwood-veneer-rnfa",
+    "fabric": "f-sand-v49e",
+    "pillows": "f-purple-suede-56n5",
+    "detail1": "f-beige-marble-gggw"
    }
   },
   "pieceFinishes": {
@@ -1428,9 +2151,9 @@
     ]
    },
    "x-scarlet-custom-couch-svxv": {
-    "frame": [
-     "ebony"
-    ]
+    "frame": [],
+    "detail1": [],
+    "pillows": []
    },
    "x-emma-j-shipley-one-9czi": {
     "fabric": [
@@ -1443,19 +2166,60 @@
      "f-light-brown-suede-3jb6",
      "f-navy-suede-41x9"
     ]
+   },
+   "x-aira-bench-vsdk": {
+    "fabric": [
+     "f-off-white-ivory-v-6vpb",
+     "f-sand-v-8rjl",
+     "f-beige-v-9kca",
+     "f-greige-v-b1tr",
+     "f-taupe-v-brv4",
+     "f-light-grey-v-cm7d",
+     "f-olive-velvet-0xsp",
+     "f-brown-velvet-ky0o",
+     "f-charcoal-v-e1nw",
+     "f-off-white-ivory-hsur",
+     "f-sand-v49e",
+     "f-greige-wqg5",
+     "f-taupe-xk7v",
+     "f-light-grey-zn4r",
+     "f-olive-0g6l",
+     "f-brown-4s5b",
+     "f-charcoal-1tve",
+     "f-off-white-ivory-v14d",
+     "f-sand-wdym",
+     "f-beige-yqws",
+     "f-greige-zclh",
+     "f-taupe-02rf",
+     "f-light-grey-0o1h",
+     "f-olive-1w3y",
+     "f-brown-2ndg",
+     "f-charcoal-3co0",
+     "f-off-white-ivory-dkoi",
+     "f-sand-e4if",
+     "f-beige-eov3",
+     "f-greige-ftja",
+     "f-taupe-gc23",
+     "f-light-grey-gxbc",
+     "f-olive-hghi",
+     "f-brown-i36r",
+     "f-charcoal-ipjq"
+    ],
+    "pillows": [],
+    "detail1": []
    }
   },
   "finishTypes": [
-   {
-    "id": "frame",
-    "name": "Frame",
-    "target": "frame"
-   },
    {
     "id": "fabric",
     "name": "Fabric",
     "target": "fabric",
     "materialType": "Fabric"
+   },
+   {
+    "id": "frame",
+    "name": "Frame",
+    "target": "frame"
    },
    {
     "id": "pillows",
@@ -1533,6 +2297,123 @@
    ],
    "f-emma-j-shipley-two-8hsh": [
     "fabric"
+   ],
+   "f-off-white-ivory-jixp": [
+    "fabric"
+   ],
+   "f-white-oakwood-veneer-rnfa": [
+    "frame"
+   ],
+   "f-olive-8j3w": [
+    "fabric"
+   ],
+   "f-olive-velvet-0xsp": [
+    "fabric"
+   ],
+   "f-ivory-velvet-icob": [
+    "fabric"
+   ],
+   "f-brown-velvet-ky0o": [
+    "fabric"
+   ],
+   "f-off-white-ivory-v-6vpb": [
+    "fabric"
+   ],
+   "f-sand-v-8rjl": [
+    "fabric"
+   ],
+   "f-beige-v-9kca": [
+    "fabric"
+   ],
+   "f-greige-v-b1tr": [
+    "fabric"
+   ],
+   "f-taupe-v-brv4": [
+    "fabric"
+   ],
+   "f-light-grey-v-cm7d": [
+    "fabric"
+   ],
+   "f-charcoal-v-e1nw": [
+    "fabric"
+   ],
+   "f-brown-4s5b": [
+    "fabric"
+   ],
+   "f-off-white-ivory-hsur": [
+    "fabric"
+   ],
+   "f-sand-v49e": [
+    "fabric"
+   ],
+   "f-greige-wqg5": [
+    "fabric"
+   ],
+   "f-taupe-xk7v": [
+    "fabric"
+   ],
+   "f-light-grey-zn4r": [
+    "fabric"
+   ],
+   "f-olive-0g6l": [
+    "fabric"
+   ],
+   "f-charcoal-1tve": [
+    "fabric"
+   ],
+   "f-off-white-ivory-v14d": [
+    "fabric"
+   ],
+   "f-sand-wdym": [
+    "fabric"
+   ],
+   "f-beige-yqws": [
+    "fabric"
+   ],
+   "f-greige-zclh": [
+    "fabric"
+   ],
+   "f-taupe-02rf": [
+    "fabric"
+   ],
+   "f-light-grey-0o1h": [
+    "fabric"
+   ],
+   "f-olive-1w3y": [
+    "fabric"
+   ],
+   "f-brown-2ndg": [
+    "fabric"
+   ],
+   "f-charcoal-3co0": [
+    "fabric"
+   ],
+   "f-off-white-ivory-dkoi": [
+    "fabric"
+   ],
+   "f-sand-e4if": [
+    "fabric"
+   ],
+   "f-beige-eov3": [
+    "fabric"
+   ],
+   "f-greige-ftja": [
+    "fabric"
+   ],
+   "f-taupe-gc23": [
+    "fabric"
+   ],
+   "f-light-grey-gxbc": [
+    "fabric"
+   ],
+   "f-olive-hghi": [
+    "fabric"
+   ],
+   "f-brown-i36r": [
+    "fabric"
+   ],
+   "f-charcoal-ipjq": [
+    "fabric"
    ]
   },
   "pieceFinishAvailability": {
@@ -1608,12 +2489,200 @@
     "fabric": true,
     "pillows": false,
     "detail1": false
+   },
+   "x-aira-bench-vsdk": {
+    "frame": true,
+    "fabric": true,
+    "pillows": false,
+    "detail1": false
+   },
+   "x-scarlet-custom-couch-svxv": {
+    "frame": false,
+    "pillows": false,
+    "detail1": false
    }
   },
   "site": {
    "viewportPan": true,
    "viewportMinZoom": 3
-  }
+  },
+  "materialPbrDefaults": {
+   "f-off-white-ivory-jixp": false,
+   "f-olive-8j3w": true,
+   "f-olive-velvet-0xsp": true,
+   "f-ivory-velvet-icob": true,
+   "f-brown-velvet-ky0o": true,
+   "f-off-white-ivory-v-6vpb": true,
+   "f-sand-v-8rjl": true,
+   "f-beige-v-9kca": true,
+   "f-greige-v-b1tr": true,
+   "f-taupe-v-brv4": true,
+   "f-light-grey-v-cm7d": true,
+   "f-charcoal-v-e1nw": true,
+   "f-brown-4s5b": false,
+   "f-off-white-ivory-hsur": true,
+   "f-sand-v49e": true,
+   "f-greige-wqg5": true,
+   "f-taupe-xk7v": true,
+   "f-light-grey-zn4r": true,
+   "f-olive-0g6l": true,
+   "f-charcoal-1tve": true,
+   "f-off-white-ivory-v14d": true,
+   "f-sand-wdym": true,
+   "f-beige-yqws": true,
+   "f-greige-zclh": true,
+   "f-taupe-02rf": true,
+   "f-light-grey-0o1h": true,
+   "f-olive-1w3y": true,
+   "f-brown-2ndg": true,
+   "f-charcoal-3co0": true,
+   "f-off-white-ivory-dkoi": true,
+   "f-sand-e4if": true,
+   "f-beige-eov3": true,
+   "f-greige-ftja": true,
+   "f-taupe-gc23": true,
+   "f-light-grey-gxbc": true,
+   "f-olive-hghi": true,
+   "f-brown-i36r": true,
+   "f-charcoal-ipjq": true
+  },
+  "materialOrder": [
+   "oyster",
+   "sage",
+   "charcoal",
+   "terracotta",
+   "navy",
+   "mustard",
+   "blush",
+   "forest",
+   "walnut",
+   "natural-oak",
+   "ebony",
+   "ash",
+   "f-lemo-grey-38z3",
+   "f-furnwood-qjlm",
+   "f-velvet-chocolate-n2op",
+   "f-boucle-mustard-2nrd",
+   "f-light-brown-suede-3jb6",
+   "f-navy-suede-41x9",
+   "f-orange-suede-4opl",
+   "f-purple-suede-56n5",
+   "f-beige-marble-gggw",
+   "f-off-white-ivory-jixp",
+   "f-white-oakwood-veneer-rnfa",
+   "f-olive-8j3w",
+   "f-off-white-ivory-v-6vpb",
+   "f-sand-v-8rjl",
+   "f-beige-v-9kca",
+   "f-ivory-velvet-icob",
+   "f-greige-v-b1tr",
+   "f-taupe-v-brv4",
+   "f-light-grey-v-cm7d",
+   "f-olive-velvet-0xsp",
+   "f-brown-velvet-ky0o",
+   "f-charcoal-v-e1nw",
+   "f-off-white-ivory-hsur",
+   "f-sand-v49e",
+   "f-greige-wqg5",
+   "f-taupe-xk7v",
+   "f-light-grey-zn4r",
+   "f-olive-0g6l",
+   "f-brown-4s5b"
+  ],
+  "fabricEdits": {
+   "f-charcoal-v-e1nw": {
+    "name": "Charcoal",
+    "image": "swatches/fabrics/f-charcoal-v-e1nw.jpg"
+   },
+   "f-brown-velvet-ky0o": {
+    "name": "Brown",
+    "image": "swatches/fabrics/f-brown-velvet-ky0o.jpg"
+   },
+   "f-olive-velvet-0xsp": {
+    "name": "Olive",
+    "image": "swatches/fabrics/f-olive-velvet-0xsp.jpg"
+   },
+   "f-light-grey-v-cm7d": {
+    "name": "Light Grey",
+    "image": "swatches/fabrics/f-light-grey-v-cm7d.jpg"
+   },
+   "f-taupe-v-brv4": {
+    "name": "Taupe",
+    "image": "swatches/fabrics/f-taupe-v-brv4.jpg"
+   },
+   "f-greige-v-b1tr": {
+    "name": "Greige",
+    "image": "swatches/fabrics/f-greige-v-b1tr.jpg"
+   },
+   "f-ivory-velvet-icob": {
+    "name": "Ivory",
+    "image": "swatches/fabrics/f-ivory-velvet-icob.webp"
+   },
+   "f-beige-v-9kca": {
+    "name": "Beige",
+    "image": "swatches/fabrics/f-beige-v-9kca.jpg"
+   },
+   "f-sand-v-8rjl": {
+    "name": "Sand",
+    "image": "swatches/fabrics/f-sand-v-8rjl.jpg"
+   },
+   "f-off-white-ivory-v-6vpb": {
+    "name": "Off-white / Ivory",
+    "image": "swatches/fabrics/f-off-white-ivory-v-6vpb.webp"
+   },
+   "f-light-grey-zn4r": {
+    "type": "Boucle",
+    "image": "swatches/fabrics/f-light-grey-zn4r.jpg"
+   }
+  },
+  "finishTypeOrder": [
+   "fabric",
+   "frame",
+   "pillows",
+   "detail1"
+  ],
+  "materialTypes": [
+   {
+    "name": "Fabric",
+    "kind": "fabric"
+   },
+   {
+    "name": "Leather",
+    "kind": "fabric"
+   },
+   {
+    "name": "Velvet",
+    "kind": "fabric"
+   },
+   {
+    "name": "Linen",
+    "kind": "fabric"
+   },
+   {
+    "name": "Wood",
+    "kind": "finish"
+   },
+   {
+    "name": "Stone",
+    "kind": "finish"
+   },
+   {
+    "name": "Metal",
+    "kind": "finish"
+   },
+   {
+    "name": "Other",
+    "kind": "finish"
+   },
+   {
+    "name": "Boucle",
+    "kind": "fabric"
+   },
+   {
+    "name": "Woven",
+    "kind": "fabric"
+   }
+  ]
  },
  "files": {
   "model:x-granite-dining-table-02dj": {
@@ -1915,9 +2984,264 @@
    "path": "media/products/x-office-one-kxcy/gallery-3.png",
    "type": "image/png",
    "name": "office-one-iso.png"
+  },
+  "fabric:f-beige-eov3": {
+   "path": "swatches/fabrics/f-beige-eov3.jpg",
+   "type": "image/jpeg",
+   "name": "beige.jpg"
+  },
+  "fabric:f-beige-v-9kca": {
+   "path": "swatches/fabrics/f-beige-v-9kca.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-linen-plain-flat_51.jpg"
+  },
+  "fabric:f-beige-yqws": {
+   "path": "swatches/fabrics/f-beige-yqws.jpg",
+   "type": "image/jpeg",
+   "name": "beige.jpg"
+  },
+  "fabric:f-brown-2ndg": {
+   "path": "swatches/fabrics/f-brown-2ndg.jpg",
+   "type": "image/jpeg",
+   "name": "brown.jpg"
+  },
+  "fabric:f-brown-4s5b": {
+   "path": "swatches/fabrics/f-brown-4s5b.webp",
+   "type": "image/webp",
+   "name": "brown.webp"
+  },
+  "fabric:f-brown-i36r": {
+   "path": "swatches/fabrics/f-brown-i36r.jpg",
+   "type": "image/jpeg",
+   "name": "brown.jpg"
+  },
+  "fabric:f-brown-velvet-ky0o": {
+   "path": "swatches/fabrics/f-brown-velvet-ky0o.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-espresso-plain-flat_51.jpg"
+  },
+  "fabric:f-charcoal-1tve": {
+   "path": "swatches/fabrics/f-charcoal-1tve.webp",
+   "type": "image/webp",
+   "name": "charcoal.webp"
+  },
+  "fabric:f-charcoal-3co0": {
+   "path": "swatches/fabrics/f-charcoal-3co0.jpg",
+   "type": "image/jpeg",
+   "name": "charcoal.jpg"
+  },
+  "fabric:f-charcoal-ipjq": {
+   "path": "swatches/fabrics/f-charcoal-ipjq.jpg",
+   "type": "image/jpeg",
+   "name": "charcoal.jpg"
+  },
+  "fabric:f-charcoal-v-e1nw": {
+   "path": "swatches/fabrics/f-charcoal-v-e1nw.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-graphite-plain-flat_51.jpg"
+  },
+  "fabric:f-greige-ftja": {
+   "path": "swatches/fabrics/f-greige-ftja.jpg",
+   "type": "image/jpeg",
+   "name": "greige.jpg"
+  },
+  "fabric:f-greige-v-b1tr": {
+   "path": "swatches/fabrics/f-greige-v-b1tr.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-stone-plain-flat_51.jpg"
+  },
+  "fabric:f-greige-wqg5": {
+   "path": "swatches/fabrics/f-greige-wqg5.jpg",
+   "type": "image/jpeg",
+   "name": "greige.jpg"
+  },
+  "fabric:f-greige-zclh": {
+   "path": "swatches/fabrics/f-greige-zclh.jpg",
+   "type": "image/jpeg",
+   "name": "greige.jpg"
+  },
+  "fabric:f-ivory-velvet-icob": {
+   "path": "swatches/fabrics/f-ivory-velvet-icob.webp",
+   "type": "image/webp",
+   "name": "KR-254316.1.0_Main-850-850.webp"
+  },
+  "fabric:f-light-grey-0o1h": {
+   "path": "swatches/fabrics/f-light-grey-0o1h.jpg",
+   "type": "image/jpeg",
+   "name": "light-grey.jpg"
+  },
+  "fabric:f-light-grey-gxbc": {
+   "path": "swatches/fabrics/f-light-grey-gxbc.jpg",
+   "type": "image/jpeg",
+   "name": "light-grey.jpg"
+  },
+  "fabric:f-light-grey-v-cm7d": {
+   "path": "swatches/fabrics/f-light-grey-v-cm7d.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-cloud-plain-flat_51.jpg"
+  },
+  "fabric:f-light-grey-zn4r": {
+   "path": "swatches/fabrics/f-light-grey-zn4r.jpg",
+   "type": "image/jpeg",
+   "name": "light-grey.jpg"
+  },
+  "fabric:f-off-white-ivory-dkoi": {
+   "path": "swatches/fabrics/f-off-white-ivory-dkoi.jpg",
+   "type": "image/jpeg",
+   "name": "ivory.jpg"
+  },
+  "fabric:f-off-white-ivory-hsur": {
+   "path": "swatches/fabrics/f-off-white-ivory-hsur.jpg",
+   "type": "image/jpeg",
+   "name": "ivory.jpg"
+  },
+  "fabric:f-off-white-ivory-jixp": {
+   "path": "swatches/fabrics/f-off-white-ivory-jixp.jpg",
+   "type": "image/jpeg",
+   "name": "KOVA-03_1009x1009.jpg"
+  },
+  "fabric:f-off-white-ivory-v-6vpb": {
+   "path": "swatches/fabrics/f-off-white-ivory-v-6vpb.webp",
+   "type": "image/webp",
+   "name": "KR-254316.1.0_Main-850-850.webp"
+  },
+  "fabric:f-off-white-ivory-v14d": {
+   "path": "swatches/fabrics/f-off-white-ivory-v14d.jpg",
+   "type": "image/jpeg",
+   "name": "ivory.jpg"
+  },
+  "fabric:f-olive-0g6l": {
+   "path": "swatches/fabrics/f-olive-0g6l.bmp",
+   "type": "image/bmp",
+   "name": "olive_diffuseOriginal.bmp"
+  },
+  "fabric:f-olive-1w3y": {
+   "path": "swatches/fabrics/f-olive-1w3y.jpg",
+   "type": "image/jpeg",
+   "name": "olive.jpg"
+  },
+  "fabric:f-olive-8j3w": {
+   "path": "swatches/fabrics/f-olive-8j3w.jpg",
+   "type": "image/jpeg",
+   "name": "leather-texture-background-natural-leather-material-pattern-close-view-square-illustration_568886-1166.jpg"
+  },
+  "fabric:f-olive-hghi": {
+   "path": "swatches/fabrics/f-olive-hghi.webp",
+   "type": "image/webp",
+   "name": "olive.webp"
+  },
+  "fabric:f-olive-velvet-0xsp": {
+   "path": "swatches/fabrics/f-olive-velvet-0xsp.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-olive-plain-flat_51 (1).jpg"
+  },
+  "fabric:f-sand-e4if": {
+   "path": "swatches/fabrics/f-sand-e4if.jpg",
+   "type": "image/jpeg",
+   "name": "sand.jpg"
+  },
+  "fabric:f-sand-v-8rjl": {
+   "path": "swatches/fabrics/f-sand-v-8rjl.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-sand-plain-flat_51.jpg"
+  },
+  "fabric:f-sand-v49e": {
+   "path": "swatches/fabrics/f-sand-v49e.jpg",
+   "type": "image/jpeg",
+   "name": "sand.jpg"
+  },
+  "fabric:f-sand-wdym": {
+   "path": "swatches/fabrics/f-sand-wdym.jpg",
+   "type": "image/jpeg",
+   "name": "sand.jpg"
+  },
+  "fabric:f-taupe-02rf": {
+   "path": "swatches/fabrics/f-taupe-02rf.jpg",
+   "type": "image/jpeg",
+   "name": "taupe.jpg"
+  },
+  "fabric:f-taupe-gc23": {
+   "path": "swatches/fabrics/f-taupe-gc23.jpg",
+   "type": "image/jpeg",
+   "name": "taupe.jpg"
+  },
+  "fabric:f-taupe-v-brv4": {
+   "path": "swatches/fabrics/f-taupe-v-brv4.jpg",
+   "type": "image/jpeg",
+   "name": "fabric-cosmos-clay-plain-flat_51.jpg"
+  },
+  "fabric:f-taupe-xk7v": {
+   "path": "swatches/fabrics/f-taupe-xk7v.jpg",
+   "type": "image/jpeg",
+   "name": "taupe.jpg"
+  },
+  "fabric:f-white-oakwood-veneer-rnfa": {
+   "path": "swatches/fabrics/f-white-oakwood-veneer-rnfa.jpe",
+   "type": "image/jpeg",
+   "name": "white-oakwood-veneer.jpe"
+  },
+  "model:x-aira-bench-vsdk": {
+   "path": "models/x-aira-bench-vsdk.glb",
+   "type": "",
+   "name": "Husseini-Portfolio4.glb"
+  },
+  "pbr:f-brown-4s5b:bump": {
+   "path": "media/slots/pbr-f-brown-4s5b-bump.jpg",
+   "type": "image/jpeg",
+   "name": "brown_height.jpg"
+  },
+  "pbr:f-brown-4s5b:normal": {
+   "path": "media/slots/pbr-f-brown-4s5b-normal.jpg",
+   "type": "image/jpeg",
+   "name": "brown_normal.jpg"
+  },
+  "pbr:f-charcoal-1tve:bump": {
+   "path": "media/slots/pbr-f-charcoal-1tve-bump.jpg",
+   "type": "image/jpeg",
+   "name": "charcoal_height.jpg"
+  },
+  "pbr:f-charcoal-1tve:normal": {
+   "path": "media/slots/pbr-f-charcoal-1tve-normal.jpg",
+   "type": "image/jpeg",
+   "name": "charcoal_normal.jpg"
+  },
+  "pbr:f-greige-wqg5:normal": {
+   "path": "media/slots/pbr-f-greige-wqg5-normal.jpg",
+   "type": "image/jpeg",
+   "name": "greige_normal.jpg"
+  },
+  "pbr:f-off-white-ivory-hsur:bump": {
+   "path": "media/slots/pbr-f-off-white-ivory-hsur-bump.jpg",
+   "type": "image/jpeg",
+   "name": "ivory_height.jpg"
+  },
+  "pbr:f-off-white-ivory-hsur:normal": {
+   "path": "media/slots/pbr-f-off-white-ivory-hsur-normal.jpg",
+   "type": "image/jpeg",
+   "name": "ivory_normal.jpg"
+  },
+  "pbr:f-olive-0g6l:normal": {
+   "path": "media/slots/pbr-f-olive-0g6l-normal.bmp",
+   "type": "image/bmp",
+   "name": "olive_normal.bmp"
+  },
+  "pbr:f-sand-v49e:normal": {
+   "path": "media/slots/pbr-f-sand-v49e-normal.jpg",
+   "type": "image/jpeg",
+   "name": "sand_normal.jpg"
+  },
+  "pbr:f-white-oakwood-veneer-rnfa:bump": {
+   "path": "media/slots/pbr-f-white-oakwood-veneer-rnfa-bump.jpg",
+   "type": "image/jpeg",
+   "name": "white-oakwood-veneer_height.jpg"
+  },
+  "pbr:f-white-oakwood-veneer-rnfa:normal": {
+   "path": "media/slots/pbr-f-white-oakwood-veneer-rnfa-normal.jpg",
+   "type": "image/jpeg",
+   "name": "white-oakwood-veneer_normal.jpg"
   }
  },
- "version": 1793042639683,
+ "version": 1793446429855,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",
@@ -1933,6 +3257,7 @@
   "x-tuft-supreme-oeqb": "models/x-tuft-supreme-oeqb.glb",
   "x-vonia-3-seater-0n8h": "models/x-vonia-3-seater-0n8h.glb",
   "x-emma-j-shipley-one-9czi": "models/x-emma-j-shipley-one-9czi.glb",
-  "x-marble-one-erfd": "models/x-marble-one-erfd.glb"
+  "x-marble-one-erfd": "models/x-marble-one-erfd.glb",
+  "x-aira-bench-vsdk": "models/x-aira-bench-vsdk.glb"
  }
 }

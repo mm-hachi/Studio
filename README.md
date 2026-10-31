@@ -100,6 +100,7 @@ Add references to them under `"documents"` in `data/site.json`.
 ### Features in Admin
 1. **Materials Library**:
    - Manage fabrics and frame/finish materials in one unified library.
+   - Add and remove material types; fabric-category types are selectable on product pages and filter the swatches shown.
    - **Finish Types**: Create or remove custom finish types (e.g. Frame, Legs, Base) with exact target names matching GLB materials.
    - **Reset materials to default**: Restore built-in fabrics and finish settings.
 2. **Pieces**:

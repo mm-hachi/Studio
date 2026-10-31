@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadGLTF } from './loader.js';
-import { applyFabric, DEFMAP } from './texture.js';
+import { applyFabric, applyPbrMaps, DEFMAP } from './texture.js';
 import * as Store from './store.js';
 import { build, getMapping, PRODUCTS } from './products.js';
-export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=true}={}){
- const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=true,capture=false}={}){
+ const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserveDrawingBuffer:capture});
  r.setPixelRatio(Math.min(devicePixelRatio,2));r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.1;r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFSoftShadowMap;
  const sc=new THREE.Scene();sc.environment=new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(),.04).texture;
  const cam=new THREE.PerspectiveCamera(32,1,.1,100),base=new THREE.Vector3(5,2.8,6.5),look=new THREE.Vector3(0,.9,0);cam.position.copy(base);
@@ -17,12 +17,56 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
  const floor=new THREE.Mesh(new THREE.CircleGeometry(5,64),new THREE.ShadowMaterial({opacity:.22}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;sc.add(floor);
  const ring=new THREE.Mesh(new THREE.RingGeometry(2.3,2.33,128),new THREE.MeshBasicMaterial({color:0x9c7a4d,transparent:true,opacity:.35,side:2}));ring.rotation.x=-Math.PI/2;ring.position.y=.005;sc.add(ring);
  const ctl=new OrbitControls(cam,canvas);ctl.target.copy(look);ctl.enableDamping=true;ctl.enablePan=view.pan;ctl.enableRotate=orbit;ctl.minDistance=view.minZoom;ctl.maxDistance=view.maxZoom;ctl.maxPolarAngle=Math.PI*.49;
- let obj,grow=0,colour,glow=1,dim=[1,1,1],dead=false,fab=null;
+ let obj,grow=0,colour,glow=1,dim=[1,1,1],dead=false,fab=null,capturing=false;
  const frameListeners=new Set();
+ const lightDefaults={exposure:r.toneMappingExposure,key:key.intensity,rim:rim.intensity,back:back.intensity,
+  keyColor:key.color.clone(),rimColor:rim.color.clone(),backColor:back.color.clone()};
+ const envMaterials=new Map();let lighting={brightness:1,warmth:0,environment:1};
+ const updateEnvironment=()=>{
+  if(obj)obj.traverse(node=>{
+   if(!node.isMesh)return;
+   [].concat(node.material).forEach(material=>{
+    if(!envMaterials.has(material))envMaterials.set(material,material.envMapIntensity);
+    material.envMapIntensity=envMaterials.get(material)*lighting.environment;
+   });
+  });
+ };
+ const setLighting=values=>{
+  lighting={...lighting,...values};
+  const {brightness,warmth}=lighting;
+  r.toneMappingExposure=lightDefaults.exposure*brightness;
+  key.intensity=lightDefaults.key*brightness;rim.intensity=lightDefaults.rim*brightness;back.intensity=lightDefaults.back*brightness;
+  const tint=warmth>=0?new THREE.Color(0xffd1a1):new THREE.Color(0xc8ddff);
+  const strength=Math.abs(warmth)*.38;
+  key.color.copy(lightDefaults.keyColor).lerp(tint,strength);
+  rim.color.copy(lightDefaults.rimColor).lerp(tint,strength);
+  back.color.copy(lightDefaults.backColor).lerp(tint,strength);
+  updateEnvironment();
+ };
+ const capturePhoto=async button=>{
+  if(capturing)return;
+  capturing=true;button.disabled=true;
+  const originalLabel=button.textContent;let clearState;
+  try{
+   button.textContent='Preparing photo…';document.body.classList.add('viewport-photo-mode');
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+   clearState={color:r.getClearColor(new THREE.Color()),alpha:r.getClearAlpha()};
+   r.setClearColor(0xf4f0e9,1);
+   r.render(sc,cam);
+   const blob=await new Promise((resolve,reject)=>canvas.toBlob(image=>image?resolve(image):reject(new Error('The viewport image could not be created.')),'image/png'));
+   r.setClearColor(clearState.color,clearState.alpha);clearState=null;
+   const url=URL.createObjectURL(blob),link=document.createElement('a');
+   link.href=url;link.download=`dekara-${id}-view.png`;link.click();setTimeout(()=>URL.revokeObjectURL(url),4000);
+  }catch(error){console.error('Could not capture the product viewport.',error);alert(error.message||'Could not capture the product viewport.')}
+  finally{
+   if(clearState)r.setClearColor(clearState.color,clearState.alpha);
+   document.body.classList.remove('viewport-photo-mode');button.textContent=originalLabel;button.disabled=false;capturing=false;
+  }
+ };
  const tint=h=>{colour=h;fab=null;obj.userData.tints.forEach(m=>{m.map=null;m.color.set(h);m.needsUpdate=true})};
  let orig=[];const snap=()=>{orig=obj.userData.tints.map(m=>({m,c:m.color.clone(),map:m.map}))};
  const restore=()=>{orig.forEach(({m,c,map})=>{m.userData.fabTok=-1;if(m.map&&m.map!==map)m.map.dispose();m.map=map;m.color.copy(c);m.needsUpdate=true})};
- const applyFab=()=>{if(fab)applyFabric(obj.userData.tints,fab.f,fab.m)};
+ const applyFab=()=>{if(fab){applyFabric(obj.userData.tints,fab.f,fab.m);applyPbrMaps(obj.userData.tints,fab.f,true,fab.m)}};
  const setFabric=(f,m)=>{if(!f)return;fab={f,m};applyFab()};
  const curFinishes={};
  const applyFinishes=()=>{
@@ -31,7 +75,7 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
    const list=(obj.userData.finMap?.[tgt])||(tgt==='frame'?obj.userData.frames:null);
    if(!list||!list.length)return;
    if(typeof mat.mat==='string'){list.forEach(m=>{m.map=null;m.color.set(mat.mat);m.needsUpdate=true})}
-   else if(Array.isArray(mat.mat)){applyFabric(list,mat.mat,mat.m)}
+   else if(Array.isArray(mat.mat)){applyFabric(list,mat.mat,mat.m);applyPbrMaps(list,mat.mat,true,mat.m)}
   });
  };
  const setFinish=(tgt,mat,m=DEFMAP)=>{const k=(tgt||'frame').toLowerCase().trim();curFinishes[k]={mat,m};applyFinishes()};
@@ -52,7 +96,7 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
      if(!(m.transparent&&m.opacity<1)){al.push(m);if(mn==='tint')nm.push(m)}
     })}});
     obj.userData.tints.push(...(nm.length?nm:al));obj.userData.frames.push(...fr);obj.userData.finMap=finMap;
-    obj.add(s);snap();applyFinishes();applyFab();
+    obj.add(s);snap();applyFinishes();applyFab();updateEnvironment();
     if(firstFabric)setFabric(firstFabric,getMapping(n,firstFabric[2],'fabric'));
    }).catch(()=>obj.add(build(n,colour)))}
   sc.add(obj);grow=0;setGlow(glow);snap();applyFinishes();applyFab();
@@ -63,8 +107,12 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
  set(id);
  const projectDimensions=()=>{
   if(!obj)return null;
-  obj.updateMatrixWorld(true);cam.updateMatrixWorld();
+  obj.updateMatrixWorld(true);cam.updateMatrixWorld(true);
   const bounds=new THREE.Box3().setFromObject(obj);if(bounds.isEmpty())return null;
+  for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){
+   const point=new THREE.Vector3(x,y,z),viewPoint=point.clone().applyMatrix4(cam.matrixWorldInverse),ndc=point.clone().project(cam);
+   if(-viewPoint.z<cam.near||-viewPoint.z>cam.far||Math.abs(ndc.x)>0.96||Math.abs(ndc.y)>0.96)return null;
+  }
   const z=cam.position.z>=obj.position.z?bounds.max.z:bounds.min.z,x=cam.position.x>=obj.position.x?bounds.max.x:bounds.min.x;
   const project=point=>{const p=point.project(cam);return {x:(p.x+1)*500,y:(1-p.y)*350}};
   return {
@@ -96,5 +144,10 @@ export function viewer(canvas,id,{orbit=false,spin=.35,scroll=false,fullscreen=t
   if(ctl)ctl.update();if(!orbit){obj.rotation.y=.6+t*spin+(scroll?scrollY*.003:0)+m.x*.9;if(!ctl){cam.position.set(base.x,base.y-m.y*.8,base.z+(scroll?scrollY*.002:0));cam.lookAt(look)}}
   frameListeners.forEach(listener=>listener());
   r.render(sc,cam)})(last);
- return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);if(fullChange)document.removeEventListener('fullscreenchange',fullChange);full?.remove();ctl.dispose();r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),projectDimensions,onFrame(listener){frameListeners.add(listener);return ()=>frameListeners.delete(listener)},setId:set,setColour:tint,setFabric,setFrame,setFinish,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
+ let photo;
+ if(capture){
+  photo=document.createElement('button');photo.type='button';photo.className='viewport-photo-button';photo.textContent='Take photo';photo.setAttribute('aria-label','Take a clean photo of this view');stage.append(photo);
+  photo.addEventListener('click',()=>capturePhoto(photo));
+ }
+ return {destroy(){dead=true;ro.disconnect();vio.disconnect();removeEventListener('pointermove',mv);if(fullChange)document.removeEventListener('fullscreenchange',fullChange);full?.remove();photo?.remove();ctl.dispose();r.dispose();r.forceContextLoss&&r.forceContextLoss()},getModel:()=>({object:obj,dim}),projectDimensions,onFrame(listener){frameListeners.add(listener);return ()=>frameListeners.delete(listener)},setId:set,setColour:tint,setFabric,setFrame,setFinish,setLighting,setGlow,setDims:(a,b,c)=>{dim=[a,b,c]}};
 }

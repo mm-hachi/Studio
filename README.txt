@@ -113,9 +113,10 @@ available in the floating action bar at the bottom. In Materials library,
 expand a material and use Move earlier / Move later to reorder finish and
 fabric swatches; the order is shared wherever those material choices appear.
 Click Apply changes to refresh the choices on the current page after reordering.
-Fabric selectors only include materials whose type is Fabric, Leather, Velvet
-or Linen. Wood, Stone, Metal and Other remain in the materials library for
-finish selectors and are not offered as upholstery fabrics.
+Product fabric choices are grouped by material type: choose Fabric, Leather,
+Velvet, Linen, or another type marked as a fabric category, then choose from
+only that category's assigned swatches. Wood, Stone, Metal and other material
+types are not offered as upholstery fabrics by default.
 
 Admin sections:
 
@@ -124,9 +125,9 @@ Fabric mapping (on a product page)
   adjust scale X/Y, rotation and location, then choose Lock values to save.
   Each finish-type/material mapping is independent. Reset removes that
   material's custom mapping. The Fabric finish type is also the product page's
-  fabric selector; there is no second fabric swatch selector there. The Apply
-  to all control has a dedicated label target so opening the mapping editor
-  does not trigger a null textContent error.
+  fabric selector; choose a fabric category before selecting its swatch.
+  The Apply to all control has a dedicated label target so opening the mapping
+  editor does not trigger a null textContent error.
 
 Media on this page
   Upload images/videos to the visible slots on the current page. These uploads
@@ -147,9 +148,11 @@ Custom Studio
   available studio finish materials.
 
 Materials library
-  Add/edit/delete materials, upload a swatch texture, create finish types, and
-  reset material settings. A finish type maps to a named material in a GLB.
-  Fabric is a built-in finish type and should not be deleted.
+  Add/edit/delete materials, upload a swatch texture, create and remove
+  material categories, create finish types, and reset material settings.
+  Material categories marked as fabric categories appear in the product-page
+  fabric-type selector. Removing a category reassigns its materials to another
+  category of the same kind. A finish type maps to a named material in a GLB.
 
 Pieces
   Edit product text, categories, price and fabric/finish availability; upload a

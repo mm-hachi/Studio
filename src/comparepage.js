@@ -2,12 +2,13 @@ import { PRODUCTS, FINISHES, getMapping, ORIGINAL } from './products.js';
 import { viewer } from './viewer.js';
 import * as C from './compare.js';
 import * as Basket from './basket.js';
+import { setRangeValue } from './range.js';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const R=n=>'R '+Math.round(n).toLocaleString('en-ZA');
 let cols=[];
 const activeId=(arr,id)=>arr.some(a=>a[2]===id)?id:arr[0]?.[2];
 const sw=(arr,cls,selected)=>`<div class="sw ${cls}">${arr.map((a,i)=>`<button class="${(selected?selected===a[2]:i===0)?'on':''}${a[2]==='original'?' orig':''}" style="background:${a[3]?`url(${esc(a[3])}) center/cover`:esc(a[1])}" title="${esc(a[0])}" aria-label="${esc(a[0])}" data-k="${esc(a[2]??i)}"></button>`).join('')}</div>`;
-const rg=(ax,l,min,max)=>`<div class="rg"><div><span>${l}</span><b class="o-${ax}"></b></div><input type="range" data-ax="${ax}" min="${min}" max="${max}" value="100"></div>`;
+const rg=(ax,l,min,max)=>`<div class="rg"><div><span>${l}</span><b class="o-${ax}"></b></div><div class="adjust-control"><input type="range" data-ax="${ax}" min="${min}" max="${max}" value="100" aria-label="${l} slider"><input type="number" class="exact-value" data-ax-exact="${ax}" step="any" value="100" aria-label="${l} exact value"></div></div>`;
 function build(){cols.forEach(c=>c.v.destroy());cols=[];
  const L=C.list().map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean),root=$('cmp-grid');
  $('cmp-tools').hidden=!L.length;
@@ -35,6 +36,7 @@ $('cmp-grid').addEventListener('click',e=>{const el=e.target.closest('.cc');if(!
  else if(b.classList.contains('rm'))C.remove(c.p.id);
  else if(b.classList.contains('add')){const d=dims(c);Basket.add({key:`p:${c.p.id}:${c.fabric[0]}:${c.finish[0]}:${d.join('x')}`,name:c.p.name,desc:`${c.fabric[0]} · ${c.finish[0]} frame · ${d.join(' × ')} cm`,price:price(c),swatch:c.fabric[1]})}
  update()});
-$('cmp-grid').addEventListener('input',e=>{const r=e.target.closest('[data-ax]');if(!r)return;const c=cols.find(x=>x.el===r.closest('.cc'));c.s[+r.dataset.ax]=r.value/100;c.v.setDims(...c.s);update()});
+$('cmp-grid').addEventListener('input',e=>{const r=e.target.closest('[data-ax]'),n=e.target.closest('[data-ax-exact]'),control=r||n;if(!control)return;const c=cols.find(x=>x.el===control.closest('.cc')),axis=Number(r?r.dataset.ax:n.dataset.axExact),value=r?r.valueAsNumber:n.valueAsNumber;if(!Number.isFinite(value))return;const range=c.el.querySelector(`[data-ax="${axis}"]`),exact=c.el.querySelector(`[data-ax-exact="${axis}"]`);if(n)setRangeValue(range,value);else exact.value=String(value);if(n)range.nextElementSibling.value=String(value);c.s[axis]=value/100;c.v.setDims(...c.s);update()});
+$('cmp-grid').addEventListener('change',e=>{const n=e.target.closest('[data-ax-exact]');if(n&&!Number.isFinite(n.valueAsNumber))n.value=n.previousElementSibling.value});
 $('cmp-clear').onclick=()=>C.clear();
 C.onChange(build);build();
