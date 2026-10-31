@@ -3239,9 +3239,24 @@
    "path": "media/slots/pbr-f-white-oakwood-veneer-rnfa-normal.jpg",
    "type": "image/jpeg",
    "name": "white-oakwood-veneer_normal.jpg"
+  },
+  "gallery:x-aira-bench-vsdk:1": {
+   "path": "media/products/x-aira-bench-vsdk/gallery-1.png",
+   "type": "image/png",
+   "name": "charcoal-bench1.png"
+  },
+  "gallery:x-aira-bench-vsdk:2": {
+   "path": "media/products/x-aira-bench-vsdk/gallery-2.png",
+   "type": "image/png",
+   "name": "olive-bench2.png"
+  },
+  "gallery:x-aira-bench-vsdk:3": {
+   "path": "media/products/x-aira-bench-vsdk/gallery-3.png",
+   "type": "image/png",
+   "name": "ivory-bench3.png"
   }
  },
- "version": 1793446429855,
+ "version": 1793450261509,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",
