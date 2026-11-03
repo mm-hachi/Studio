@@ -394,6 +394,23 @@
     ],
     "dimsLocked": false,
     "model": "models/x-aira-bench-vsdk.glb"
+   },
+   {
+    "id": "x-drakensburg-pedestal-42ly",
+    "name": "Drakensburg Pedestal",
+    "cat": "Bedroom",
+    "sub": "Cabinets",
+    "tag": "",
+    "price": 3750,
+    "mat": "",
+    "desc": "",
+    "dims": [
+     50,
+     47,
+     62
+    ],
+    "dimsLocked": false,
+    "model": "models/x-drakensburg-pedestal-42ly.glb"
    }
   ],
   "pieceFabrics": {
@@ -871,6 +888,62 @@
     "hex": "#cccccc",
     "desc": "",
     "image": "swatches/fabrics/f-charcoal-ipjq.jpg"
+   },
+   {
+    "id": "f-black-q4el",
+    "name": "Black",
+    "type": "Paint",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-black-q4el.png"
+   },
+   {
+    "id": "f-brass-qw6b",
+    "name": "Brass",
+    "type": "Fabric",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-brass-qw6b.jpg"
+   },
+   {
+    "id": "f-dark-grey-rz3j",
+    "name": "Dark Grey",
+    "type": "Paint",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-dark-grey-rz3j.jpg"
+   },
+   {
+    "id": "f-light-grey-sy1e",
+    "name": "Light Grey",
+    "type": "Paint",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-light-grey-sy1e.jpg"
+   },
+   {
+    "id": "f-satin-white-u4u6",
+    "name": "Satin White",
+    "type": "Paint",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-satin-white-u4u6.png"
+   },
+   {
+    "id": "f-french-oak-znrz",
+    "name": "French Oak",
+    "type": "Wood",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-french-oak-znrz.jpg"
+   },
+   {
+    "id": "f-kiaat-20m1",
+    "name": "Kiaat",
+    "type": "Wood",
+    "hex": "#cccccc",
+    "desc": "",
+    "image": "swatches/fabrics/f-kiaat-20m1.png"
    }
   ],
   "mapping": {
@@ -2054,6 +2127,35 @@
      "normalStrength": -2,
      "locked": true
     }
+   },
+   "x-drakensburg-pedestal-42ly": {
+    "finish:top:f-french-oak-znrz": {
+     "sx": 2,
+     "sy": 2,
+     "rot": 90,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:body:f-black-q4el": {
+     "sx": 0.05,
+     "sy": 0.05,
+     "rot": 0,
+     "ox": 0,
+     "oy": 0,
+     "normalStrength": 1,
+     "locked": true
+    },
+    "finish:top:f-kiaat-20m1": {
+     "sx": 2.5,
+     "sy": 2.5,
+     "rot": 90,
+     "ox": 0,
+     "oy": 0.4,
+     "normalStrength": 1,
+     "locked": true
+    }
    }
   },
   "pieceDefaults": {
@@ -2142,6 +2244,16 @@
     "fabric": "f-sand-v49e",
     "pillows": "f-purple-suede-56n5",
     "detail1": "f-beige-marble-gggw"
+   },
+   "x-drakensburg-pedestal-42ly": {
+    "fabric": "f-taupe-v-brv4",
+    "frame": "f-kiaat-20m1",
+    "pillows": "f-purple-suede-56n5",
+    "detail1": "f-satin-white-u4u6",
+    "body": "f-black-q4el",
+    "top": "f-french-oak-znrz",
+    "handles": "f-brass-qw6b",
+    "legs": "f-black-q4el"
    }
   },
   "pieceFinishes": {
@@ -2207,6 +2319,20 @@
     ],
     "pillows": [],
     "detail1": []
+   },
+   "x-drakensburg-pedestal-42ly": {
+    "fabric": [],
+    "frame": [],
+    "pillows": [],
+    "detail1": [],
+    "top": [
+     "f-french-oak-znrz",
+     "f-kiaat-20m1"
+    ],
+    "handles": [
+     "f-black-q4el",
+     "f-brass-qw6b"
+    ]
    }
   },
   "finishTypes": [
@@ -2230,6 +2356,26 @@
     "id": "detail1",
     "name": "Accessory",
     "target": "detail1"
+   },
+   {
+    "id": "body",
+    "name": "Cabinte Body",
+    "target": "body"
+   },
+   {
+    "id": "top",
+    "name": "Cabinet Top",
+    "target": "top"
+   },
+   {
+    "id": "handles",
+    "name": "Cabinet Handles",
+    "target": "handles"
+   },
+   {
+    "id": "legs",
+    "name": "Cabinet Legs",
+    "target": "legs"
    }
   ],
   "materialFinishTypes": {
@@ -2414,6 +2560,49 @@
    ],
    "f-charcoal-ipjq": [
     "fabric"
+   ],
+   "f-black-q4el": [
+    "frame",
+    "body",
+    "top",
+    "handles",
+    "legs"
+   ],
+   "f-brass-qw6b": [
+    "detail1",
+    "handles"
+   ],
+   "f-dark-grey-rz3j": [
+    "frame",
+    "detail1",
+    "body",
+    "top",
+    "handles",
+    "legs"
+   ],
+   "f-light-grey-sy1e": [
+    "frame",
+    "detail1",
+    "body",
+    "top",
+    "handles",
+    "legs"
+   ],
+   "f-satin-white-u4u6": [
+    "frame",
+    "detail1",
+    "body",
+    "top",
+    "handles",
+    "legs"
+   ],
+   "f-french-oak-znrz": [
+    "frame",
+    "top"
+   ],
+   "f-kiaat-20m1": [
+    "frame",
+    "top"
    ]
   },
   "pieceFinishAvailability": {
@@ -2500,6 +2689,16 @@
     "frame": false,
     "pillows": false,
     "detail1": false
+   },
+   "x-drakensburg-pedestal-42ly": {
+    "fabric": false,
+    "frame": false,
+    "pillows": false,
+    "detail1": false,
+    "body": true,
+    "top": true,
+    "handles": true,
+    "legs": false
    }
   },
   "site": {
@@ -2544,7 +2743,14 @@
    "f-light-grey-gxbc": true,
    "f-olive-hghi": true,
    "f-brown-i36r": true,
-   "f-charcoal-ipjq": true
+   "f-charcoal-ipjq": true,
+   "f-black-q4el": true,
+   "f-brass-qw6b": false,
+   "f-dark-grey-rz3j": false,
+   "f-light-grey-sy1e": false,
+   "f-satin-white-u4u6": false,
+   "f-french-oak-znrz": false,
+   "f-kiaat-20m1": true
   },
   "materialOrder": [
    "oyster",
@@ -2633,6 +2839,18 @@
    "f-light-grey-zn4r": {
     "type": "Boucle",
     "image": "swatches/fabrics/f-light-grey-zn4r.jpg"
+   },
+   "f-black-q4el": {
+    "name": "Flat Black",
+    "image": "swatches/fabrics/f-black-q4el.png"
+   },
+   "f-dark-grey-rz3j": {
+    "name": "Satin Dark Grey",
+    "image": "swatches/fabrics/f-dark-grey-rz3j.jpg"
+   },
+   "f-light-grey-sy1e": {
+    "name": "Satin Light Grey",
+    "image": "swatches/fabrics/f-light-grey-sy1e.jpg"
    }
   },
   "finishTypeOrder": [
@@ -2681,6 +2899,10 @@
    {
     "name": "Woven",
     "kind": "fabric"
+   },
+   {
+    "name": "Paint",
+    "kind": "finish"
    }
   ]
  },
@@ -3254,9 +3476,49 @@
    "path": "media/products/x-aira-bench-vsdk/gallery-3.png",
    "type": "image/png",
    "name": "ivory-bench3.png"
+  },
+  "fabric:f-black-q4el": {
+   "path": "swatches/fabrics/f-black-q4el.png",
+   "type": "image/png",
+   "name": "black.png"
+  },
+  "fabric:f-brass-qw6b": {
+   "path": "swatches/fabrics/f-brass-qw6b.jpg",
+   "type": "image/jpeg",
+   "name": "brass.jpg"
+  },
+  "fabric:f-dark-grey-rz3j": {
+   "path": "swatches/fabrics/f-dark-grey-rz3j.jpg",
+   "type": "image/jpeg",
+   "name": "dark-grey.jpg"
+  },
+  "fabric:f-french-oak-znrz": {
+   "path": "swatches/fabrics/f-french-oak-znrz.jpg",
+   "type": "image/jpeg",
+   "name": "french-oak.jpg"
+  },
+  "fabric:f-kiaat-20m1": {
+   "path": "swatches/fabrics/f-kiaat-20m1.png",
+   "type": "image/png",
+   "name": "Kiaat.png"
+  },
+  "fabric:f-light-grey-sy1e": {
+   "path": "swatches/fabrics/f-light-grey-sy1e.jpg",
+   "type": "image/jpeg",
+   "name": "light-grey.jpg"
+  },
+  "fabric:f-satin-white-u4u6": {
+   "path": "swatches/fabrics/f-satin-white-u4u6.png",
+   "type": "image/png",
+   "name": "white.png"
+  },
+  "model:x-drakensburg-pedestal-42ly": {
+   "path": "models/x-drakensburg-pedestal-42ly.glb",
+   "type": "",
+   "name": "timbur-drakensburg-pedestal.glb"
   }
  },
- "version": 1793450261509,
+ "version": 1793723751560,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",
@@ -3273,6 +3535,7 @@
   "x-vonia-3-seater-0n8h": "models/x-vonia-3-seater-0n8h.glb",
   "x-emma-j-shipley-one-9czi": "models/x-emma-j-shipley-one-9czi.glb",
   "x-marble-one-erfd": "models/x-marble-one-erfd.glb",
-  "x-aira-bench-vsdk": "models/x-aira-bench-vsdk.glb"
+  "x-aira-bench-vsdk": "models/x-aira-bench-vsdk.glb",
+  "x-drakensburg-pedestal-42ly": "models/x-drakensburg-pedestal-42ly.glb"
  }
 }
