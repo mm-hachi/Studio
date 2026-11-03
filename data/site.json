@@ -3516,9 +3516,24 @@
    "path": "models/x-drakensburg-pedestal-42ly.glb",
    "type": "",
    "name": "timbur-drakensburg-pedestal.glb"
+  },
+  "gallery:x-drakensburg-pedestal-42ly:1": {
+   "path": "media/products/x-drakensburg-pedestal-42ly/gallery-1.webp",
+   "type": "image/webp",
+   "name": "timbur-drakensburg-pedestal-foak-black-brass-480.webp"
+  },
+  "gallery:x-drakensburg-pedestal-42ly:2": {
+   "path": "media/products/x-drakensburg-pedestal-42ly/gallery-2.webp",
+   "type": "image/webp",
+   "name": "timbur-drakensburg-pedestal-kiaat-lgrey-brass-1200.webp"
+  },
+  "gallery:x-drakensburg-pedestal-42ly:3": {
+   "path": "media/products/x-drakensburg-pedestal-42ly/gallery-3.webp",
+   "type": "image/webp",
+   "name": "timbur-drakensburg-pedestal-kiaat-white-matte-1200.webp"
   }
  },
- "version": 1793723751560,
+ "version": 1793744674325,
  "models": {
   "x-molo-occasional-chair-bkmk": "models/x-molo-occasional-chair-bkmk.glb",
   "x-scarlet-custom-couch-svxv": "models/x-scarlet-custom-couch-svxv.glb",
